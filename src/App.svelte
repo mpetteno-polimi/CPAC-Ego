@@ -1,45 +1,117 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import Counter from './lib/Counter.svelte'
+  import { onMount } from 'svelte';
+  import { config } from "./config.js";
+  import * as FM from '@mediapipe/face_mesh';
+  import { drawConnectors } from '@mediapipe/drawing_utils';
+  import { Camera } from '@mediapipe/camera_utils';
+
+  let video, canvas, canvasCtx, camera, faceMesh;
+
+  function onResults(results) {
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+    if (results.multiFaceLandmarks) {
+      for (const landmarks of results.multiFaceLandmarks) {
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_RIGHT_EYE, {color: '#FF3030'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_RIGHT_EYEBROW, {color: '#FF3030'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_RIGHT_IRIS, {color: '#FF3030'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LEFT_EYE, {color: '#30FF30'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LEFT_EYEBROW, {color: '#30FF30'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LEFT_IRIS, {color: '#30FF30'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_FACE_OVAL, {color: '#E0E0E0'});
+        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LIPS, {color: '#E0E0E0'});
+      }
+    }
+    canvasCtx.restore();
+  }
+
+  onMount(() => {
+    canvasCtx = canvas.getContext('2d');
+
+    camera = new Camera(video, {
+      onFrame: async () => {
+        await faceMesh.send({image: video});
+      },
+      width: 1280,
+      height: 720
+    });
+    camera.start();
+
+    faceMesh = new FM.FaceMesh({locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@` + `${FM.VERSION}/${file}`;
+    }});
+    faceMesh.setOptions(config.faceMesh);
+    faceMesh.onResults(onResults);
+  })
+
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer"> 
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer"> 
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+  <div class="container">
+    <video class="input_video" bind:this={video}>
+      <track kind="captions">
+    </video>
+    <div class="canvas-container">
+      <canvas class="output_canvas" width="1280px" height="720px" bind:this={canvas}>
+      </canvas>
+    </div>
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
 </main>
 
-<style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
+<style lang="scss">
+
+  :global(body) {
+    bottom: 0;
+    font-family: "Titillium Web", sans-serif;
+    color: white;
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform-origin: 0px 0px;
+    overflow: hidden;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+
+  .container {
+    position: absolute;
+    background-color: #596e73;
+    width: 100%;
+    max-height: 100%;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+
+  .input_video {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    &.selfie {
+      transform: scale(-1, 1);
+    }
   }
-  .read-the-docs {
-    color: #888;
+
+  .input_image {
+    position: absolute;
   }
+
+  .canvas-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .output_canvas {
+    max-width: 100%;
+    display: block;
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+
 </style>
