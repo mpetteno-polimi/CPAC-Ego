@@ -66,3 +66,12 @@
 
 <svelte:window on:resize={resize}/>
 <canvas bind:this={canvas}></canvas>
+
+<style>
+    canvas {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+</style>

@@ -8,7 +8,7 @@ export default class PointCloud {
     constructor() {
         this.bufferGeometry = new THREE.BufferGeometry()
         this.material = new THREE.PointsMaterial({
-            color: 0x888888,
+            color: 0xffffff,
             size: 0.0151,
             sizeAttenuation: true,
         })

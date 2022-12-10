@@ -25,7 +25,7 @@ export const config: AppConfig = {
             farPlane: 100
         },
         scene: {
-            backgroundColor: 0xffffff
+            backgroundColor: 0x000000
         }
     }
 }
