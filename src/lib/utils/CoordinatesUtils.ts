@@ -1,11 +1,9 @@
-export function getScreenRanges(aspectRatio: number, width: number): ScreenRange {
-    const screenHeight: number = width / aspectRatio
-
+export function getScreenRangesForThreeJSWorld(width: number, height: number): ScreenRange {
     const widthStart: number = 0 - width / 2
     const widthEnd: number = widthStart + width
 
-    const heightStart: number = 0 - screenHeight / 2
-    const heightEnd: number = heightStart + screenHeight
+    const heightStart: number = 0 - height / 2
+    const heightEnd: number = heightStart + height
 
     return {
         height: { from: heightStart, to: heightEnd },
@@ -13,9 +11,20 @@ export function getScreenRanges(aspectRatio: number, width: number): ScreenRange
     }
 }
 
-export function mapRangetoRange(from: number, point: number, range: Range, invert = false): number {
-    let pointMagnitude: number = point / from
-    if (invert) pointMagnitude = 1 - pointMagnitude
-    const targetMagnitude = range.to - range.from
-    return targetMagnitude * pointMagnitude + range.from
+export function getScreenRangesForWebcam(width: number, height: number): ScreenRange {
+    const widthStart: number = 0
+    const widthEnd: number = widthStart + width
+
+    const heightStart: number = 0
+    const heightEnd: number = heightStart + height
+
+    return {
+        height: { from: heightStart, to: heightEnd },
+        width: { from: widthStart, to: widthEnd },
+    }
+}
+
+export function convertToRange(value, oldRange: Range, newRange: Range) {
+    let newValue = (value - oldRange.from) * (newRange.to - newRange.from) / (oldRange.to - oldRange.from) + newRange.from;
+    return Math.min(Math.max(newValue, newRange.from) , newRange.to);
 }

@@ -13,9 +13,9 @@ type FaceMeshConfig = {
 }
 
 type WebcamConfig = {
-    canvasSize: number,
     widthRes: number,
     heightRes: number
+    fps: number
 }
 
 type ThreeJSConfig = {

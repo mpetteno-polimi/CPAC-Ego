@@ -14,15 +14,15 @@ export const config: AppConfig = {
         }
     },
     webcam: {
-        canvasSize: 500,
         widthRes: 1280,
-        heightRes: 720
+        heightRes: 720,
+        fps: 60
     },
     threeJS: {
         camera: {
-            fieldOfView: 75,
-            nearPlane: 0.01,
-            farPlane: 100
+            fieldOfView: 90,
+            nearPlane: 0.1,
+            farPlane: 1000
         },
         scene: {
             backgroundColor: 0x000000
