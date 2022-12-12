@@ -6,7 +6,7 @@ export const config: AppConfig = {
             runtime: 'mediapipe',
             refineLandmarks: true,
             solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
-            maxFaces: 1
+            maxFaces: 2
         },
         estimator: {
             flipHorizontal: false,
@@ -21,7 +21,7 @@ export const config: AppConfig = {
     threeJS: {
         camera: {
             fieldOfView: 90,
-            nearPlane: 0.1,
+            nearPlane: 0.01,
             farPlane: 1000
         },
         scene: {

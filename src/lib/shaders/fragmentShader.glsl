@@ -64,7 +64,6 @@ void main() {
     vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
     uv *= 1. + dot(uv, uv)*.3;
 
-
     float time = u_time / 20.;
 
     mat2 rot = mat2(cos(time), sin(time),
@@ -86,16 +85,5 @@ void main() {
     colour += .1;
     colour = clamp(colour, 0.05, 1.);
 
-
-    // colour = vec3(QR * 200.);
-    // colour.r -= dot(q, r) * 15.;
-    // colour.g += r.x;
-    // colour = mix(colour, vec3(pattern(uv * r, seed2, time, q, r), dot(q, r) * 15., 0.), .5);
-    // colour -= q.y * 1.5;
-    // colour.g += dot(q, r) * 15.;
-
-    // colour = hsv2rgb(colour);
-
-    // gl_FragColor = vec4(abs(colour), 1.);
     gl_FragColor = vec4(colour + (abs(colour) * .5), 1.);
 }

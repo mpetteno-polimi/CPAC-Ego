@@ -9,8 +9,8 @@ type ScreenRange = {
 }
 
 type Sizes = {
-    innerWidth: number
-    innerHeight: number
+    width: number
+    height: number
     videoWidth: number
     videoHeight: number
 }
