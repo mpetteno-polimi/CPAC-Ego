@@ -6,7 +6,7 @@ export const config: AppConfig = {
             runtime: 'mediapipe',
             refineLandmarks: true,
             solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
-            maxFaces: 2
+            maxFaces: 1
         },
         estimator: {
             flipHorizontal: false,
