@@ -14,7 +14,7 @@
         facesKeypoints.forEach((faceKeypoints, index) => {
             const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
             const facePositions = createBufferAttribute(flatData);
-            scene.pointClouds[index].updateProperty(facePositions, 'position');
+            scene.facePointClouds[index].updateProperty(facePositions, 'position');
         })
     }
 

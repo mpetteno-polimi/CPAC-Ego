@@ -4,7 +4,7 @@ export const config: AppConfig = {
     faceMesh: {
         detector: {
             runtime: 'mediapipe',
-            refineLandmarks: true,
+            refineLandmarks: false,
             solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
             maxFaces: 1
         },
@@ -20,9 +20,9 @@ export const config: AppConfig = {
     },
     threeJS: {
         camera: {
-            fieldOfView: 90,
+            fieldOfView: 75,
             nearPlane: 0.01,
-            farPlane: 1000
+            farPlane: 100
         },
         scene: {
             backgroundColor: 0x000000
