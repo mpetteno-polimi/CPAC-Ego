@@ -4,8 +4,13 @@
     import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/FaceMeshUtils";
     import {Webcam} from "./lib/classes/Webcam";
     import Scene from "./lib/classes/Scene";
+    import OSCClient from "./lib/classes/OSCClient";
 
     let container, webcam, video, scene;
+
+    const oscClient = new OSCClient();
+    oscClient.sendMessage(); // TODO - Test (use like this)
+
     const faceMeshDetector = new FaceMeshDetector()
 
     async function bindFacesDataToPointCloud() {

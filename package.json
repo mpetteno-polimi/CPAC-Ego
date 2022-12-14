@@ -13,6 +13,7 @@
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "@tsconfig/svelte": "^3.0.0",
     "@types/three": "^0.146.0",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "dat.gui": "^0.7.9",
     "svelte": "^3.54.0",
     "svelte-check": "^2.10.0",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "@tensorflow-models/face-landmarks-detection": "^1.0.2",
+    "osc-js": "^2.4.0",
     "three": "^0.147.0"
   }
 }
