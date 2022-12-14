@@ -1,117 +1,58 @@
-<script>
-  import { onMount } from 'svelte';
-  import { config } from "./config.js";
-  import * as FM from '@mediapipe/face_mesh';
-  import { drawConnectors } from '@mediapipe/drawing_utils';
-  import { Camera } from '@mediapipe/camera_utils';
+<script lang="ts">
+    import {onMount} from "svelte";
+    import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
+    import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/FaceMeshUtils";
+    import {Webcam} from "./lib/classes/Webcam";
+    import Scene from "./lib/classes/Scene";
 
-  let video, canvas, canvasCtx, camera, faceMesh;
+    let container, webcam, video, scene;
+    const faceMeshDetector = new FaceMeshDetector()
 
-  function onResults(results) {
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    canvasCtx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-    if (results.multiFaceLandmarks) {
-      for (const landmarks of results.multiFaceLandmarks) {
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_RIGHT_EYE, {color: '#FF3030'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_RIGHT_EYEBROW, {color: '#FF3030'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_RIGHT_IRIS, {color: '#FF3030'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LEFT_EYE, {color: '#30FF30'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LEFT_EYEBROW, {color: '#30FF30'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LEFT_IRIS, {color: '#30FF30'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_FACE_OVAL, {color: '#E0E0E0'});
-        drawConnectors(canvasCtx, landmarks, FM.FACEMESH_LIPS, {color: '#E0E0E0'});
-      }
+    async function bindFacesDataToPointCloud() {
+        const estimatedFaces = await faceMeshDetector.detectFaces(webcam.video);
+        const facesKeypoints = estimatedFaces.map(estimatedFace => estimatedFace.keypoints);
+        facesKeypoints.forEach((faceKeypoints, index) => {
+            const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
+            const facePositions = createBufferAttribute(flatData);
+            scene.facePointClouds[index].updateProperty(facePositions, 'position');
+        })
     }
-    canvasCtx.restore();
-  }
 
-  onMount(() => {
-    canvasCtx = canvas.getContext('2d');
+    function animate() {
+        bindFacesDataToPointCloud();
+        scene.render();
+        requestAnimationFrame(animate);
+    }
 
-    camera = new Camera(video, {
-      onFrame: async () => {
-        await faceMesh.send({image: video});
-      },
-      width: 1280,
-      height: 720
+    onMount(async () => {
+        webcam = new Webcam(video);
+        await webcam.setup();
+        scene = new Scene({
+            container: container,
+            video: webcam.video
+        });
+        await faceMeshDetector.loadDetector();
+        await animate();
     });
-    camera.start();
-
-    faceMesh = new FM.FaceMesh({locateFile: (file) => {
-      return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@` + `${FM.VERSION}/${file}`;
-    }});
-    faceMesh.setOptions(config.faceMesh);
-    faceMesh.onResults(onResults);
-  })
-
 </script>
 
-<main>
-  <div class="container">
-    <video class="input_video" bind:this={video}>
-      <track kind="captions">
-    </video>
-    <div class="canvas-container">
-      <canvas class="output_canvas" width="1280px" height="720px" bind:this={canvas}>
-      </canvas>
-    </div>
-  </div>
+<svelte:window on:resize={scene.resize()}/>
+<main bind:this={container}>
+    <video bind:this={video} id="video" autoplay></video>
 </main>
 
-<style lang="scss">
-
-  :global(body) {
-    bottom: 0;
-    font-family: "Titillium Web", sans-serif;
-    color: white;
-    left: 0;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transform-origin: 0px 0px;
-    overflow: hidden;
-  }
-
-  .container {
-    position: absolute;
-    background-color: #596e73;
-    width: 100%;
-    max-height: 100%;
-  }
-
-  .input_video {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    &.selfie {
-      transform: scale(-1, 1);
+<style>
+    main {
+        position: fixed;
+        width: 100%;
+        height: 100%;
     }
-  }
 
-  .input_image {
-    position: absolute;
-  }
-
-  .canvas-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .output_canvas {
-    max-width: 100%;
-    display: block;
-    position: relative;
-    left: 0;
-    top: 0;
-  }
-
+    video {
+        display: none;
+        position: absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%, -50%);
+    }
 </style>
