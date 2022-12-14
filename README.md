@@ -1,47 +1,35 @@
-# Svelte + TS + Vite
+Creative Programming and Computing
+A. Y. 2022-2023
+Abstract of the project
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+# Ego
 
-## Recommended IDE Setup
+## Name of the group
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## Members of the group
+1.	Sebastian Gafencu https://github.com/sebastiangafencu
+2.	Samuele Del Moro - https://github.com/SamueleDelMoro
+3.	Matteo Pettenò - https://github.com/mpetteno-polimi
 
-## Need an official Svelte framework?
+## Github repository
+https://github.com/mpetteno-polimi/CPAC-Project
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+# Abstract
+The goal of this project is to build a real time 3D model of the user face and then slowly morph it into abstract shapes, representing the degradation of one's identity as perceived through an external point of view, and the liquid nature of the self.
+For these reasons, we want the target shapes of the morph to have an aesthetic that reminds of the Rorschach tests. These shapes will be generated randomly, in real time.
+The face's landmarks will be also used to compose a unique generative soundtrack in real time, by controlling and altering a "sentence" (string of symbols used to compose the music in real time). The aim is to tie each face to a different musical entity.
 
-## Technical considerations
+## Artistic vision
+With this project we want to explore perception, as a reconstruction based on one's model of the world. The idea that our view of the world is a projection of our own model of it, leads inevitably to the problem of discrepancy: reality is not what we think it is and we are not what we think we are. We want to explore the theme of a feedback loop between world and self, and the concept of cognitive dissonance/reality distortion.
 
-**Why use this over SvelteKit?**
+## Prototype after the hackathon
+- Generate a face mesh from the webcam’s input in real time
+- Use face’s to generate a grammar string for music composition
+- Define a grammar for the composition
+- Use the grammar to generate music in Pure Data via OSC
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+# Final project
+- Continuous loop morphing between face and abstract shapes
+- Alter sound based on the heads spatial parameters
+- Handle multiple faces at the same time
+- Real time generation of morphing target images
