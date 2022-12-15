@@ -6,10 +6,7 @@
     import Scene from "./lib/classes/Scene";
     import OSCClient from "./lib/classes/OSCClient";
 
-    let container, webcam, video, scene;
-
-    const oscClient = new OSCClient();
-    oscClient.sendMessage(); // TODO - Test (use like this)
+    let container, webcam, video, scene, oscClient;
 
     const faceMeshDetector = new FaceMeshDetector()
 
@@ -29,7 +26,12 @@
         requestAnimationFrame(animate);
     }
 
+    function testOSC() {
+        oscClient.sendMessage();
+    }
+
     onMount(async () => {
+        oscClient = new OSCClient();
         webcam = new Webcam(video);
         await webcam.setup();
         scene = new Scene({
@@ -41,7 +43,8 @@
     });
 </script>
 
-<svelte:window on:resize={scene.resize()}/>
+<svelte:window on:resize={() => scene.resize()}/>
+<button on:click={testOSC}>TEST OSC</button>
 <main bind:this={container}>
     <video bind:this={video} id="video" autoplay></video>
 </main>
@@ -59,5 +62,11 @@
         top:50%;
         left:50%;
         transform:translate(-50%, -50%);
+    }
+
+    button {
+        width: 100px;
+        height: 50px;
+        z-index: 1000000;
     }
 </style>
