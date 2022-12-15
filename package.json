@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@tensorflow-models/face-landmarks-detection": "^1.0.2",
+    "gsap": "^3.11.3",
     "three": "^0.147.0"
   }
 }

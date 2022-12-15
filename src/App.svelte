@@ -1,12 +1,12 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
-    import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/FaceMeshUtils";
+    import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/Utils";
     import {Webcam} from "./lib/classes/Webcam";
     import Scene from "./lib/classes/Scene";
 
     let container, webcam, video, scene;
-    const faceMeshDetector = new FaceMeshDetector()
+    const faceMeshDetector = new FaceMeshDetector();
 
     async function bindFacesDataToPointCloud() {
         const estimatedFaces = await faceMeshDetector.detectFaces(webcam.video);
@@ -14,12 +14,20 @@
         facesKeypoints.forEach((faceKeypoints, index) => {
             const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
             const facePositions = createBufferAttribute(flatData);
-            scene.facePointClouds[index].updateProperty(facePositions, 'position');
+            scene.facePointClouds[index].updatePosition(facePositions);
+            scene.facePointClouds[index].cloud.geometry.morphAttributes.position =
+                [scene.facePointClouds[index].morphTarget.getMorphBufferAttribute()];
+            scene.facePointClouds[index].cloud.updateMorphTargets();
         })
     }
 
     function animate() {
-        bindFacesDataToPointCloud();
+        if (!scene.isPlaying) {
+            bindFacesDataToPointCloud();
+            scene.play();
+        } else if (!scene.isLooping) {
+            scene.loopMorph();
+        }
         scene.render();
         requestAnimationFrame(animate);
     }
