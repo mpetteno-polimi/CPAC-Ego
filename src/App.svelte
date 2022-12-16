@@ -4,8 +4,10 @@
     import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/Utils";
     import {Webcam} from "./lib/classes/Webcam";
     import Scene from "./lib/classes/Scene";
+    import OSCClient from "./lib/classes/OSCClient";
+    import Grammar from "./lib/classes/Grammar";
 
-    let container, webcam, video, scene;
+    let container, webcam, video, scene, oscClient, grammar;
     const faceMeshDetector = new FaceMeshDetector();
 
     async function bindFacesDataToPointCloud() {
@@ -31,7 +33,23 @@
         requestAnimationFrame(animate);
     }
 
+    function testOSC() {
+        generateNewArpeggio();
+    }
+
+    function generateNewArpeggio(){
+        oscClient.sendMessage('/setBpm', 100);
+        oscClient.sendMessage('/resetNotes');
+        grammar.generateInstance();
+        for(let i=0; i<grammar.generatedInstance.messages.length; i++){
+            oscClient.sendMessage(grammar.generatedInstance.messages[i].address, ...grammar.generatedInstance.messages[i].args);
+        }
+        oscClient.sendMessage("/sequencerPlay", 1);
+    }
+
     onMount(async () => {
+        grammar = new Grammar();
+        oscClient = new OSCClient();
         webcam = new Webcam(video);
         await webcam.setup();
         scene = new Scene({
@@ -44,6 +62,7 @@
 </script>
 
 <svelte:window on:resize={scene.resize()} on:keydown={scene.play()}/>
+<button on:click={testOSC}>TEST OSC</button>
 <main bind:this={container}>
     <video bind:this={video} id="video" autoplay></video>
 </main>
@@ -61,5 +80,11 @@
         top:50%;
         left:50%;
         transform:translate(-50%, -50%);
+    }
+
+    button {
+        width: 100px;
+        height: 50px;
+        z-index: 1000000;
     }
 </style>
