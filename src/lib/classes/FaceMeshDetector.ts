@@ -20,7 +20,7 @@ export default class FaceMeshDetector {
         this.detector = await faceLandmarksDetection.createDetector(this.model, this.detectorConfig)
     }
 
-    async detectFaces(source: faceLandmarksDetection.FaceLandmarksDetectorInput) {
+    async detect(source: faceLandmarksDetection.FaceLandmarksDetectorInput) {
         if (!this.detector)
             throw new Error('call the loadDetector method first on this class before calling this')
         return await this.detector.estimateFaces(source, config.faceMesh.estimator)

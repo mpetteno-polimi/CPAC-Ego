@@ -1,6 +1,6 @@
 import {config} from "../../config";
 
-export class Webcam {
+export default class Webcam {
     video: HTMLVideoElement
     videoConfig: MediaStreamConstraints
     constructor(video: HTMLVideoElement) {

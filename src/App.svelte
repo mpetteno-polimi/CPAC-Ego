@@ -1,16 +1,18 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
     import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/Utils";
-    import {Webcam} from "./lib/classes/Webcam";
+    import Webcam from "./lib/classes/Webcam";
     import Scene from "./lib/classes/Scene";
+    import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
+    import FaceExpressionDetector from "./lib/classes/FaceExpressionDetector";
     import OSCClient from "./lib/classes/OSCClient";
 
     let container, webcam, video, scene, oscClient;
-    const faceMeshDetector = new FaceMeshDetector()
+    const faceMeshDetector = new FaceMeshDetector();
+    const faceExpressionDetector = new FaceExpressionDetector();
 
     async function bindFacesDataToPointCloud() {
-        const estimatedFaces = await faceMeshDetector.detectFaces(webcam.video);
+        const estimatedFaces = await faceMeshDetector.detect(webcam.video);
         const facesKeypoints = estimatedFaces.map(estimatedFace => estimatedFace.keypoints);
         facesKeypoints.forEach((faceKeypoints, index) => {
             const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
@@ -22,9 +24,15 @@
         })
     }
 
+    async function recognizeExpression() {
+        const estimatedExpressions = await faceExpressionDetector.detect(webcam.video);
+        console.log(estimatedExpressions);
+    }
+
     function animate() {
         if (!scene.isPlaying) {
             bindFacesDataToPointCloud();
+            //recognizeExpression();
             scene.play();
         } else if (!scene.isLooping) {
             scene.loopMorph();
@@ -46,6 +54,7 @@
             video: webcam.video
         });
         await faceMeshDetector.loadDetector();
+        await faceExpressionDetector.loadModels();
         await animate();
     });
 </script>
