@@ -33,7 +33,7 @@
         if (!scene.isPlaying) {
             bindFacesDataToPointCloud();
             //recognizeExpression();
-            scene.play();
+            //scene.play();
         } else if (!scene.isLooping) {
             scene.loopMorph();
         }
