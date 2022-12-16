@@ -8,9 +8,8 @@ export default class OSCClient {
         this.client.open();
     }
 
-    sendMessage(options?) {
-        const message = new OSC.Message('/test', 12.221, 'hello')
-        console.log("Sending OSC message...", message);
+    sendMessage(address, ...parameters) {
+        const message = new OSC.Message(address, ...parameters);
         this.client.send(message)
     }
 }

@@ -27,7 +27,12 @@
     }
 
     function testOSC() {
-        oscClient.sendMessage();
+        //oscClient.sendMessage('/resetNotes');
+        oscClient.sendMessage('/setBpm', 100);
+        for(let i=0; i<16; i++){
+            oscClient.sendMessage('/note', 40+Math.floor(Math.random()*16), 1, 50);
+            //oscClient.sendMessage("/note", i, i, i)
+        }
     }
 
     onMount(async () => {
