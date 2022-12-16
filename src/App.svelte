@@ -5,8 +5,9 @@
     import {Webcam} from "./lib/classes/Webcam";
     import Scene from "./lib/classes/Scene";
     import OSCClient from "./lib/classes/OSCClient";
+    import Grammar from "./lib/classes/Grammar";
 
-    let container, webcam, video, scene, oscClient;
+    let container, webcam, video, scene, oscClient, grammar;
 
     const faceMeshDetector = new FaceMeshDetector()
 
@@ -27,15 +28,21 @@
     }
 
     function testOSC() {
-        //oscClient.sendMessage('/resetNotes');
+        generateNewArpeggio();
+    }
+
+    function generateNewArpeggio(){
         oscClient.sendMessage('/setBpm', 100);
-        for(let i=0; i<16; i++){
-            oscClient.sendMessage('/note', 40+Math.floor(Math.random()*16), 1, 50);
-            //oscClient.sendMessage("/note", i, i, i)
+        oscClient.sendMessage('/resetNotes');
+        grammar.generateInstance();
+        for(let i=0; i<grammar.generatedInstance.messages.length; i++){
+            oscClient.sendMessage(grammar.generatedInstance.messages[i].address, ...grammar.generatedInstance.messages[i].args);
         }
+        oscClient.sendMessage("/sequencerPlay", 1);
     }
 
     onMount(async () => {
+        grammar = new Grammar();
         oscClient = new OSCClient();
         webcam = new Webcam(video);
         await webcam.setup();
