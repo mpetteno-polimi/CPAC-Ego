@@ -189,7 +189,7 @@ export default class Scene {
     }
 
     render() {
-        if (!this.isPlaying) return;
+        //if (!this.isPlaying) return;
         this.time += 0.5;
         this.material.uniforms.u_time.value = this.time;
         //this.material.uniforms.u_distortion.value = this.settings.distortion;
