@@ -1,3 +1,5 @@
+#include <morphtarget_pars_vertex>
+
 /* Uniforms */
 uniform float u_time;
 uniform sampler2D texture;
@@ -225,14 +227,16 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
 }
 
 void main() {
-    vUv = uv;
+    #include <begin_vertex>
+    #include <morphtarget_vertex>
 
-    vec3 noise = vec3(position)*curl_noise(vec3(
+    vUv = uv;
+    vec3 noise = vec3(transformed)*curl_noise(vec3(
         position.x*0.002 + u_time*0.1,
         position.y*0.002 + u_time*0.1,
-        (position.x + position.y)*0.02
+        (transformed.x + transformed.y)*0.02
     ))*u_distortion;
-    vec3 finalPosition = position + noise;
+    vec3 finalPosition = transformed + noise;
     vec4 myPosition = modelViewMatrix * vec4(finalPosition, 1.);
     gl_PointSize = 3.;
     gl_Position = projectionMatrix * myPosition;

@@ -2,16 +2,17 @@ import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-import vertexShader from "../shaders/particles/vertexShader.glsl";
-import fragmentShader from "../shaders/particles/fragmentShader.glsl";
 import {config} from "../../config";
 import FacePointCloud from "./FacePointCloud";
+import MorphTarget from "./MorphTarget";
+import vertexShader from "../shaders/particles/vertexShader.glsl";
+import fragmentShader from "../shaders/particles/fragmentShader.glsl";
 import * as dat from "dat.gui";
+import gsap from "gsap";
 
 export default class Scene {
     private readonly scene: THREE.Scene;
@@ -31,7 +32,9 @@ export default class Scene {
     private renderScene: RenderPass;
     private bloomPass: any;
     private composer: EffectComposer;
-    private settings: { bloomStrength: number; distortion: number };
+    private settings: { bloomStrength: number; distortion: number, morphing: number };
+    private morphTarget: MorphTarget;
+    private isLooping: boolean;
 
     constructor(options) {
         this.scene = new THREE.Scene();
@@ -72,7 +75,7 @@ export default class Scene {
             config.threeJS.camera.nearPlane,
             config.threeJS.camera.farPlane
         );
-        this.camera.position.set(0, 0, 2);
+        this.camera.position.set(0, 0, 2.5);
         this.camera.lookAt(0, 0, 0);
         this.controls = new OrbitControls(this.camera, options.container);
         this.controls.enableDamping = true;
@@ -83,23 +86,26 @@ export default class Scene {
         this.gltf.setDRACOLoader(this.dracoLoader);
 
         this.time = 0;
-        this.isPlaying = true;
+        this.isPlaying = false;
 
         this.settingsControls();
         this.addObjects();
         this.addPostProcessing();
         this.resize();
-        this.render();
     }
 
     settingsControls() {
         this.settings = {
             distortion: 0,
-            bloomStrength: 0
+            bloomStrength: 0,
+            morphing: 0
         };
         this.gui = new dat.GUI();
         this.gui.add(this.settings, "distortion", 0, 3, 0.01);
         this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
+        // this.gui.add(this.settings, "morphing", 0, 1, 0.01).onChange((value) => {
+        //     this.facePointClouds[0].cloud.morphTargetInfluences[0] = value;
+        // });
     }
 
     resize() {
@@ -114,11 +120,13 @@ export default class Scene {
     }
 
     addObjects() {
-        // this.material = new THREE.MeshStandardMaterial( {
-        //     color: 0xff0000,
-        //     wireframe: true
-        // } );
-
+        // this.material = new THREE.PointsMaterial({
+        //     color: 0x888888,
+        //     size: 0.0151,
+        //     sizeAttenuation: true,
+        //     wireframe: true,
+        //     transparent: true,
+        // })
         this.material = new THREE.ShaderMaterial({
             extensions: {
                 derivatives: "#extension GL_OES_standard_derivatives : enable"
@@ -130,49 +138,26 @@ export default class Scene {
                 u_resolution: { type: "v2", value: new THREE.Vector2() },
                 u_uvRate: { value: new THREE.Vector2(1, 1) }
             },
-            // wireframe: true,
-            // transparent: true,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader
         })
+        this.material.morphTargets = true;
 
-        this.facePointClouds = [...Array(config.faceMesh.detector.maxFaces)].map(() => new FacePointCloud(this.material));
+        this.morphTarget = new MorphTarget();
+        this.morphTarget.loadFromCircleGeometry();
+
+        this.facePointClouds = [...Array(config.faceMesh.detector.maxFaces)].map(() => new FacePointCloud(
+            this.material,
+            this.morphTarget
+        ));
         this.facePointClouds.forEach((pointCloud) => {
             this.scene.add(pointCloud.cloud)
         })
 
         // let axesHelper = new THREE.AxesHelper( 5 );
         // this.scene.add( axesHelper );
-        //
         // let gridHelper = new THREE.GridHelper(10, 10);
         // this.scene.add(gridHelper);
-
-        // let loader = new SVGLoader();
-        // loader.load(
-        //     "/images/Inkblot.svg", // called when the resource is loaded
-        // (svgData) => {
-        //     const svgGroup = new THREE.Group();
-        //     svgGroup.scale.multiplyScalar( 0.005 );
-        //     svgGroup.scale.y *= - 1;
-        //     //const fillMaterial = new THREE.MeshBasicMaterial({ color: "#F3FBFB" });
-        //     const stokeMaterial = new THREE.LineBasicMaterial({ color: "#00A5E6" });
-        //     svgData.paths.forEach((path) => {
-        //         const shapes = SVGLoader.createShapes( path );
-        //         shapes.forEach((shape) => {
-        //             const meshGeometry = new THREE.ExtrudeGeometry(shape, {
-        //                 steps: 2,
-        //                 depth: 2,
-        //                 bevelEnabled: false
-        //             });
-        //             meshGeometry.center();
-        //             //const mesh = new THREE.Mesh(meshGeometry, fillMaterial);
-        //             const linesGeometry = new THREE.EdgesGeometry(meshGeometry);
-        //             const lines = new THREE.LineSegments(linesGeometry, stokeMaterial);
-        //             svgGroup.add(lines);
-        //         });
-        //     });
-        //     this.scene.add(svgGroup);
-        // });
     }
 
     addPostProcessing() {
@@ -196,10 +181,7 @@ export default class Scene {
     }
 
     play() {
-        if (!this.isPlaying) {
-            this.render();
-            this.isPlaying = true;
-        }
+        this.isPlaying = true;
     }
 
     stop() {
@@ -210,11 +192,28 @@ export default class Scene {
         if (!this.isPlaying) return;
         this.time += 0.5;
         this.material.uniforms.u_time.value = this.time;
-        this.material.uniforms.u_distortion.value = this.settings.distortion;
-        this.bloomPass.strength = this.settings.bloomStrength;
+        //this.material.uniforms.u_distortion.value = this.settings.distortion;
+        //this.bloomPass.strength = this.settings.bloomStrength;
         this.controls.update();
         //this.renderer.render(this.scene, this.camera);
         this.composer.render();
+    }
+
+    loopMorph() {
+        this.isLooping = true;
+        let tl = gsap.timeline({onComplete: () => this.isLooping = false, repeat: -1, repeatDelay: 1});
+        tl.startTime(2);
+        tl.to(this.facePointClouds[0].cloud.morphTargetInfluences, { "0": 1, duration: 6 }, 0);
+        tl.to(this.material.uniforms.u_distortion, { value: 0.8, duration: 3, ease: "power2.inOut" }, 0);
+        tl.to(this.bloomPass, { strength: 7, duration: 2, ease: "power2.in" }, 0);
+        tl.to(this.material.uniforms.u_distortion, { value: 0, duration: 2, ease: "power2.inOut" }, 3);
+        tl.to(this.bloomPass, { strength: 0, duration: 2, ease: "power2.out" }, 3);
+
+        tl.to(this.facePointClouds[0].cloud.morphTargetInfluences, { "0": 0, duration: 5 }, 6);
+        tl.to(this.material.uniforms.u_distortion, { value: 0.8, duration: 3, ease: "power2.inOut" }, 6);
+        tl.to(this.bloomPass, { strength: 7, duration: 2, ease: "power2.in" }, 6);
+        tl.to(this.material.uniforms.u_distortion, { value: 0, duration: 2, ease: "power2.inOut" }, 9);
+        tl.to(this.bloomPass, { strength: 0, duration: 2, ease: "power2.out" }, 9);
     }
 
 }
