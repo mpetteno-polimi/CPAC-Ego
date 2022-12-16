@@ -15,17 +15,16 @@
             const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
             const facePositions = createBufferAttribute(flatData);
             scene.facePointClouds[index].updatePosition(facePositions);
-            scene.facePointClouds[index].cloud.geometry.morphAttributes.position =
-                [scene.facePointClouds[index].morphTarget.getMorphBufferAttribute()];
-            scene.facePointClouds[index].cloud.updateMorphTargets();
         })
     }
 
     function animate() {
         if (!scene.isPlaying) {
             bindFacesDataToPointCloud();
-            scene.play();
         } else if (!scene.isLooping) {
+            scene.facePointClouds[0].cloud.geometry.morphAttributes.position =
+                [scene.facePointClouds[0].morphTarget.getMorphBufferAttribute()];
+            scene.facePointClouds[0].cloud.updateMorphTargets();
             scene.loopMorph();
         }
         scene.render();
@@ -44,7 +43,7 @@
     });
 </script>
 
-<svelte:window on:resize={scene.resize()}/>
+<svelte:window on:resize={scene.resize()} on:keydown={scene.play()}/>
 <main bind:this={container}>
     <video bind:this={video} id="video" autoplay></video>
 </main>
