@@ -27,6 +27,7 @@
             scene.facePointClouds[0].cloud.geometry.morphAttributes.position =
                 [scene.facePointClouds[0].morphTarget.getMorphBufferAttribute()];
             scene.facePointClouds[0].cloud.updateMorphTargets();
+            generateNewArpeggio();
             scene.loopMorph();
         }
         scene.render();
@@ -57,6 +58,7 @@
             video: webcam.video
         });
         await faceMeshDetector.loadDetector();
+        oscClient.sendMessage("/dronePlay", 1);
         await animate();
     });
 </script>

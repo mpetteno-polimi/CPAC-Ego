@@ -88,7 +88,7 @@ export default class Scene {
         this.time = 0;
         this.isPlaying = false;
 
-        this.settingsControls();
+        //this.settingsControls();
         this.addObjects();
         this.addPostProcessing();
         this.resize();
@@ -163,9 +163,9 @@ export default class Scene {
     addPostProcessing() {
         this.renderScene = new RenderPass(this.scene, this.camera);
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-        this.bloomPass.threshold = this.settings.bloomThreshold;
-        this.bloomPass.strength = this.settings.bloomStrength;
-        this.bloomPass.radius = this.settings.bloomRadius;
+        // this.bloomPass.threshold = this.settings.bloomThreshold;
+        // this.bloomPass.strength = this.settings.bloomStrength;
+        // this.bloomPass.radius = this.settings.bloomRadius;
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(this.renderScene);
         this.composer.addPass(this.bloomPass);
