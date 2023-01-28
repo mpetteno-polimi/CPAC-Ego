@@ -1,38 +1,35 @@
-# create-svelte
+Creative Programming and Computing
+A. Y. 2022-2023
+Abstract of the project
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+# Ego
 
-## Creating a project
+## Name of the group
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Members of the group
+1.	Sebastian Gafencu https://github.com/sebastiangafencu
+2.	Samuele Del Moro - https://github.com/SamueleDelMoro
+3.	Matteo Pettenò - https://github.com/mpetteno-polimi
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Github repository
+https://github.com/mpetteno-polimi/CPAC-Project
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+# Abstract
+The goal of this project is to build a real time 3D model of the user face and then slowly morph it into abstract shapes, representing the degradation of one's identity as perceived through an external point of view, and the liquid nature of the self.
+For these reasons, we want the target shapes of the morph to have an aesthetic that reminds of the Rorschach tests. These shapes will be generated randomly, in real time.
+The face's landmarks will be also used to compose a unique generative soundtrack in real time, by controlling and altering a "sentence" (string of symbols used to compose the music in real time). The aim is to tie each face to a different musical entity.
 
-## Developing
+## Artistic vision
+With this project we want to explore perception, as a reconstruction based on one's model of the world. The idea that our view of the world is a projection of our own model of it, leads inevitably to the problem of discrepancy: reality is not what we think it is and we are not what we think we are. We want to explore the theme of a feedback loop between world and self, and the concept of cognitive dissonance/reality distortion.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Prototype after the hackathon
+- Generate a face mesh from the webcam’s input in real time
+- Use face’s to generate a grammar string for music composition
+- Define a grammar for the composition
+- Use the grammar to generate music in Pure Data via OSC
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+# Final project
+- Continuous loop morphing between face and abstract shapes
+- Alter sound based on the heads spatial parameters
+- Handle multiple faces at the same time
+- Real time generation of morphing target images
