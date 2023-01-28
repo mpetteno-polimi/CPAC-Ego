@@ -26,10 +26,12 @@ With this project we want to explore perception, as a reconstruction based on on
 - Generate a face mesh from the webcam’s input in real time ![100%](https://progress-bar.dev/100)
 - ~~Use face’s to generate a grammar string for music composition~~
 - ~~Define a grammar for the composition~~
-- ~~Use the grammar to generate music in Pure Data via OSC~~
+- Generate music in Pure Data via OSC ![20%](https://progress-bar.dev/20)
 
 # Final project
-- Continuous loop morphing between face and abstract shapes ![20%](https://progress-bar.dev/0)
-- Alter sound based on the heads spatial parameters ![50%](https://progress-bar.dev/0)
+- Face triangulation and animation improvements ![40%](https://progress-bar.dev/40)
+- Continuous loop morphing between face and abstract shapes ![20%](https://progress-bar.dev/20)
+- Define markov chain for the composition ![70%](https://progress-bar.dev/70)
+- Alter sound based on the heads spatial parameters ![50%](https://progress-bar.dev/50)
 - Handle multiple faces at the same time ![0%](https://progress-bar.dev/0)
 - Real time generation of morphing target images ![0%](https://progress-bar.dev/0)
