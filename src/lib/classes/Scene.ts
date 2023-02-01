@@ -16,7 +16,7 @@ import gsap from "gsap";
 
 export default class Scene {
     private readonly scene: THREE.Scene;
-    private currentSizes: Sizes;
+    currentSizes: Sizes;
     private container: HTMLElement;
     private videoInput: HTMLVideoElement;
     private readonly renderer: THREE.WebGLRenderer;
@@ -24,7 +24,7 @@ export default class Scene {
     private controls: OrbitControls;
     private time: number;
     private isPlaying: boolean;
-    private material: THREE.ShaderMaterial;
+    material: THREE.ShaderMaterial;
     public facePointClouds: FacePointCloud[];
     private readonly dracoLoader: DRACOLoader;
     private gltf: GLTFLoader;
@@ -33,7 +33,7 @@ export default class Scene {
     private bloomPass: any;
     private composer: EffectComposer;
     private settings: { bloomStrength: number; distortion: number, morphing: number };
-    private morphTarget: MorphTarget;
+    morphTarget: MorphTarget;
     private isLooping: boolean;
 
     constructor(options) {
@@ -146,10 +146,7 @@ export default class Scene {
         this.morphTarget = new MorphTarget();
         this.morphTarget.loadFromCircleGeometry();
 
-        this.facePointClouds = [...Array(config.faceMesh.detector.maxFaces)].map(() => new FacePointCloud(
-            this.material,
-            this.morphTarget
-        ));
+        this.facePointClouds = [...Array(config.faceMesh.detector.maxFaces)].map(() => new FacePointCloud(this));
         this.facePointClouds.forEach((pointCloud) => {
             this.scene.add(pointCloud.cloud)
         })
