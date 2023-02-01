@@ -29,7 +29,7 @@ With this project we want to explore perception, as a reconstruction based on on
 - Generate music in Pure Data via OSC ![20%](https://progress-bar.dev/20) &rarr; **Samuele**
 
 # Final project
-- Face triangulation and animation improvements ![40%](https://progress-bar.dev/40) &rarr; **Matteo**
+- Face triangulation and animation improvements ![75%](https://progress-bar.dev/75) &rarr; **Matteo**
 - Image's object contour recognition ![0%](https://progress-bar.dev/0) &rarr; **Matteo**
 - Continuous loop morphing between face and abstract shapes ![80%](https://progress-bar.dev/80) &rarr; **Matteo**
 - Define markov chain for the composition ![70%](https://progress-bar.dev/70) &rarr; **Sebastian**
