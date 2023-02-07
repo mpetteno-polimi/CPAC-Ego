@@ -2,35 +2,11 @@
     import {onMount} from "svelte";
     import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
     import {Webcam} from "./lib/classes/Webcam";
-    import Scene from "./lib/classes/Scene";
+    import World from "./lib/classes/World";
     import OSCClient from "./lib/classes/OSCClient";
     import Grammar from "./lib/classes/Grammar";
 
-    let container, webcam, video, scene, oscClient, grammar;
-    const faceMeshDetector = new FaceMeshDetector();
-
-    async function bindFacesDataToPointCloud() {
-        const estimatedFaces = await faceMeshDetector.detectFaces(webcam.video);
-        estimatedFaces.forEach((estimatedFace, index) => scene.facePointClouds[index].updateFromFaceEstimation(estimatedFace));
-    }
-
-    function animate() {
-        if (!scene.isPlaying) {
-            bindFacesDataToPointCloud();
-        } else if (!scene.isLooping) {
-            scene.facePointClouds[0].cloud.geometry.morphAttributes.position =
-                [scene.facePointClouds[0].morphTarget.getMorphBufferAttribute()];
-            scene.facePointClouds[0].cloud.updateMorphTargets();
-            generateNewArpeggio();
-            scene.loopMorph();
-        }
-        scene.render();
-        requestAnimationFrame(animate);
-    }
-
-    function testOSC() {
-        generateNewArpeggio();
-    }
+    let container, video, world, oscClient, grammar;
 
     function generateNewArpeggio(){
         oscClient.sendMessage('/setBpm', 100);
@@ -45,22 +21,25 @@
     onMount(async () => {
         grammar = new Grammar();
         oscClient = new OSCClient();
-        webcam = new Webcam(video);
+        const webcam = new Webcam(video);
         await webcam.setup();
-        scene = new Scene({
-            container: container,
-            video: webcam.video
-        });
+        const faceMeshDetector = new FaceMeshDetector(webcam);
         await faceMeshDetector.loadDetector();
+        world = new World({
+            container: container,
+            video: webcam.video,
+            faceMeshDetector: faceMeshDetector
+        });
         oscClient.sendMessage("/dronePlay", 1);
-        await animate();
+        await world.start();
     });
 </script>
 
-<svelte:window on:resize={scene.resize()} on:keydown={scene.play()}/>
-<button on:click={testOSC}>TEST OSC</button>
+<svelte:window on:resize={world.resize()} />
 <main bind:this={container}>
-    <video bind:this={video} id="video" autoplay></video>
+    <video bind:this={video} id="video" autoplay>
+        <track kind="captions">
+    </video>
 </main>
 
 <style>
