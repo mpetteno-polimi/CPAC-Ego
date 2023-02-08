@@ -14,9 +14,10 @@
 
     async function bindFacesDataToPointCloud() {
         const estimatedFaces = await faceMeshDetector.detectFaces(webcam.video);
+        estimatedFaces.forEach((estimatedFace, index) => scene.facePointClouds[index].updateFromFaceEstimation(estimatedFace));
         const facesKeypoints = estimatedFaces.map(estimatedFace => estimatedFace.keypoints);
         facesKeypoints.forEach((faceKeypoints, index) => {
-            const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes); 
+            const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
             const facePositions = createBufferAttribute(flatData);
             musicGenerator.processLandmarks(flatData);
             musicGenerator.setFaceDistance(estimatedFaces[0].box.width, estimatedFaces[0].box.height);
@@ -55,7 +56,7 @@
             if(Math.random()<0.2){
                 oscClient.sendMessage('/bass', 0);
             }else{
-                oscClient.sendMessage('/bass', note['note']-24); 
+                oscClient.sendMessage('/bass', note['note']-24);
             }
         }
     }

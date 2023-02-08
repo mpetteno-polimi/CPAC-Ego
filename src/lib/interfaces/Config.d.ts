@@ -25,6 +25,7 @@ type ThreeJSConfig = {
 
 type SceneConfig = {
     backgroundColor: number
+    triangulateFace: boolean
 }
 
 type CameraConfig = {

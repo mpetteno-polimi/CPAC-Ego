@@ -25,7 +25,8 @@ export const config: AppConfig = {
             farPlane: 100
         },
         scene: {
-            backgroundColor: 0x000000
+            backgroundColor: 0x000000,
+            triangulateFace: true
         }
     }
 }
