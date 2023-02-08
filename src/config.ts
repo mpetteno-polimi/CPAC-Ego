@@ -13,6 +13,11 @@ export const config: AppConfig = {
             staticImageMode: false
         }
     },
+    music: {
+        generator: {
+            bassEnabled: true
+        }
+    },
     webcam: {
         widthRes: 1280,
         heightRes: 720,
@@ -26,7 +31,8 @@ export const config: AppConfig = {
         },
         scene: {
             backgroundColor: 0x000000,
-            triangulateFace: true
+            triangulateFace: true,
+            textureSize: 256
         }
     }
 }

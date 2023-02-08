@@ -1,5 +1,5 @@
+import {config} from "../../config";
 import * as THREE from 'three';
-
 import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader";
 
 export default class MorphTarget {
@@ -49,7 +49,7 @@ export default class MorphTarget {
                 0,
                 Math.PI * 2,
                 true
-            ).getSpacedPoints(467)
+            ).getSpacedPoints(config.threeJS.scene.textureSize)
         );
         this.mesh = new THREE.Line(this.geometry, this.material);
     }
