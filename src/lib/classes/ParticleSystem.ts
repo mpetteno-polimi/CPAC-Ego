@@ -55,13 +55,13 @@ export default class ParticleSystem {
             },
             side: THREE.DoubleSide,
             uniforms: {
-                u_delta: {type: "f", value: 0},
-                u_time: {type: "f", value: 0},
-                u_distortion: {type: "f", value: 0},
-                u_resolution: {type: "v2", value: new THREE.Vector2()},
-                u_uvRate: {value: new THREE.Vector2(1, 1)},
-                u_texturePosition: {value: null},
-                u_textureVelocity: {value: null}
+                u_delta: { value: 0 },
+                u_time: { value: 0 },
+                u_distortion: { value: 0 },
+                u_resolution: { value: new THREE.Vector2() },
+                u_uvRate: { value: new THREE.Vector2(1, 1) },
+                u_texturePosition: { value: null },
+                u_textureVelocity: { value: null }
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,

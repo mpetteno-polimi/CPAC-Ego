@@ -221,6 +221,7 @@ export default class MusicGenerator {
     }*/
 
     private processFaceLandmarks(data) {
+        let flattenedData = this.flattenFaceData(data);
         // update note generation markov table
         let sum;
         let k;
@@ -228,8 +229,8 @@ export default class MusicGenerator {
             sum = 0.0;
             for (let j = 0; j < 7; j++) {
                 k = i * 3 * 7 + j * 3;
-                this.noteMarkovTable[i][j] = Math.pow(data[k], this.MakeUniform * 2); // stupid math going on here, trying to make the distribution less uniform
-                this.noteMarkovTable[i][j] += Math.pow(data[k + 1], this.MakeUniform * 2);
+                this.noteMarkovTable[i][j] = Math.pow(flattenedData[k], this.MakeUniform * 2); // stupid math going on here, trying to make the distribution less uniform
+                this.noteMarkovTable[i][j] += Math.pow(flattenedData[k + 1], this.MakeUniform * 2);
                 //this.noteMarkovTable[i][j] += Math.pow(data[k+2], 2); //not using z coordinate because then we get an almost uniform distribution
                 sum += this.noteMarkovTable[i][j];
             }
@@ -238,6 +239,17 @@ export default class MusicGenerator {
                 this.noteMarkovTable[i][j] /= sum;
             }
         }
+    }
+
+    private flattenFaceData(data) {
+        let filteredData = data.map((keypoint) => {
+            return {
+                x: keypoint.x,
+                y: keypoint.y,
+                z: keypoint.z
+            }
+        });
+        return filteredData.flatMap((point) => Object.values(point));
     }
 
     private setFaceDistance(width, height) {
