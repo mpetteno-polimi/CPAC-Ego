@@ -23,13 +23,16 @@ The face's landmarks will be also used to compose a unique generative soundtrack
 With this project we want to explore perception, as a reconstruction based on one's model of the world. The idea that our view of the world is a projection of our own model of it, leads inevitably to the problem of discrepancy: reality is not what we think it is and we are not what we think we are. We want to explore the theme of a feedback loop between world and self, and the concept of cognitive dissonance/reality distortion.
 
 ## Prototype after the hackathon
-- Generate a face mesh from the webcam’s input in real time
-- Use face’s to generate a grammar string for music composition
-- Define a grammar for the composition
-- Use the grammar to generate music in Pure Data via OSC
+- Generate a face mesh from the webcam’s input in real time ![100%](https://progress-bar.dev/100)
+- ~~Use face’s to generate a grammar string for music composition~~
+- ~~Define a grammar for the composition~~
+- Generate music in Pure Data via OSC ![20%](https://progress-bar.dev/20) &rarr; **Samuele**
 
 # Final project
-- Continuous loop morphing between face and abstract shapes
-- Alter sound based on the heads spatial parameters
-- Handle multiple faces at the same time
-- Real time generation of morphing target images
+- Face triangulation and animation improvements ![75%](https://progress-bar.dev/75) &rarr; **Matteo**
+- Image's object contour recognition ![0%](https://progress-bar.dev/0) &rarr; **Matteo**
+- Continuous loop morphing between face and abstract shapes ![80%](https://progress-bar.dev/80) &rarr; **Matteo**
+- Define markov chain for the composition ![70%](https://progress-bar.dev/70) &rarr; **Sebastian**
+- Alter sound based on the heads spatial parameters ![50%](https://progress-bar.dev/50) &rarr; **Sebastian**
+- Handle multiple faces at the same time ![0%](https://progress-bar.dev/0)
+- Real time generation of morphing target images ![0%](https://progress-bar.dev/0) &rarr; **Tommaso**

@@ -1,68 +1,42 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {createBufferAttribute, flattenFacialLandMarkArray} from "./lib/utils/Utils";
-    import Webcam from "./lib/classes/Webcam";
-    import Scene from "./lib/classes/Scene";
     import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
     import FaceExpressionDetector from "./lib/classes/FaceExpressionDetector";
-    import OSCClient from "./lib/classes/OSCClient";
+    import {Webcam} from "./lib/classes/Webcam";
+    import World from "./lib/classes/World";
+    import MusicGenerator from "./lib/classes/MusicGenerator";
 
-    let container, webcam, video, scene, oscClient;
-    const faceMeshDetector = new FaceMeshDetector();
+    let container, video, world;
+
     const faceExpressionDetector = new FaceExpressionDetector();
-
-    async function bindFacesDataToPointCloud() {
-        const estimatedFaces = await faceMeshDetector.detect(webcam.video);
-        const facesKeypoints = estimatedFaces.map(estimatedFace => estimatedFace.keypoints);
-        facesKeypoints.forEach((faceKeypoints, index) => {
-            const flatData = flattenFacialLandMarkArray(faceKeypoints, scene.currentSizes);
-            const facePositions = createBufferAttribute(flatData);
-            scene.facePointClouds[index].updatePosition(facePositions);
-            scene.facePointClouds[index].cloud.geometry.morphAttributes.position =
-                [scene.facePointClouds[index].morphTarget.getMorphBufferAttribute()];
-            scene.facePointClouds[index].cloud.updateMorphTargets();
-        })
-    }
 
     async function recognizeExpression() {
         const estimatedExpressions = await faceExpressionDetector.detect(webcam.video);
         console.log(estimatedExpressions);
     }
 
-    function animate() {
-        if (!scene.isPlaying) {
-            bindFacesDataToPointCloud();
-            //recognizeExpression();
-            //scene.play();
-        } else if (!scene.isLooping) {
-            scene.loopMorph();
-        }
-        scene.render();
-        requestAnimationFrame(animate);
-    }
-
-    function testOSC() {
-        oscClient.sendMessage();
-    }
-
     onMount(async () => {
-        oscClient = new OSCClient();
-        webcam = new Webcam(video);
+        const webcam = new Webcam(video);
         await webcam.setup();
-        scene = new Scene({
-            container: container,
-            video: webcam.video
-        });
+        const musicGenerator = new MusicGenerator();
+        const faceMeshDetector = new FaceMeshDetector(webcam);
         await faceMeshDetector.loadDetector();
         await faceExpressionDetector.loadModels();
-        await animate();
+        world = new World({
+            container: container,
+            video: webcam.video,
+            faceMeshDetector: faceMeshDetector,
+            musicGenerator: musicGenerator
+        });
+        world.start();
     });
 </script>
 
-<svelte:window on:resize={() => scene.resize()}/>
-<button on:click={testOSC}>TEST OSC</button>
+<svelte:window on:resize={world.resize()}/>
 <main bind:this={container}>
-    <video bind:this={video} id="video" autoplay></video>
+    <video bind:this={video} id="video" autoplay>
+        <track kind="captions">
+    </video>
 </main>
 
 <style>

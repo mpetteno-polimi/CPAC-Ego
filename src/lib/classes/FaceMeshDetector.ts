@@ -3,14 +3,17 @@ import '@tensorflow/tfjs-core'
 import '@tensorflow/tfjs-backend-webgl'
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection'
 import {config} from "../../config";
+import type {Webcam} from "./Webcam";
 
 
 export default class FaceMeshDetector {
-    detectorConfig: faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig
-    model: faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
-    detector: faceLandmarksDetection.FaceLandmarksDetector | null
+    private readonly detectorConfig: faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig
+    private readonly model: faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
+    private detector: faceLandmarksDetection.FaceLandmarksDetector | null
+    private webcam: Webcam;
 
-    constructor(detectorConfig = config.faceMesh.detector) {
+    constructor(webcam: Webcam, detectorConfig = config.faceMesh.detector) {
+        this.webcam = webcam;
         this.model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
         this.detector = null
         this.detectorConfig = detectorConfig;
@@ -20,9 +23,9 @@ export default class FaceMeshDetector {
         this.detector = await faceLandmarksDetection.createDetector(this.model, this.detectorConfig)
     }
 
-    async detect(source: faceLandmarksDetection.FaceLandmarksDetectorInput) {
+    async detectFaces() {
         if (!this.detector)
             throw new Error('call the loadDetector method first on this class before calling this')
-        return await this.detector.estimateFaces(source, config.faceMesh.estimator)
+        return await this.detector.estimateFaces(this.webcam.video, config.faceMesh.estimator)
     }
 }

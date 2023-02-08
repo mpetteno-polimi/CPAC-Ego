@@ -23,10 +23,9 @@
   },
   "dependencies": {
     "@tensorflow-models/face-landmarks-detection": "^1.0.2",
-    "@vladmandic/face-api": "^1.7.7",
-    "face-api.js": "^0.22.2",
-    "gsap": "^3.11.3",
     "osc-js": "^2.4.0",
-    "three": "^0.147.0"
+    "gsap": "^3.11.3",
+    "three": "^0.147.0",
+    "@vladmandic/face-api": "^1.7.7"
   }
 }

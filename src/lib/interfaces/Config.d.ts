@@ -3,6 +3,7 @@ import type {MediaPipeFaceMeshEstimationConfig} from "@tensorflow-models/face-la
 
 type AppConfig = {
     faceMesh: FaceMeshConfig
+    music: MusicConfig
     webcam: WebcamConfig
     threeJS: ThreeJSConfig
 }
@@ -10,6 +11,14 @@ type AppConfig = {
 type FaceMeshConfig = {
     detector: MediaPipeFaceMeshMediaPipeModelConfig
     estimator: MediaPipeFaceMeshEstimationConfig
+}
+
+type MusicConfig = {
+    generator: MusicGeneratorConfig
+}
+
+type MusicGeneratorConfig = {
+    bassEnabled: true
 }
 
 type WebcamConfig = {
@@ -25,6 +34,8 @@ type ThreeJSConfig = {
 
 type SceneConfig = {
     backgroundColor: number
+    triangulateFace: boolean
+    textureSize: number
 }
 
 type CameraConfig = {
