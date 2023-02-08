@@ -49,7 +49,7 @@ export default class MorphTarget {
                 0,
                 Math.PI * 2,
                 true
-            ).getSpacedPoints(config.threeJS.scene.particles )
+            ).getSpacedPoints(config.threeJS.scene.textureSize)
         );
         this.mesh = new THREE.Line(this.geometry, this.material);
     }

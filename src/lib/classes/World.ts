@@ -1,4 +1,5 @@
 import type FaceMeshDetector from "./FaceMeshDetector";
+import type MusicGenerator from "./MusicGenerator";
 
 import * as THREE from "three";
 import * as dat from "dat.gui";
@@ -23,6 +24,7 @@ export default class World {
     loop: Loop;
     controls: OrbitControls;
     particles: ParticleSystem;
+    musicGenerator: MusicGenerator;
     private dracoLoader: DRACOLoader;
     private gltf: GLTFLoader;
     private gui: dat.GUI;
@@ -46,15 +48,23 @@ export default class World {
             videoWidth: this.videoInput.width,
             videoHeight: this.videoInput.height
         };
+        this.settings = {
+            distortion: 0,
+            bloomRadius: 0,
+            bloomThreshold: 0,
+            bloomStrength: 0,
+            zoom: 1
+        };
         this.faceMeshDetector = options.faceMeshDetector;
+        this.musicGenerator = options.musicGenerator;
         this.addCamera();
         this.addRenderer();
         this.addScene();
-        this.addControls();
+        //this.addControls();
         //this.addGUI();
         this.addLoop();
         this.addPostProcessing();
-        this.addLoaders();
+        //this.addLoaders();
         this.addObjects();
         //this.addLights();
         //this.addHelpers();
@@ -130,13 +140,6 @@ export default class World {
     private addControls() {
         this.controls = new OrbitControls(this.camera, this.container);
         this.controls.enableDamping = true;
-        this.settings = {
-            distortion: 0,
-            bloomRadius: 0,
-            bloomThreshold: 0,
-            bloomStrength: 0,
-            zoom: 1
-        };
     }
 
     private addGUI() {

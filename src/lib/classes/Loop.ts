@@ -67,10 +67,9 @@ export default class Loop {
     }*/
 
     render(elapsedTime: number, delta: number) {
-        this.world.particles.updateDetectedFace();
-        this.world.particles.updateUniforms(elapsedTime, delta);
+        this.world.particles.update(elapsedTime, delta);
         //this.world.updateSettings();
-        this.world.controls.update();
+        //this.world.controls.update();
         //this.world.renderer.render(this.scene, this.camera);
         this.world.composer.render();
     }

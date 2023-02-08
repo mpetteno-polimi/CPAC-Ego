@@ -13,6 +13,11 @@ export const config: AppConfig = {
             staticImageMode: false
         }
     },
+    music: {
+        generator: {
+            bassEnabled: true
+        }
+    },
     webcam: {
         widthRes: 1280,
         heightRes: 720,

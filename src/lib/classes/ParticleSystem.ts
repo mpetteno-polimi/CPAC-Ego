@@ -21,7 +21,8 @@ export default class ParticleSystem {
             type: 'module'
         });
         this.faceFlattener.onmessage = (event) => {
-            this.gpuComputation.updateFaceTextures(event.data[0][0], event.data[0][1]);
+            let faceTextureData = event.data[0];
+            this.gpuComputation.updateFaceTextures(faceTextureData[0], faceTextureData[1]);
             this.isProcessingFace = false;
             this.world.loop.isFaceDetected = true;
         }
@@ -96,25 +97,28 @@ export default class ParticleSystem {
         this.material.uniforms.u_resolution.value.y = this.world.currentSizes.height;
     }
 
-    updateDetectedFace() {
+    update(elapsedTime: number, delta: number) {
         this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
             if (estimatedFaces.length != 0) {
+                let estimatedFace = estimatedFaces[0];
                 if (this.isFaceToUpdate()) {
                     this.isProcessingFace = true;
                     this.faceFlattener.postMessage([
-                        estimatedFaces[0],
+                        estimatedFace,
                         this.gpuComputation.textureArraySize,
                         this.world.currentSizes,
                         config.threeJS.scene.triangulateFace
                     ]);
+                    this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 }
             } else {
                 this.world.loop.isFaceDetected = false;
             }
         });
+        this.updateUniforms(elapsedTime, delta);
     }
 
-    updateUniforms(elapsedTime: number, delta: number) {
+    private updateUniforms(elapsedTime: number, delta: number) {
         if (this.gpuComputation) {
             this.gpuComputation.compute(delta, this.world.loop.isFaceDetected);
             this.material.uniforms.u_texturePosition.value = this.gpuComputation.getCurrentTexturePosition();
@@ -124,7 +128,6 @@ export default class ParticleSystem {
         this.material.uniforms.u_time.value = elapsedTime;
         this.material.uniforms.u_distortion.value = this.world.settings.distortion;
     }
-
 
     private isFaceToUpdate(): boolean {
         return !this.world.loop.isFaceDetected && !this.isProcessingFace;
