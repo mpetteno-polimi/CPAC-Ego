@@ -2,18 +2,11 @@
     import {onMount} from "svelte";
     import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
     import FaceExpressionDetector from "./lib/classes/FaceExpressionDetector";
-    import {Webcam} from "./lib/classes/Webcam";
+    import Webcam from "./lib/classes/Webcam";
     import World from "./lib/classes/World";
     import MusicGenerator from "./lib/classes/MusicGenerator";
 
     let container, video, world;
-
-    const faceExpressionDetector = new FaceExpressionDetector();
-
-    async function recognizeExpression() {
-        const estimatedExpressions = await faceExpressionDetector.detect(webcam.video);
-        console.log(estimatedExpressions);
-    }
 
     onMount(async () => {
         const webcam = new Webcam(video);
@@ -21,11 +14,13 @@
         const musicGenerator = new MusicGenerator();
         const faceMeshDetector = new FaceMeshDetector(webcam);
         await faceMeshDetector.loadDetector();
+        const faceExpressionDetector = new FaceExpressionDetector(webcam);
         await faceExpressionDetector.loadModels();
         world = new World({
             container: container,
             video: webcam.video,
             faceMeshDetector: faceMeshDetector,
+            faceExpressionDetector: faceExpressionDetector,
             musicGenerator: musicGenerator
         });
         world.start();

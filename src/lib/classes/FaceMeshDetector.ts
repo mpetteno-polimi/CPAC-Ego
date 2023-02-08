@@ -1,9 +1,10 @@
+import type Webcam from "./Webcam";
+
 import '@mediapipe/face_mesh'
 import '@tensorflow/tfjs-core'
 import '@tensorflow/tfjs-backend-webgl'
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection'
 import {config} from "../../config";
-import type {Webcam} from "./Webcam";
 
 
 export default class FaceMeshDetector {

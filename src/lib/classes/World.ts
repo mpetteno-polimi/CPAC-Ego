@@ -1,4 +1,5 @@
 import type FaceMeshDetector from "./FaceMeshDetector";
+import type FaceExpressionDetector from "./FaceExpressionDetector";
 import type MusicGenerator from "./MusicGenerator";
 
 import * as THREE from "three";
@@ -19,6 +20,7 @@ export default class World {
     private readonly container: HTMLElement;
     private videoInput: HTMLVideoElement;
     faceMeshDetector: FaceMeshDetector;
+    faceExpressionDetector: FaceExpressionDetector;
     renderer: THREE.WebGLRenderer;
     camera: THREE.PerspectiveCamera;
     loop: Loop;
@@ -56,6 +58,7 @@ export default class World {
             zoom: 1
         };
         this.faceMeshDetector = options.faceMeshDetector;
+        this.faceExpressionDetector = options.faceExpressionDetector;
         this.musicGenerator = options.musicGenerator;
         this.addCamera();
         this.addRenderer();

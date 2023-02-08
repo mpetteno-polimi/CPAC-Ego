@@ -1,3 +1,5 @@
+import type Webcam from "./Webcam";
+
 import * as faceapi from '@vladmandic/face-api';
 
 export default class FaceExpressionDetector {
@@ -11,9 +13,11 @@ export default class FaceExpressionDetector {
         faceExpressionNet: faceapi.FaceExpressionNet;
         ageGenderNet: faceapi.AgeGenderNet
     };
+    private webcam: Webcam;
 
-    constructor() {
+    constructor(webcam: Webcam) {
         this.nets = faceapi.nets;
+        this.webcam = webcam;
     }
 
     async loadModels() {
@@ -24,8 +28,8 @@ export default class FaceExpressionDetector {
         await this.nets.ageGenderNet.loadFromUri("/models");
     }
 
-    async detect(input) {
-        await faceapi.detectAllFaces(input)
+    async detectExpressions() {
+        await faceapi.detectAllFaces(this.webcam.video)
             .withFaceLandmarks()
             .withFaceExpressions()
             .withAgeAndGender()
