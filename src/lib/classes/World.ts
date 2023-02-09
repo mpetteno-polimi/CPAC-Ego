@@ -13,6 +13,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import {config} from "../../config";
 import Loop from "./Loop";
 import ParticleSystem from "./ParticleSystem";
+import DLA from "./DLA";
 
 export default class World {
     scene: THREE.Scene;
@@ -26,6 +27,7 @@ export default class World {
     loop: Loop;
     controls: OrbitControls;
     particles: ParticleSystem;
+    dla: DLA;
     musicGenerator: MusicGenerator;
     private dracoLoader: DRACOLoader;
     private gltf: GLTFLoader;
@@ -63,7 +65,7 @@ export default class World {
         this.addCamera();
         this.addRenderer();
         this.addScene();
-        //this.addControls();
+        this.addControls();
         //this.addGUI();
         this.addLoop();
         this.addPostProcessing();
@@ -88,7 +90,7 @@ export default class World {
         this.currentSizes.height = this.container.offsetHeight;
         this.renderer.setSize(this.currentSizes.width, this.currentSizes.height);
         this.composer.setSize(this.currentSizes.width, this.currentSizes.height);
-        this.particles.resize();
+        //this.particles.resize();
         this.camera.aspect = this.currentSizes.width / this.currentSizes.height;
         this.camera.updateProjectionMatrix();
     }
@@ -173,7 +175,11 @@ export default class World {
     }
 
     private addObjects() {
-        this.particles = new ParticleSystem(this);
+        //this.particles = new ParticleSystem(this);
+        this.dla = new DLA(this, {
+            texture_width: config.threeJS.scene.textureSize,
+            texture_height: config.threeJS.scene.textureSize * 2
+        });
     }
 
     private addLights() {

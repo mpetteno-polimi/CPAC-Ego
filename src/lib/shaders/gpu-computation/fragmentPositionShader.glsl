@@ -1,5 +1,7 @@
 uniform float u_delta;
 uniform bool u_faceDetected;
+uniform bool u_dlaEnabled;
+
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -9,8 +11,11 @@ void main() {
     vec3 newPosition;
     if (u_faceDetected) {
         vec3 facePosition = texture2D(textureFacePosition, uv).xyz;
-        float mixRate = u_delta*0.5;
+        float mixRate = u_delta*0.25;
         newPosition = mix(position, facePosition, mixRate);
+    } else if (u_dlaEnabled) {
+        vec3 dlaPosition = texture2D(textureDLAPosition, uv).xyz;
+        newPosition = dlaPosition;
     } else {
         float evolvRate = u_delta*0.1;
         newPosition = position + velocity * evolvRate;

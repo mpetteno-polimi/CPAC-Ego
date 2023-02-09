@@ -9,6 +9,7 @@ import fragmentFacePositionShader from "../shaders/gpu-computation/fragmentFaceP
 import fragmentFaceVelocityShader from "../shaders/gpu-computation/fragmentFaceVelocityShader.glsl";
 
 export default class GPUComputation {
+
     textureWidth: number;
     textureHeight: number;
     texturePoints: number;
@@ -45,13 +46,18 @@ export default class GPUComputation {
     }
 
     compute(delta, isFaceDetected) {
+        let u_delta = Math.min(delta, 0.5);
+        // Positions
+        this.positionVariable.material.uniforms.u_delta.value = u_delta;
+        this.positionVariable.material.uniforms.u_faceDetected.value = false;
+        this.positionVariable.material.uniforms.u_dlaEnabled.value = true;
+        this.velocityVariable.material.uniforms.u_delta.value = u_delta;
+        this.velocityVariable.material.uniforms.u_faceDetected.value = false;
+        this.velocityVariable.material.uniforms.u_dlaEnabled.value = true;
+        // Face
+        this.positionFaceVariable.material.uniforms.u_delta.value = u_delta;
+        this.velocityFaceVariable.material.uniforms.u_delta.value = u_delta;
         this.gpuComputationRenderer.compute();
-        this.positionVariable.material.uniforms.u_delta.value = Math.min(delta, 0.5);
-        this.positionVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.velocityVariable.material.uniforms.u_delta.value = Math.min(delta, 0.5);
-        this.velocityVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.positionFaceVariable.material.uniforms.u_delta.value = Math.min(delta, 0.5);
-        this.velocityFaceVariable.material.uniforms.u_delta.value = Math.min(delta, 0.5);
     }
 
     getCurrentTexturePosition() {
@@ -87,32 +93,40 @@ export default class GPUComputation {
 
     private initVariables() {
         // Sphere - Position
-        this.positionVariable = this.gpuComputationRenderer.addVariable('texturePosition', fragmentPositionShader, this.positionData);
+        this.positionVariable = this.gpuComputationRenderer.addVariable('texturePosition',
+            fragmentPositionShader, this.positionData);
         this.positionVariable.material.uniforms.u_delta = { value: 0 };
         this.positionVariable.material.uniforms.u_faceDetected = { value: false };
         this.positionVariable.wrapS = THREE.RepeatWrapping;
         this.positionVariable.wrapT = THREE.RepeatWrapping;
         // Sphere - Velocity
-        this.velocityVariable = this.gpuComputationRenderer.addVariable('textureVelocity', fragmentVelocityShader, this.velocityData);
+        this.velocityVariable = this.gpuComputationRenderer.addVariable('textureVelocity',
+            fragmentVelocityShader, this.velocityData);
         this.velocityVariable.material.uniforms.u_delta = { value: 0 };
         this.velocityVariable.material.uniforms.u_faceDetected = { value: false };
         this.velocityVariable.wrapS = THREE.RepeatWrapping;
         this.velocityVariable.wrapT = THREE.RepeatWrapping;
         // Face - Position
-        this.positionFaceVariable = this.gpuComputationRenderer.addVariable('textureFacePosition', fragmentFacePositionShader, this.positionFaceData);
+        this.positionFaceVariable = this.gpuComputationRenderer.addVariable('textureFacePosition',
+            fragmentFacePositionShader, this.positionFaceData);
         this.positionFaceVariable.material.uniforms.u_delta = { value: 0 };
         this.positionFaceVariable.wrapS = THREE.RepeatWrapping;
         this.positionFaceVariable.wrapT = THREE.RepeatWrapping;
         // Face - Velocity
-        this.velocityFaceVariable = this.gpuComputationRenderer.addVariable('textureFaceVelocity', fragmentFaceVelocityShader, this.velocityFaceData);
+        this.velocityFaceVariable = this.gpuComputationRenderer.addVariable('textureFaceVelocity',
+            fragmentFaceVelocityShader, this.velocityFaceData);
         this.velocityFaceVariable.material.uniforms.u_delta = { value: 0 };
         this.velocityFaceVariable.wrapS = THREE.RepeatWrapping;
         this.velocityFaceVariable.wrapT = THREE.RepeatWrapping;
         // Dependencies
-        this.gpuComputationRenderer.setVariableDependencies(this.positionVariable, [this.velocityVariable, this.positionVariable, this.positionFaceVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.velocityVariable, [this.velocityVariable, this.positionVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.positionFaceVariable, [this.velocityFaceVariable, this.positionFaceVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.velocityFaceVariable, [this.velocityFaceVariable, this.positionFaceVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.positionVariable,
+            [this.velocityVariable, this.positionVariable, this.positionFaceVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.velocityVariable,
+            [this.velocityVariable, this.positionVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.positionFaceVariable,
+            [this.velocityFaceVariable, this.positionFaceVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.velocityFaceVariable,
+            [this.velocityFaceVariable, this.positionFaceVariable]);
     }
 
     private getSphereTextureData() {
