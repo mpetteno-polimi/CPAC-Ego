@@ -28,12 +28,8 @@ export default class FaceExpressionDetector {
         await this.nets.ageGenderNet.loadFromUri("/models");
     }
 
-    async detectExpressions() {
-        await faceapi.detectAllFaces(this.webcam.video)
-            .withFaceLandmarks()
-            .withFaceExpressions()
-            .withAgeAndGender()
-            .withFaceDescriptors()
+    detectExpressions() {
+        return faceapi.detectAllFaces(this.webcam.video).withFaceExpressions();
     }
 
 }

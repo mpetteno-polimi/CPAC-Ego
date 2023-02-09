@@ -13,16 +13,16 @@ import {config} from "../../config";
 export default class MusicGenerator {
     NoteGenerationMarkovOrder = 2;
     noteMarkovTable = [];
-    scales = [
-        [0, 2, 4, 5, 7, 9, 11],  // happy
-        [0, 2, 3, 5, 7, 8, 11],  // sad
-        [0, 2, 4, 6, 7, 9, 11],  // surprised
-        [0, 2, 4, 6, 8, 10, 12], // neutral
-        [0, 1, 5, 6, 9, 11, 12], // disgusted, questa è a casaccio
-        [0, 2, 3, 5, 6, 8, 11],  // fearful (?)
-        [0, 1, 3, 5, 7, 8, 10]   // angry
-    ]
-    scale = this.scales[0];
+    scales = {
+        'happy': [0, 2, 4, 5, 7, 9, 11],
+        'sad': [0, 2, 3, 5, 7, 8, 11],
+        'surprised': [0, 2, 4, 6, 7, 9, 11],
+        'neutral': [0, 2, 4, 6, 8, 10, 12],
+        'disgusted': [0, 1, 5, 6, 9, 11, 12],
+        'fearful': [0, 2, 3, 5, 6, 8, 11],
+        'angry': [0, 1, 3, 5, 7, 8, 10]
+    }
+    scale = this.scales['happy'];
     history = [];
     faceDistance = 1;
     MakeUniform = 10; // constant from 1 to idk, 20; the smaller the constant the more uniform the probability distribution in markov's table; best to keep it halfway;
@@ -170,8 +170,11 @@ export default class MusicGenerator {
         return {'note': note + this.baseNote, 'duration': duration};
     }
 
-    setSentiment(index) {
-        this.scale = this.scales[index];
+    setSentiment(expressions) {
+        let confidences = Object.values<number>(expressions);
+        let maxConfidences = Math.max(...confidences);
+        let sentiment = Object.keys(expressions).find(key => expressions[key] === maxConfidences);;
+        this.scale = this.scales[sentiment];
     }
 
     mapToRange(input, inMin, inMax, outMin, outMax) {

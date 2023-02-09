@@ -109,6 +109,9 @@ export default class ParticleSystem {
                         this.world.currentSizes,
                         config.threeJS.scene.triangulateFace
                     ]);
+                    this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
+                        this.world.musicGenerator.setSentiment(estimatedExpression[0].expressions);
+                    });
                     this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 }
             } else {
