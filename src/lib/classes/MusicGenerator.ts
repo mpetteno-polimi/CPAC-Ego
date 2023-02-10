@@ -11,13 +11,13 @@ import OSCClient from "./OSCClient";
 import {config} from "../../config";
 
 export default class MusicGenerator {
-    NoteGenerationMarkovOrder = 2;
+    NoteGenerationMarkovOrder = 1;
     noteMarkovTable = [];
     scales = {
         'happy': [0, 2, 4, 5, 7, 9, 11],
         'sad': [0, 2, 3, 5, 7, 8, 11],
         'surprised': [0, 2, 4, 6, 7, 9, 11],
-        'neutral': [0, 2, 4, 6, 8, 10, 12],
+        'neutral': [0, 7, 12, 19, -5, -12, 0],
         'disgusted': [0, 1, 5, 6, 9, 11, 12],
         'fearful': [0, 2, 3, 5, 6, 8, 11],
         'angry': [0, 1, 3, 5, 7, 8, 10]
@@ -36,8 +36,8 @@ export default class MusicGenerator {
         [0.02, 0.08, 0.1, 0.6, 0.2],   // 2nd
         [0.02, 0.08, 0.2, 0.2, 0.5],   // 1
     ]
-    bpmMin = 5;
-    bpmMax = 100;
+    bpmMin = .000001;
+    bpmMax = 40;
     bpm = 40;
     currentSequence = [];
     seqCurrentIndex = -1;
@@ -76,10 +76,10 @@ export default class MusicGenerator {
     }
 
     forwardSequence() {
-        this.seqCurrentIndex = (this.seqCurrentIndex + 1) % this.currentSequence.length;
         if (this.currentSequence.length < 1) {
             this.generateNewSequence()
         }
+        this.seqCurrentIndex = (this.seqCurrentIndex+1) % this.currentSequence.length;
         if (this.alterSeq && Math.random() < this.alterChance) {
             this.currentSequence[this.seqCurrentIndex] = this.generateNote();
         }
@@ -175,6 +175,7 @@ export default class MusicGenerator {
         let maxConfidences = Math.max(...confidences);
         let sentiment = Object.keys(expressions).find(key => expressions[key] === maxConfidences);;
         this.scale = this.scales[sentiment];
+        console.log(sentiment, this.scale)
     }
 
     mapToRange(input, inMin, inMax, outMin, outMax) {
@@ -189,10 +190,11 @@ export default class MusicGenerator {
 
     startPlayingSequence() {
         let note = this.forwardSequence();
-        this.sequenceTimeout = setTimeout(this.startPlayingSequence, note['duration']);
+        let thisRef = this;
+        this.sequenceTimeout = setTimeout(function(){thisRef.startPlayingSequence()}, note['duration']);
         this.playNote(note['note']);
         // most stupid bass ever
-        if (Math.random() < 0.1) this.playBass(Math.random() < 0.2 ? 0 : note['note'] - 24);
+        if (Math.random() < 0.05) this.playBass(note['note'] - 24);
     }
 
     stopPlayingSequence() {

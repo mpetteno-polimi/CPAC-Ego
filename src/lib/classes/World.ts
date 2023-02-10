@@ -77,6 +77,7 @@ export default class World {
 
     start() {
         this.loop.start();
+        this.musicGenerator.startPlayingSequence();
     }
 
     stop() {
