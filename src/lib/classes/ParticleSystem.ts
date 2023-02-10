@@ -25,6 +25,8 @@ export default class ParticleSystem {
             this.gpuComputation.updateFaceTextures(faceTextureData[0], faceTextureData[1]);
             this.isProcessingFace = false;
             this.world.loop.isFaceDetected = true;
+            this.world.musicGenerator.startPlayingSequence();
+            this.world.musicGenerator.newFace();
         }
         this.addGPUComputation();
         this.addGeometry();
@@ -117,6 +119,7 @@ export default class ParticleSystem {
                 this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
             } else {
                 this.world.loop.isFaceDetected = false;
+                this.world.musicGenerator.stopPlayingSequence();
             }
         });
         this.updateUniforms(elapsedTime, delta);

@@ -15,9 +15,9 @@ export default class MusicGenerator {
     noteMarkovTable = [];
     scales = {
         'happy': [0, 2, 4, 5, 7, 9, 11],
-        'sad': [0, 2, 3, 5, 7, 8, 11],
+        'sad': [0, 2, 3, 5, 7, 8, 10],
         'surprised': [0, 2, 4, 6, 7, 9, 11],
-        'neutral': [0, 7, 12, 19, -5, -12, 0],
+        'neutral': [0, 7, 14, 21, -7, -14, 12],
         'disgusted': [0, 1, 5, 6, 9, 11, 12],
         'fearful': [0, 2, 3, 5, 6, 8, 11],
         'angry': [0, 1, 3, 5, 7, 8, 10]
@@ -26,7 +26,7 @@ export default class MusicGenerator {
     history = [];
     faceDistance = 1;
     MakeUniform = 10; // constant from 1 to idk, 20; the smaller the constant the more uniform the probability distribution in markov's table; best to keep it halfway;
-    baseNote = 48;
+    baseNote = 60;
     noteDuration = [1 / 16, 1 / 8, 1 / 4, 1 / 2, 1]
     noteDurationHistory = 4;
     noteDurationMarkovTable = [
@@ -45,6 +45,8 @@ export default class MusicGenerator {
     maxSeqLength = 32;
     alterSeq = true;
     alterChance = 0.2;
+    bassChance = 0.05;
+    bassDistance = 24;
     private oscClient: OSCClient;
     private bassEnabled: boolean;
     private sequenceTimeout: NodeJS.Timeout;
@@ -175,7 +177,6 @@ export default class MusicGenerator {
         let maxConfidences = Math.max(...confidences);
         let sentiment = Object.keys(expressions).find(key => expressions[key] === maxConfidences);;
         this.scale = this.scales[sentiment];
-        console.log(sentiment, this.scale)
     }
 
     mapToRange(input, inMin, inMax, outMin, outMax) {
@@ -194,7 +195,7 @@ export default class MusicGenerator {
         this.sequenceTimeout = setTimeout(function(){thisRef.startPlayingSequence()}, note['duration']);
         this.playNote(note['note']);
         // most stupid bass ever
-        if (Math.random() < 0.05) this.playBass(note['note'] - 24);
+        if (Math.random() < this.bassChance) this.playBass(note['note'] - this.bassDistance);
     }
 
     stopPlayingSequence() {
@@ -266,4 +267,15 @@ export default class MusicGenerator {
         this.bpm = this.mapToRange(this.faceDistance, 0, 2, this.bpmMin, this.bpmMax);
     }
 
+    public newFace(){
+        // randomize some parameters when a new face is detected
+        this.alterChance = Math.random()*0.4;
+        this.baseNote = 48 + Math.floor(Math.random()*3)*12;
+        this.bassChance = Math.random()*0.1;
+        this.bassDistance = Math.floor(Math.random()*3)*12;
+        console.log("alter chance: ", this.alterChance)
+        console.log("base note is: ", this.baseNote)
+        console.log("bass chance is: ", this.bassChance)
+        console.log("base distance is: ", this.bassDistance)
+    }
 }
