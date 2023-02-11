@@ -63,7 +63,7 @@ export default class World {
         this.addCamera();
         this.addRenderer();
         this.addScene();
-        //this.addControls();
+        this.addControls();
         //this.addGUI();
         this.addLoop();
         this.addPostProcessing();
@@ -73,6 +73,10 @@ export default class World {
         //this.addHelpers();
         this.container.append(this.renderer.domElement);
         this.resize();
+    }
+
+    morph() {
+        this.loop.isAnimationModeActive = true;
     }
 
     start() {

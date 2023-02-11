@@ -5,15 +5,19 @@ import GPUComputation from "./GPUComputation";
 import vertexShader from "../shaders/particles/vertexShader.glsl";
 import fragmentShader from "../shaders/particles/fragmentShader.glsl";
 import {config} from "../../config";
+import MorphTarget from "./MorphTarget";
+import gsap from "gsap";
+import {BufferAttribute, InterleavedBufferAttribute} from "three";
 
 export default class ParticleSystem {
-    protected bufferGeometry: THREE.BufferGeometry;
+    particles: THREE.Points<THREE.BufferGeometry, THREE.Material>;
+    protected geometry: THREE.BufferGeometry;
     protected material: THREE.ShaderMaterial;
-    protected readonly particles: THREE.Points<THREE.BufferGeometry, THREE.Material>;
     protected world: World;
     protected gpuComputation: GPUComputation;
     private faceFlattener: Worker;
     private isProcessingFace: boolean;
+    private morphTargets: MorphTarget[];
 
     constructor(world: World, visible: boolean = true) {
         this.world = world;
@@ -29,14 +33,14 @@ export default class ParticleSystem {
         this.addGPUComputation();
         this.addGeometry();
         this.addMaterial();
-        this.particles = new THREE.Points(this.bufferGeometry, this.material);
-        this.addMorph();
+        this.particles = new THREE.Points(this.geometry, this.material);
+        this.morphTargets = [new MorphTarget(this.world)];
         this.world.scene.add(this.particles);
         visible ? this.show() : this.hide();
     }
 
     protected addGeometry() {
-        this.bufferGeometry = new THREE.BufferGeometry();
+        this.geometry = new THREE.BufferGeometry();
         const vertices = new Float32Array(this.gpuComputation.texturePoints  * 3).fill(0);
         const references = new Float32Array(this.gpuComputation.texturePoints * 2);
         for (let i = 0; i < references.length; i += 2) {
@@ -44,8 +48,9 @@ export default class ParticleSystem {
             references[i] = (indexVertex % this.gpuComputation.textureWidth) / this.gpuComputation.textureWidth;
             references[i + 1] = Math.floor(indexVertex / this.gpuComputation.textureWidth) / this.gpuComputation.textureHeight;
         }
-        this.bufferGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        this.bufferGeometry.setAttribute('reference', new THREE.BufferAttribute(references, 2));
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        this.geometry.setAttribute('reference', new THREE.BufferAttribute(references, 2));
+        this.geometry.morphAttributes.position = [];
     }
 
     protected addMaterial() {
@@ -70,9 +75,6 @@ export default class ParticleSystem {
             depthTest: false,
             depthWrite: false
         });
-    }
-
-    protected addMorph() {
         this.material.morphTargets = true;
     }
 
@@ -97,6 +99,17 @@ export default class ParticleSystem {
         this.material.uniforms.u_resolution.value.y = this.world.currentSizes.height;
     }
 
+    startMorphAnimation() {
+        let tl = gsap.timeline({
+            onComplete: () => { this.world.loop.isAnimationModeActive = false; },
+            repeat: 0,
+            repeatDelay: 1
+        });
+        tl.startTime(0);
+        tl.to(this.particles.morphTargetInfluences, { "0": 1, duration: 20 }, 0);
+        tl.to(this.particles.morphTargetInfluences, { "0": 0, duration: 20 }, 25);
+    }
+
     update(elapsedTime: number, delta: number) {
         this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
             if (estimatedFaces.length != 0) {
@@ -119,6 +132,11 @@ export default class ParticleSystem {
             }
         });
         this.updateUniforms(elapsedTime, delta);
+    }
+
+    updateMorphTarget(position: BufferAttribute | InterleavedBufferAttribute) {
+        this.geometry.morphAttributes.position.push(position);
+        this.particles.updateMorphTargets();
     }
 
     private updateUniforms(elapsedTime: number, delta: number) {

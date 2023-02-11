@@ -27,7 +27,7 @@
     });
 </script>
 
-<svelte:window on:resize={world.resize()}/>
+<svelte:window on:resize={world.resize()} on:keydown={world.morph()}/>
 <main bind:this={container}>
     <video bind:this={video} id="video" autoplay>
         <track kind="captions">

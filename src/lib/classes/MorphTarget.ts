@@ -1,16 +1,23 @@
+import type {BufferAttribute, InterleavedBufferAttribute} from "three";
+
 import {config} from "../../config";
 import * as THREE from 'three';
+import World from "./World";
 import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader";
+import {mergeBufferGeometries} from "three/examples/jsm/utils/BufferGeometryUtils";
 
 export default class MorphTarget {
-    private geometry: THREE.BufferGeometry;
-    private readonly material: THREE.LineBasicMaterial;
-    private mesh: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>;
-    private svgGroup: THREE.Group;
+    position: BufferAttribute | InterleavedBufferAttribute;
+    private pointsNumber: number;
+    private world: World;
 
-    constructor() {
-        this.material = new THREE.LineBasicMaterial({color: "aqua"});
-        this.loadFromCircleGeometry();
+    constructor(world: World) {
+        this.world = world;
+        this.pointsNumber = config.threeJS.scene.textureSize * config.threeJS.scene.textureSize * 2;
+        this.loadFromSvg({
+            src: "./images/Inkblot.svg",
+            scale: 0.01
+        });
     }
 
     loadFromSvg(options: { src: string; scale: number; }) {
@@ -18,44 +25,28 @@ export default class MorphTarget {
         loader.load(
             options.src, // called when the resource is loaded
         (svgData) => {
-            this.svgGroup = new THREE.Group();
-            this.svgGroup.scale.multiplyScalar( options.scale );
-            this.svgGroup.scale.y *= - 1;
+            let geometries = [];
             svgData.paths.forEach((path) => {
-                const shapes = SVGLoader.createShapes( path );
+                const shapes = SVGLoader.createShapes(path);
                 shapes.forEach((shape) => {
-                    const meshGeometry = new THREE.ExtrudeGeometry(shape, {
+                    let extrudeGeometry = new THREE.ExtrudeGeometry(shape, {
+                        curveSegments: 20,
                         steps: 2,
-                        depth: 2,
-                        bevelEnabled: false
-                    });
-                    meshGeometry.center();
-                    //const mesh = new THREE.Mesh(meshGeometry, fillMaterial);
-                    const linesGeometry = new THREE.EdgesGeometry(meshGeometry);
-                    const lines = new THREE.LineSegments(linesGeometry, this.material);
-                    this.svgGroup.add(lines);
+                        depth: 5,
+                        bevelEnabled: false,
+                        bevelThickness: 0.2,
+                        bevelSize: 0.1,
+                        bevelOffset: 0,
+                        bevelSegments: 3
+                    }).center();
+                    geometries.push(extrudeGeometry);
                 });
             });
+            let svgGeom = mergeBufferGeometries(geometries);
+            svgGeom.scale(options.scale, -1*options.scale, options.scale);
+            this.position = svgGeom.getAttribute("position");
+            this.world.particles.updateMorphTarget(this.position);
         });
-    }
-
-    // TODO - Remove (only for test)
-    loadFromCircleGeometry() {
-        this.geometry = new THREE.BufferGeometry().setFromPoints(
-            new THREE.Path().absarc(
-                0,
-                0,
-                1.25,
-                0,
-                Math.PI * 2,
-                true
-            ).getSpacedPoints(config.threeJS.scene.textureSize)
-        );
-        this.mesh = new THREE.Line(this.geometry, this.material);
-    }
-
-    getMorphBufferAttribute() {
-        return this.geometry.getAttribute("position").clone();
     }
 
 }
