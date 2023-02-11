@@ -22,7 +22,7 @@ export default class MorphTarget {
             this.svgGroup.scale.multiplyScalar( options.scale );
             this.svgGroup.scale.y *= - 1;
             svgData.paths.forEach((path) => {
-                const shapes = SVGLoader.createShapes( path );
+                const shapes = SVGLoader.createShapes(path);
                 shapes.forEach((shape) => {
                     const meshGeometry = new THREE.ExtrudeGeometry(shape, {
                         steps: 2,
@@ -37,21 +37,6 @@ export default class MorphTarget {
                 });
             });
         });
-    }
-
-    // TODO - Remove (only for test)
-    loadFromCircleGeometry() {
-        this.geometry = new THREE.BufferGeometry().setFromPoints(
-            new THREE.Path().absarc(
-                0,
-                0,
-                1.25,
-                0,
-                Math.PI * 2,
-                true
-            ).getSpacedPoints(config.threeJS.scene.textureSize)
-        );
-        this.mesh = new THREE.Line(this.geometry, this.material);
     }
 
     getMorphBufferAttribute() {
