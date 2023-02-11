@@ -11,13 +11,13 @@ import OSCClient from "./OSCClient";
 import {config} from "../../config";
 
 export default class MusicGenerator {
-    NoteGenerationMarkovOrder = 1;
+    NoteGenerationMarkovOrder = 2;
     noteMarkovTable = [];
     scales = {
         'happy': [0, 2, 4, 5, 7, 9, 11],
         'sad': [0, 2, 3, 5, 7, 8, 10],
         'surprised': [0, 2, 4, 6, 7, 9, 11],
-        'neutral': [0, 7, 14, 21, -7, -14, 12],
+        'neutral': [0, 2, 5, 7, 0, 2, 5],
         'disgusted': [0, 1, 5, 6, 9, 11, 12],
         'fearful': [0, 2, 3, 5, 6, 8, 11],
         'angry': [0, 1, 3, 5, 7, 8, 10]
@@ -47,6 +47,7 @@ export default class MusicGenerator {
     alterChance = 0.2;
     bassChance = 0.05;
     bassDistance = 24;
+    higherOctave = false;
     private oscClient: OSCClient;
     private bassEnabled: boolean;
     private sequenceTimeout: NodeJS.Timeout;
@@ -71,6 +72,7 @@ export default class MusicGenerator {
     }
 
     generateNewSequence() {
+        this.currentSequence = []
         let seqLength = this.minSeqLength + Math.floor(Math.random() * (this.maxSeqLength - this.minSeqLength));
         for (let i = 0; i < seqLength; i++) {
             this.currentSequence.push(this.generateNote());
@@ -86,6 +88,7 @@ export default class MusicGenerator {
             this.currentSequence[this.seqCurrentIndex] = this.generateNote();
         }
         let note = this.currentSequence[this.seqCurrentIndex];
+        //if(this.higherOctave) note['note']+=12;
         return {'note': note['note'], 'duration': note['duration'] * 60000 / this.bpm};
     }
 
@@ -99,7 +102,7 @@ export default class MusicGenerator {
         }
         let markovRow = [...this.noteMarkovTable[correspondingRow]];
         // exaggerate probability
-        if (true) {
+        if (false) {
             let pow = 3;//Math.pow(2,this.faceDistance);
             let sum = 0;
             for (let i = 0; i < markovRow.length; i++) {
@@ -173,10 +176,37 @@ export default class MusicGenerator {
     }
 
     setSentiment(expressions) {
+        let oldScale = this.scale;
         let confidences = Object.values<number>(expressions);
         let maxConfidences = Math.max(...confidences);
         let sentiment = Object.keys(expressions).find(key => expressions[key] === maxConfidences);;
         this.scale = this.scales[sentiment];
+        // if the scale is different, adapt sequence to new scale
+        if(oldScale!=this.scale){ this.adaptArpeggioToNewScale() }
+    }
+
+    adaptArpeggioToNewScale(){
+        // ignorant algorithm but does the job :)
+        let scale = this.scale;
+        let span = []
+        for(let i=0; i<11; i++){
+            for(let j=0; j<7; j++){
+                let gen = scale[j]+i*12;
+                if(gen<=127 && gen>=0) span.push(gen)
+            }
+        }
+        for(let i=0; i<this.currentSequence.length; i++){
+            let nearest = -1;
+            let nearestDistance = 100;
+            for(let j=0; j<span.length; j++){
+                if((this.currentSequence[i]['note']-span[j])<nearestDistance){
+                    nearestDistance = this.currentSequence[i]['note']-span[j]
+                    nearest = span[j]
+                    if(nearestDistance<1) break;
+                }
+            }
+            this.currentSequence[i]['note'] = nearest
+        }
     }
 
     mapToRange(input, inMin, inMax, outMin, outMax) {
@@ -195,7 +225,7 @@ export default class MusicGenerator {
         this.sequenceTimeout = setTimeout(function(){thisRef.startPlayingSequence()}, note['duration']);
         this.playNote(note['note']);
         // most stupid bass ever
-        if (Math.random() < this.bassChance) this.playBass(note['note'] - this.bassDistance);
+        if (Math.random() < this.bassChance) { let n = 24+this.bassDistance+(note['note']%12); this.playBass(n);};
     }
 
     stopPlayingSequence() {
@@ -217,14 +247,6 @@ export default class MusicGenerator {
     playBass(note) {
         if (this.bassEnabled) this.oscClient.sendMessage('/bass', note);
     }
-
-    /*function testOSC() {
-        this.bassEnabled = true;
-        setTimeout(function(){this.setSentiment(Math.floor(Math.random()*7))}, 10000);
-        this.generateNewSequence();
-        this.alterSequence(true);
-        this.startPlayingSequence();
-    }*/
 
     private processFaceLandmarks(data) {
         let flattenedData = this.flattenFaceData(data);
@@ -262,20 +284,20 @@ export default class MusicGenerator {
         // use face bounding box to estimate distance
         let area = width * height;
         this.faceDistance = this.mapToRange(area, 1000, 150000, 0, 2); //costanti molto euristiche che spero funzionino
-        this.faceDistance > 1.5 ? this.baseNote = 60 : this.baseNote = 48;
+        this.faceDistance > 1.5 ? this.higherOctave = true : this.higherOctave = false;
         // update bpm
         this.bpm = this.mapToRange(this.faceDistance, 0, 2, this.bpmMin, this.bpmMax);
     }
 
     public newFace(){
+        if(this.faceDistance==2) return;
         // randomize some parameters when a new face is detected
+        this.generateNewSequence();
         this.alterChance = Math.random()*0.4;
         this.baseNote = 48 + Math.floor(Math.random()*3)*12;
         this.bassChance = Math.random()*0.1;
-        this.bassDistance = Math.floor(Math.random()*3)*12;
-        console.log("alter chance: ", this.alterChance)
-        console.log("base note is: ", this.baseNote)
-        console.log("bass chance is: ", this.bassChance)
-        console.log("base distance is: ", this.bassDistance)
+        this.bassDistance = Math.floor(Math.random()*2)*12;
+        this.bpmMax = Math.random()*40;
+        Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
     }
 }
