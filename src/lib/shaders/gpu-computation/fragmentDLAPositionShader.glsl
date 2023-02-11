@@ -1,24 +1,53 @@
-#include "/src/lib/shaders/noise/noise3D.glsl"
+#include "/src/lib/shaders/lygia/generative/random.glsl"
+#include "/src/lib/shaders/lygia/generative/fbm.glsl"
 
 uniform float u_delta;
+uniform float u_elapsedTime;
 uniform float u_stepLength;
 uniform float u_maxDistance;
 uniform float u_aggregationProbability;
 uniform float u_boundingSphereRadius;
 uniform vec3 u_boundingSphereCenter;
-uniform vec2 u_textureSize;
 
-float randn(vec2 uv) {
-    return fract(sin(dot(uv,vec2(12.9898,78.233)))*43758.5453123);
+const float PI = 3.141592653589793;
+
+vec3 seed() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    vec4 point = texture2D(textureDLAPosition, uv);
+    float fbmNoise = fbm(uv);
+    float seedX = fbmNoise + u_delta;
+    float seedY = fbmNoise + u_delta;
+    float seedZ = fbmNoise * u_elapsedTime;
+    return point.xyz;
 }
 
-bool hasStaticNeighbour(vec4 point) {
-    for (int i = 0; i < int(u_textureSize.x); i++) {
-        for (int j = 0; j < int(u_textureSize.y); j++) {
+vec3 getSphereSurfaceRandomPoint(float radius, vec3 center) {
+    float theta = 2.0 * PI * random(seed());
+    float phi = acos(random(seed()) * 2.0 - 1.0);
+    float x = sin(phi) * cos(theta);
+    float y = sin(phi) * sin(theta);
+    float z = cos(phi);
+    return center + (vec3(x, y, z)*radius);
+}
+
+vec3 getRandomUnitVec3() {
+    return getSphereSurfaceRandomPoint(1., vec3(0., 0., 0.));
+}
+
+float distance2(vec3 point1, vec3 point2) {
+    float dx = point1.x - point2.x;
+    float dy = point1.y - point2.y;
+    float dz = point1.z - point2.z;
+    return pow(dx, 2.0) + pow(dy, 2.0) + pow(dz, 2.0);
+}
+
+bool hasStuckedNeighbour(vec4 point) {
+    for (int i = 0; i < int(resolution.x); i++) {
+        for (int j = 0; j < int(resolution.y); j++) {
             vec4 neighbourPoint = texture2D(textureDLAPosition, vec2(i, j));
-            if (neighbourPoint.w == 0.0) {
-                float d = distance(neighbourPoint.xyz, point.xyz);
-                if (d > 0.0 && d < u_maxDistance) {
+            if (neighbourPoint.w == 1.0) {
+                float d = distance2(neighbourPoint.xyz, point.xyz);
+                if (d < pow(u_maxDistance, 2.0)) {
                     return true;
                 }
             }
@@ -27,42 +56,31 @@ bool hasStaticNeighbour(vec4 point) {
     return false;
 }
 
-vec3 getRandomMovingPointPos(vec2 uv) {
-    float theta = 2.0 * 3.141593 * randn(uv);
-    float phi = acos(2.0 * randn(uv) - 1.0);
-    float x = sin(phi) * cos(theta);
-    float y = sin(phi) * sin(theta);
-    float z = cos(phi);
-    return u_boundingSphereCenter + (vec3(x, y, z) * u_boundingSphereRadius);
-}
-
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     vec4 point = texture2D(textureDLAPosition, uv);
 
-    vec4 newPoint = point;
-    float isMovingPoint = point.w; // 0 static - 1 moving
-    if (isMovingPoint == 1.0) {
+    vec3 newPosition = point.xyz;
+    float isStucked = point.w; // 1 stucked - 0 moving
+    if (isStucked != 1.0) {
         // Search for static points near to each moving points at a distance max 'maxDist'
-        bool hasNeighbour = hasStaticNeighbour(point);
-        if (hasNeighbour) {
+        if (hasStuckedNeighbour(point)) {
             // If there are any, roll the dice and check for aggregation probability
-            if (randn(uv) < u_aggregationProbability) {
+            if (random(u_elapsedTime) < u_aggregationProbability) {
                 // Aggregate the moving point by removing it from the moving group and adding to the static group
-                newPoint.w = 0.0;
+                isStucked = 1.0;
             }
-        } else {
-            // distance could be replaced by d^2 and check with r^2
-            if (distance(u_boundingSphereCenter, point.xyz) > u_boundingSphereRadius) {
+        } else if (isStucked != 0.5) {
+            if (distance2(u_boundingSphereCenter, point.xyz) > pow(u_boundingSphereRadius, 2.0)) {
                 // If the particle is to far, move it to a new position on the sphere surface
-                newPoint.xyz = getRandomMovingPointPos(uv);
+                newPosition = getSphereSurfaceRandomPoint(u_boundingSphereRadius, u_boundingSphereCenter);
             }
             // Compute new step direction for moving points in (in [-1, -1, -1] - [1, 1, 1] range)
-            vec3 stepDirection =  snoise(point.xyz) - vec3(2.0, 2.0, 2.0) + vec3(1.0, 1.0, 1.0);
+            vec3 stepDirection = random3(seed())*2. - 1.;
             // Update moving point position
-            newPoint.xyz = u_stepLength * stepDirection;
+            newPosition += stepDirection*u_stepLength;
         }
     }
 
-    gl_FragColor = point;
+    gl_FragColor = vec4(newPosition, isStucked);
 }

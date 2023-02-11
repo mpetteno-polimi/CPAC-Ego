@@ -67,7 +67,7 @@ export default class Loop {
     }*/
 
     render(elapsedTime: number, delta: number) {
-        this.world.dla.update(delta);
+        this.world.dla.update(elapsedTime, delta);
         //this.world.particles.update(elapsedTime, delta);
         //this.world.updateSettings();
         //this.world.controls.update();

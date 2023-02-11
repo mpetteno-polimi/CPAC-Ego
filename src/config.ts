@@ -32,7 +32,7 @@ export const config: AppConfig = {
         scene: {
             backgroundColor: 0x000000,
             triangulateFace: true,
-            textureSize: 8
+            textureSize: 256
         }
     }
 }
