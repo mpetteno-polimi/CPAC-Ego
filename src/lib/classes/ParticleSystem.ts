@@ -27,7 +27,7 @@ export default class ParticleSystem {
             this.world.loop.isFaceDetected = true;
             this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
                 this.world.musicGenerator.setSentiment(estimatedExpression[0].expressions);
-            });
+            }).catch(e=>{console.log(e)});
             this.world.musicGenerator.startPlayingSequence();
             this.world.musicGenerator.newFace();
         }

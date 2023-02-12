@@ -17,7 +17,7 @@ export default class MusicGenerator {
         'happy': [0, 2, 4, 5, 7, 9, 11],
         'sad': [0, 2, 3, 5, 7, 8, 10],
         'surprised': [0, 2, 4, 6, 7, 9, 11],
-        'neutral': [0, 2, 5, 7, 0, 2, 5],
+        'neutral': [0, 2, 5, 7, 0, 5, 7],
         'disgusted': [0, 1, 5, 6, 9, 11, 12],
         'fearful': [0, 2, 3, 5, 6, 8, 11],
         'angry': [0, 1, 3, 5, 7, 8, 10]
@@ -46,8 +46,10 @@ export default class MusicGenerator {
     alterSeq = true;
     alterChance = 0.2;
     bassChance = 0.05;
+    chordChance = 0.02;
     bassDistance = 24;
     higherOctave = false;
+    chordsEnabled = false;
     private oscClient: OSCClient;
     private bassEnabled: boolean;
     private sequenceTimeout: NodeJS.Timeout;
@@ -85,7 +87,9 @@ export default class MusicGenerator {
         }
         this.seqCurrentIndex = (this.seqCurrentIndex+1) % this.currentSequence.length;
         if (this.alterSeq && Math.random() < this.alterChance) {
-            this.currentSequence[this.seqCurrentIndex] = this.generateNote();
+            if(Math.random() < this.alterChance){ this.currentSequence[this.seqCurrentIndex] = this.generateNote(); }
+            else{this.currentSequence[this.seqCurrentIndex]['note'] = this.generateNote()['note'];}
+            //this.currentSequence[this.seqCurrentIndex]['note'] = this.generateNote()['note'];
         }
         let note = this.currentSequence[this.seqCurrentIndex];
         //if(this.higherOctave) note['note']+=12;
@@ -183,6 +187,7 @@ export default class MusicGenerator {
         this.scale = this.scales[sentiment];
         // if the scale is different, adapt sequence to new scale
         if(oldScale!=this.scale){ this.adaptArpeggioToNewScale() }
+        console.log(sentiment)
     }
 
     adaptArpeggioToNewScale(){
@@ -224,8 +229,25 @@ export default class MusicGenerator {
         let thisRef = this;
         this.sequenceTimeout = setTimeout(function(){thisRef.startPlayingSequence()}, note['duration']);
         this.playNote(note['note']);
-        // most stupid bass ever
+        // bass
         if (Math.random() < this.bassChance) { let n = 24+this.bassDistance+(note['note']%12); this.playBass(n);};
+        // chords
+        if(this.chordsEnabled && Math.random()<this.chordChance){
+            this.playChord();
+        }
+    }
+
+    playChord(){
+        let baseNoteIndex = Math.floor(Math.random()*7);
+        let baseNoteOffset = -12 + Math.floor(Math.random()*3)*12;
+        for(let i=0; i<3; i++){
+            let noteIndex = (baseNoteIndex + 2*i) % 7;
+            let note = this.scale[noteIndex] + this.baseNote;
+            if((baseNoteIndex + 2*i) > 6) note+=12;
+            note += baseNoteOffset;
+            this.oscClient.sendMessage('/chord', note);
+            console.log("playing chord note", note)
+        }
     }
 
     stopPlayingSequence() {
@@ -293,11 +315,13 @@ export default class MusicGenerator {
         if(this.faceDistance==2) return;
         // randomize some parameters when a new face is detected
         this.generateNewSequence();
-        this.alterChance = Math.random()*0.4;
-        this.baseNote = 48 + Math.floor(Math.random()*3)*12;
+        this.alterChance = 0.1+Math.random()*0.4;
+        this.baseNote = 36 + Math.floor(Math.random()*4)*12;
         this.bassChance = Math.random()*0.1;
         this.bassDistance = Math.floor(Math.random()*2)*12;
         this.bpmMax = Math.random()*40;
+        this.chordChance = Math.random()*0.1;
+        Math.random() < 0.5 ? this.chordsEnabled = true : this.chordsEnabled = false;
         Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
     }
 }
