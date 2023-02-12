@@ -1,5 +1,10 @@
 #include "/src/lib/shaders/noise/curlNoise3D.glsl"
 
+uniform float u_delta;
+uniform float u_time;
+uniform bool u_faceDetected;
+uniform bool u_morphEnabled;
+
 const float CENTER_MASS = 5.0;
 const float PARTICLE_MASS = 1.0;
 const float VELOCITY_TERMINAL = 0.01;

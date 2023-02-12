@@ -5,9 +5,7 @@ import GPUComputation from "./GPUComputation";
 import vertexShader from "../shaders/particles/vertexShader.glsl";
 import fragmentShader from "../shaders/particles/fragmentShader.glsl";
 import {config} from "../../config";
-import MorphTarget from "./MorphTarget";
-import gsap from "gsap";
-import {BufferAttribute, InterleavedBufferAttribute} from "three";
+import {DataTexture} from "three";
 
 export default class ParticleSystem {
     particles: THREE.Points<THREE.BufferGeometry, THREE.Material>;
@@ -17,7 +15,6 @@ export default class ParticleSystem {
     protected gpuComputation: GPUComputation;
     private faceFlattener: Worker;
     private isProcessingFace: boolean;
-    private morphTargets: MorphTarget[];
 
     constructor(world: World, visible: boolean = true) {
         this.world = world;
@@ -34,7 +31,6 @@ export default class ParticleSystem {
         this.addGeometry();
         this.addMaterial();
         this.particles = new THREE.Points(this.geometry, this.material);
-        this.morphTargets = [new MorphTarget(this.world)];
         this.world.scene.add(this.particles);
         visible ? this.show() : this.hide();
     }
@@ -50,7 +46,7 @@ export default class ParticleSystem {
         }
         this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         this.geometry.setAttribute('reference', new THREE.BufferAttribute(references, 2));
-        this.geometry.morphAttributes.position = [];
+        //this.geometry.morphAttributes.position = [];
     }
 
     protected addMaterial() {
@@ -64,9 +60,8 @@ export default class ParticleSystem {
                 u_time: { value: 0 },
                 u_distortion: { value: 0 },
                 u_resolution: { value: new THREE.Vector2() },
-                u_uvRate: { value: new THREE.Vector2(1, 1) },
-                u_texturePosition: { value: null },
-                u_textureVelocity: { value: null }
+                u_particlesPosition: { value: new DataTexture() },
+                u_particlesVelocity: { value: new DataTexture() }
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
@@ -75,7 +70,7 @@ export default class ParticleSystem {
             depthTest: false,
             depthWrite: false
         });
-        this.material.morphTargets = true;
+        //this.material.morphTargets = true;
     }
 
     protected addGPUComputation() {
@@ -99,18 +94,7 @@ export default class ParticleSystem {
         this.material.uniforms.u_resolution.value.y = this.world.currentSizes.height;
     }
 
-    startMorphAnimation() {
-        let tl = gsap.timeline({
-            onComplete: () => { this.world.loop.isAnimationModeActive = false; },
-            repeat: 0,
-            repeatDelay: 1
-        });
-        tl.startTime(0);
-        tl.to(this.particles.morphTargetInfluences, { "0": 1, duration: 20 }, 0);
-        tl.to(this.particles.morphTargetInfluences, { "0": 0, duration: 20 }, 25);
-    }
-
-    update(elapsedTime: number, delta: number) {
+    detectFaces() {
         this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
             if (estimatedFaces.length != 0) {
                 let estimatedFace = estimatedFaces[0];
@@ -123,7 +107,8 @@ export default class ParticleSystem {
                         config.threeJS.scene.triangulateFace
                     ]);
                     this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
-                        this.world.musicGenerator.setSentiment(estimatedExpression[0].expressions);
+                        let estimation = estimatedExpression[0];
+                        if (estimation) this.world.musicGenerator.setSentiment(estimation.expressions);
                     });
                     this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 }
@@ -131,23 +116,23 @@ export default class ParticleSystem {
                 this.world.loop.isFaceDetected = false;
             }
         });
-        this.updateUniforms(elapsedTime, delta);
     }
 
-    updateMorphTarget(position: BufferAttribute | InterleavedBufferAttribute) {
-        this.geometry.morphAttributes.position.push(position);
-        this.particles.updateMorphTargets();
+    updateMorphTarget(positions: ArrayLike<number>) {
+        // this.geometry.morphAttributes.position.push(targetPosition);
+        // this.particles.updateMorphTargets();
+        let velocities = new Float32Array(this.gpuComputation.textureArraySize).fill(0);
+        this.gpuComputation.updateMorphTextures(positions, velocities);
     }
 
-    private updateUniforms(elapsedTime: number, delta: number) {
-        if (this.gpuComputation) {
-            this.gpuComputation.compute(delta, this.world.loop.isFaceDetected);
-            this.material.uniforms.u_texturePosition.value = this.gpuComputation.getCurrentTexturePosition();
-            this.material.uniforms.u_textureVelocity.value = this.gpuComputation.getCurrentTextureVelocity();
-        }
+    updateUniforms(elapsedTime: number, delta: number) {
+        this.gpuComputation.compute(elapsedTime, delta, this.world.loop.isFaceDetected,
+            this.world.loop.isMorphEnabled);
         this.material.uniforms.u_delta.value = delta;
         this.material.uniforms.u_time.value = elapsedTime;
         this.material.uniforms.u_distortion.value = this.world.settings.distortion;
+        this.material.uniforms.u_particlesPosition.value = this.gpuComputation.getCurrentParticlesPosition();
+        this.material.uniforms.u_particlesVelocity.value = this.gpuComputation.getCurrentParticlesVelocity();
     }
 
     private isFaceToUpdate(): boolean {

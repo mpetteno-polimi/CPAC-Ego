@@ -12,8 +12,8 @@ const float CURL_RADIUS = 0.5;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
-    vec3 position = texture2D(textureFacePosition, uv).xyz;
-    vec3 velocity = texture2D(textureFaceVelocity, uv).xyz;
+    vec3 position = texture2D(textureMorphPosition, uv).xyz;
+    vec3 velocity = texture2D(textureMorphVelocity, uv).xyz;
 
     float distance = length(position);
 
