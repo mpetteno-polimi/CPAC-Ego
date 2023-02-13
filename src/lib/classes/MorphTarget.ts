@@ -1,19 +1,17 @@
 import type {BufferAttribute, InterleavedBufferAttribute} from "three";
 import type World from "./World";
 
-import {config} from "../../config";
 import * as THREE from 'three';
 import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader";
 import {MeshSurfaceSampler} from "three/examples/jsm/math/MeshSurfaceSampler";
 
 export default class MorphTarget {
-    position: BufferAttribute | InterleavedBufferAttribute;
-    private readonly pointsNumber: number;
+    private readonly verticesCount: number;
     private world: World;
 
     constructor(world: World) {
         this.world = world;
-        this.pointsNumber = 2*Math.pow(config.threeJS.scene.textureSize, 2);
+        this.verticesCount = this.world.particles.textureWidth * this.world.particles.textureHeight;
         this.loadFromSvg({
             src: "./images/Inkblot.svg",
             scale: 0.01
@@ -46,11 +44,10 @@ export default class MorphTarget {
             const sampler = new MeshSurfaceSampler(extrudedMesh).build();
             const vertices = [];
             const tempPosition = new THREE.Vector3();
-            for (let i = 0; i < this.pointsNumber; i ++) {
+            for (let i = 0; i < this.verticesCount; i++) {
                 sampler.sample(tempPosition);
                 vertices.push(tempPosition.x, tempPosition.y, tempPosition.z, 1);
             }
-
             this.world.particles.updateMorphTarget(vertices);
         });
     }

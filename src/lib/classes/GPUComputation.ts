@@ -3,12 +3,10 @@ import type {Variable} from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
 import * as THREE from "three";
 import {GPUComputationRenderer} from "three/examples/jsm/misc/GPUComputationRenderer";
-import fragmentPositionShader from "../shaders/gpu-computation/fragmentPositionShader.glsl";
-import fragmentVelocityShader from "../shaders/gpu-computation/fragmentVelocityShader.glsl";
+import fragmentPositionShader from "../shaders/gpu-computation/fragmentParticlesPositionShader.glsl";
+import fragmentVelocityShader from "../shaders/gpu-computation/fragmentParticlesVelocityShader.glsl";
 import fragmentFacePositionShader from "../shaders/gpu-computation/fragmentFacePositionShader.glsl";
-import fragmentFaceVelocityShader from "../shaders/gpu-computation/fragmentFaceVelocityShader.glsl";
 import fragmentMorphPositionShader from "../shaders/gpu-computation/fragmentMorphPositionShader.glsl";
-import fragmentMorphVelocityShader from "../shaders/gpu-computation/fragmentMorphVelocityShader.glsl";
 
 export default class GPUComputation {
     textureWidth: number;
@@ -18,22 +16,19 @@ export default class GPUComputation {
     private gpuComputationRenderer: GPUComputationRenderer;
 
     /* ########################## PARTICLES ############################# */
-    private positionData: DataTexture;
-    private velocityData: DataTexture;
-    private positionVariable: Variable;
-    private velocityVariable: Variable;
+    private positionParticlesData: DataTexture;
+    private velocityParticlesData: DataTexture;
+    private positionParticlesVariable: Variable;
+    private velocityParticlesVariable: Variable;
 
     /* ########################## FACE ############################# */
     private positionFaceData: DataTexture;
-    private velocityFaceData: DataTexture;
     private positionFaceVariable: Variable;
-    private velocityFaceVariable: Variable;
 
     /* ########################## MORPH ############################# */
     private positionMorphData: DataTexture;
-    private velocityMorphData: DataTexture;
     private positionMorphVariable: Variable;
-    private velocityMorphVariable: Variable;
+
 
     constructor(props) {
         this.textureWidth = props.texture_width;
@@ -52,159 +47,104 @@ export default class GPUComputation {
         }
     }
 
-    compute(elapsedTime: number, delta: number, isFaceDetected: boolean, isMorphEnabled: boolean) {
+    compute(options) {
         this.gpuComputationRenderer.compute();
-        let deltaValue = Math.min(delta, 0.5);
+        let elapsedTime = options["elapsedTime"];
+        let delta = options["delta"];
+        let isFaceDetected = options["isFaceDetected"];
+        let isMorphEnabled = options["isMorphEnabled"];
+        let faceMorphDuration = options["faceMorphDuration"];
+        let targetMorphDuration = options["targetMorphDuration"];
         // Particles - Position
-        this.positionVariable.material.uniforms.u_delta.value = deltaValue;
-        this.positionVariable.material.uniforms.u_time.value = elapsedTime;
-        this.positionVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.positionVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
+        this.positionParticlesVariable.material.uniforms.u_delta.value = delta;
+        this.positionParticlesVariable.material.uniforms.u_time.value = elapsedTime;
+        this.positionParticlesVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
+        this.positionParticlesVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
+        this.positionParticlesVariable.material.uniforms.u_faceMorphDuration.value = faceMorphDuration;
+        this.positionParticlesVariable.material.uniforms.u_targetMorphDuration.value = targetMorphDuration;
         // Particles - Velocity
-        this.velocityVariable.material.uniforms.u_delta.value = deltaValue;
-        this.velocityVariable.material.uniforms.u_time.value = elapsedTime;
-        this.velocityVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.velocityVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
-        // Face - Position
-        this.positionFaceVariable.material.uniforms.u_delta.value = deltaValue;
-        this.positionFaceVariable.material.uniforms.u_time.value = elapsedTime;
-        this.positionFaceVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.positionFaceVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
-        // Face - Velocity
-        this.velocityFaceVariable.material.uniforms.u_delta.value = deltaValue;
-        this.velocityFaceVariable.material.uniforms.u_time.value = elapsedTime;
-        this.velocityFaceVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.velocityFaceVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
-        // Morph - Position
-        this.positionMorphVariable.material.uniforms.u_delta.value = deltaValue;
-        this.positionMorphVariable.material.uniforms.u_time.value = elapsedTime;
-        this.positionMorphVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.positionMorphVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
-        // Morph - Velocity
-        this.velocityMorphVariable.material.uniforms.u_delta.value = deltaValue;
-        this.velocityMorphVariable.material.uniforms.u_time.value = elapsedTime;
-        this.velocityMorphVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
-        this.velocityMorphVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
+        this.velocityParticlesVariable.material.uniforms.u_delta.value = delta;
+        this.velocityParticlesVariable.material.uniforms.u_time.value = elapsedTime;
+        this.velocityParticlesVariable.material.uniforms.u_faceDetected.value = isFaceDetected;
+        this.velocityParticlesVariable.material.uniforms.u_morphEnabled.value = isMorphEnabled;
+        this.velocityParticlesVariable.material.uniforms.u_faceMorphDuration.value = faceMorphDuration;
+        this.velocityParticlesVariable.material.uniforms.u_targetMorphDuration.value = targetMorphDuration;
     }
 
     getCurrentParticlesPosition() {
-        return this.gpuComputationRenderer.getCurrentRenderTarget(this.positionVariable).texture;
+        return this.gpuComputationRenderer.getCurrentRenderTarget(this.positionParticlesVariable).texture;
     }
 
-    getCurrentParticlesVelocity() {
-        return this.gpuComputationRenderer.getCurrentRenderTarget(this.velocityVariable).texture;
-    }
-
-    updateFaceTextures(positions: ArrayLike<number>, velocities: ArrayLike<number>) {
+    updateFaceTextureData(positions: ArrayLike<number>) {
         this.positionFaceData.image.data.set(positions);
         this.positionFaceData.needsUpdate = true;
-        this.velocityFaceData.image.data.set(velocities);
-        this.velocityFaceData.needsUpdate = true;
         let currentPosRenderTarget = this.gpuComputationRenderer.getCurrentRenderTarget(this.positionFaceVariable);
         this.gpuComputationRenderer.renderTexture(this.positionFaceData, currentPosRenderTarget);
-        let currentVelRenderTarget = this.gpuComputationRenderer.getCurrentRenderTarget(this.velocityFaceVariable);
-        this.gpuComputationRenderer.renderTexture(this.velocityFaceData, currentVelRenderTarget);
     }
 
-    updateMorphTextures(positions: ArrayLike<number>, velocities: ArrayLike<number>) {
+    updateMorphTextures(positions: ArrayLike<number>) {
         this.positionMorphData.image.data.set(positions);
         this.positionMorphData.needsUpdate = true;
-        this.velocityMorphData.image.data.set(velocities);
-        this.velocityMorphData.needsUpdate = true;
         let currentPosRenderTarget = this.gpuComputationRenderer.getCurrentRenderTarget(this.positionMorphVariable);
         this.gpuComputationRenderer.renderTexture(this.positionMorphData, currentPosRenderTarget);
-        let currentVelRenderTarget = this.gpuComputationRenderer.getCurrentRenderTarget(this.velocityMorphVariable);
-        this.gpuComputationRenderer.renderTexture(this.velocityMorphData, currentVelRenderTarget);
     }
 
     private initTexturesData() {
         let emptyTextureData = this.getEmptyTextureData();
         let sphereTextureData = this.getSphereTextureData();
         // Particles
-        this.positionData = this.gpuComputationRenderer.createTexture();
-        this.velocityData = this.gpuComputationRenderer.createTexture();
-        this.positionData.image.data.set(sphereTextureData);
-        this.velocityData.image.data.set(emptyTextureData);
+        this.positionParticlesData = this.gpuComputationRenderer.createTexture();
+        this.velocityParticlesData = this.gpuComputationRenderer.createTexture();
+        this.positionParticlesData.image.data.set(sphereTextureData);
+        this.velocityParticlesData.image.data.set(emptyTextureData);
         // Face
         this.positionFaceData = this.gpuComputationRenderer.createTexture();
-        this.velocityFaceData = this.gpuComputationRenderer.createTexture();
         this.positionFaceData.image.data.set(emptyTextureData);
-        this.velocityFaceData.image.data.set(emptyTextureData);
         // Morph
         this.positionMorphData = this.gpuComputationRenderer.createTexture();
-        this.velocityMorphData = this.gpuComputationRenderer.createTexture();
         this.positionMorphData.image.data.set(emptyTextureData);
-        this.velocityMorphData.image.data.set(emptyTextureData);
     }
 
     private initVariables() {
         // Particles - Position
-        this.positionVariable = this.gpuComputationRenderer.addVariable('texturePosition',
-            fragmentPositionShader, this.positionData);
-        this.positionVariable.material.uniforms.u_delta = { value: 0 };
-        this.positionVariable.material.uniforms.u_time = { value: 0 };
-        this.positionVariable.material.uniforms.u_faceDetected = { value: false };
-        this.positionVariable.material.uniforms.u_morphEnabled = { value: false };
-        this.positionVariable.wrapS = THREE.RepeatWrapping;
-        this.positionVariable.wrapT = THREE.RepeatWrapping;
+        this.positionParticlesVariable = this.gpuComputationRenderer.addVariable('textureParticlesPosition',
+            fragmentPositionShader, this.positionParticlesData);
+        this.positionParticlesVariable.material.uniforms.u_delta = { value: 0 };
+        this.positionParticlesVariable.material.uniforms.u_time = { value: 0 };
+        this.positionParticlesVariable.material.uniforms.u_faceDetected = { value: false };
+        this.positionParticlesVariable.material.uniforms.u_morphEnabled = { value: false };
+        this.positionParticlesVariable.material.uniforms.u_faceMorphDuration = { value: 0 };
+        this.positionParticlesVariable.material.uniforms.u_targetMorphDuration = { value: 0 };
+        this.positionParticlesVariable.wrapS = THREE.RepeatWrapping;
+        this.positionParticlesVariable.wrapT = THREE.RepeatWrapping;
         // Particles - Velocity
-        this.velocityVariable = this.gpuComputationRenderer.addVariable('textureVelocity',
-            fragmentVelocityShader, this.velocityData);
-        this.velocityVariable.material.uniforms.u_delta = { value: 0 };
-        this.velocityVariable.material.uniforms.u_time = { value: 0 };
-        this.velocityVariable.material.uniforms.u_faceDetected = { value: false };
-        this.velocityVariable.material.uniforms.u_morphEnabled = { value: false };
-        this.velocityVariable.wrapS = THREE.RepeatWrapping;
-        this.velocityVariable.wrapT = THREE.RepeatWrapping;
+        this.velocityParticlesVariable = this.gpuComputationRenderer.addVariable('textureParticlesVelocity',
+            fragmentVelocityShader, this.velocityParticlesData);
+        this.velocityParticlesVariable.material.uniforms.u_delta = { value: 0 };
+        this.velocityParticlesVariable.material.uniforms.u_time = { value: 0 };
+        this.velocityParticlesVariable.material.uniforms.u_faceDetected = { value: false };
+        this.velocityParticlesVariable.material.uniforms.u_morphEnabled = { value: false };
+        this.velocityParticlesVariable.material.uniforms.u_faceMorphDuration = { value: 0 };
+        this.velocityParticlesVariable.material.uniforms.u_targetMorphDuration = { value: 0 };
+        this.velocityParticlesVariable.wrapS = THREE.RepeatWrapping;
+        this.velocityParticlesVariable.wrapT = THREE.RepeatWrapping;
         // Face - Position
         this.positionFaceVariable = this.gpuComputationRenderer.addVariable('textureFacePosition',
             fragmentFacePositionShader, this.positionFaceData);
-        this.positionFaceVariable.material.uniforms.u_delta = { value: 0 };
-        this.positionFaceVariable.material.uniforms.u_time = { value: 0 };
-        this.positionFaceVariable.material.uniforms.u_faceDetected = { value: false };
-        this.positionFaceVariable.material.uniforms.u_morphEnabled = { value: false };
         this.positionFaceVariable.wrapS = THREE.RepeatWrapping;
         this.positionFaceVariable.wrapT = THREE.RepeatWrapping;
-        // Face - Velocity
-        this.velocityFaceVariable = this.gpuComputationRenderer.addVariable('textureFaceVelocity',
-            fragmentFaceVelocityShader, this.velocityFaceData);
-        this.velocityFaceVariable.material.uniforms.u_delta = { value: 0 };
-        this.velocityFaceVariable.material.uniforms.u_time = { value: 0 };
-        this.velocityFaceVariable.material.uniforms.u_faceDetected = { value: false };
-        this.velocityFaceVariable.material.uniforms.u_morphEnabled = { value: false };
-        this.velocityFaceVariable.wrapS = THREE.RepeatWrapping;
-        this.velocityFaceVariable.wrapT = THREE.RepeatWrapping;
         // Morph - Position
         this.positionMorphVariable = this.gpuComputationRenderer.addVariable('textureMorphPosition',
             fragmentMorphPositionShader, this.positionMorphData);
-        this.positionMorphVariable.material.uniforms.u_delta = { value: 0 };
-        this.positionMorphVariable.material.uniforms.u_time = { value: 0 };
-        this.positionMorphVariable.material.uniforms.u_faceDetected = { value: false };
-        this.positionMorphVariable.material.uniforms.u_morphEnabled = { value: false };
         this.positionMorphVariable.wrapS = THREE.RepeatWrapping;
         this.positionMorphVariable.wrapT = THREE.RepeatWrapping;
-        // Morph - Velocity
-        this.velocityMorphVariable = this.gpuComputationRenderer.addVariable('textureMorphVelocity',
-            fragmentMorphVelocityShader, this.velocityMorphData);
-        this.velocityMorphVariable.material.uniforms.u_delta = { value: 0 };
-        this.velocityMorphVariable.material.uniforms.u_time = { value: 0 };
-        this.velocityMorphVariable.material.uniforms.u_faceDetected = { value: false };
-        this.velocityMorphVariable.material.uniforms.u_morphEnabled = { value: false };
-        this.velocityMorphVariable.wrapS = THREE.RepeatWrapping;
-        this.velocityMorphVariable.wrapT = THREE.RepeatWrapping;
         // Dependencies
-        this.gpuComputationRenderer.setVariableDependencies(this.positionVariable, [this.velocityVariable,
-            this.positionVariable, this.positionFaceVariable, this.positionMorphVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.velocityVariable, [this.velocityVariable,
-            this.positionVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.positionFaceVariable,
-            [this.velocityFaceVariable, this.positionFaceVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.velocityFaceVariable,
-            [this.velocityFaceVariable, this.positionFaceVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.positionMorphVariable,
-            [this.velocityMorphVariable, this.positionMorphVariable]);
-        this.gpuComputationRenderer.setVariableDependencies(this.velocityMorphVariable,
-            [this.velocityMorphVariable, this.positionMorphVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.positionParticlesVariable, [this.velocityParticlesVariable,
+            this.positionParticlesVariable, this.positionFaceVariable, this.positionMorphVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.velocityParticlesVariable, [this.velocityParticlesVariable,
+            this.positionParticlesVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.positionFaceVariable, [this.positionFaceVariable]);
+        this.gpuComputationRenderer.setVariableDependencies(this.positionMorphVariable, [this.positionMorphVariable]);
     }
 
     private getEmptyTextureData() {

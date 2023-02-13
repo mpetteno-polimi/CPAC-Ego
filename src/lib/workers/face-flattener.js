@@ -4,24 +4,25 @@ import {getScreenRanges, mapRangetoRange} from "../utils/utils.js";
 
 class FaceFlattener {
 
-    constructor(estimatedFace, targetArraySize, currentSizes, triangulateFace) {
+    constructor(estimatedFace, targetArraySize, currentSizes, triangulateFace, faceScaleFactor) {
         this.estimatedFace = estimatedFace;
         this.targetArraySize = targetArraySize;
         this.currentSizes = currentSizes;
         this.triangulateFace = triangulateFace;
+        this.scaleFaceFactor = faceScaleFactor;
     }
 
     getFaceTextureData() {
         let flattenFaceLandmarks = this.flattenFaceLandmarks(this.estimatedFace);
-        let facBufferGeometry = new THREE.BufferGeometry().setFromPoints(flattenFaceLandmarks).center();
+        let facBufferGeometry = new THREE.BufferGeometry().setFromPoints(flattenFaceLandmarks)
+            .center().scale(this.scaleFaceFactor, this.scaleFaceFactor, this.scaleFaceFactor);
         let facePoints = facBufferGeometry.getAttribute("position").array;
-        let positionData = [], velocityData = [], currentLandmarkIndex = 0;
+        let positionData = [], currentLandmarkIndex = 0;
         for (let i = 0; i < this.targetArraySize; i += 4) {
             positionData.push(facePoints[currentLandmarkIndex], facePoints[currentLandmarkIndex+1], facePoints[currentLandmarkIndex+2], 1);
-            velocityData.push(0, 0, 0, 1);
             currentLandmarkIndex = currentLandmarkIndex+3;
         }
-        return [positionData, velocityData];
+        return positionData;
     }
 
     flattenFaceLandmarks(estimatedFace) {
@@ -82,6 +83,7 @@ onmessage = (event) => {
     let targetArraySize = event.data[1];
     let currentSizes = event.data[2];
     let triangulateFace = event.data[3];
-    let faceFlattener = new FaceFlattener(estimatedFace, targetArraySize, currentSizes, triangulateFace);
+    let faceScaleFactor = event.data[4];
+    let faceFlattener = new FaceFlattener(estimatedFace, targetArraySize, currentSizes, triangulateFace, faceScaleFactor);
     postMessage([faceFlattener.getFaceTextureData()]);
 }
