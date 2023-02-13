@@ -57,14 +57,12 @@ export default class ParticleSystem {
                         config.threeJS.scene.triangulateFace,
                         config.threeJS.scene.faceScaleFactor
                     ]);
-                    this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
-                        let estimation = estimatedExpression[0];
-                        if (estimation) this.world.musicGenerator.setSentiment(estimation.expressions);
-                    });
                     this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 }
+                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
             } else {
                 this.world.loop.isFaceDetected = false;
+                this.world.musicGenerator.stopPlayingSequence();
             }
         });
     }
@@ -140,6 +138,11 @@ export default class ParticleSystem {
             this.gpuComputation.updateFaceTextureData(faceTextureData);
             this.isProcessingFace = false;
             this.world.loop.enableFaceDetected();
+            this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
+                this.world.musicGenerator.setSentiment(estimatedExpression[0].expressions);
+            }).catch(e=>{console.log(e)});
+            this.world.musicGenerator.startPlayingSequence();
+            this.world.musicGenerator.newFace();
         }
     }
 
