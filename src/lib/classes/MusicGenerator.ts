@@ -238,9 +238,12 @@ export default class MusicGenerator {
     }
 
     playChord(){
+        if(this.baseNote<38) return
         let baseNoteIndex = Math.floor(Math.random()*7);
         let baseNoteOffset = -12 + Math.floor(Math.random()*3)*12;
-        for(let i=0; i<3; i++){
+        let numberOfNotes = 3;
+        if(Math.random()<0.4) numberOfNotes=4;
+        for(let i=0; i<numberOfNotes; i++){
             let noteIndex = (baseNoteIndex + 2*i) % 7;
             let note = this.scale[noteIndex] + this.baseNote;
             if((baseNoteIndex + 2*i) > 6) note+=12;
