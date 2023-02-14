@@ -37,9 +37,9 @@ export const config: AppConfig = {
         },
         loop: {
             faceDetectionStartTime: 10,
-            faceDetectedMorphDuration: 8,
-            morphStart: 15,
-            morphDuration: 10,
+            faceDetectedMorphDuration: 20,
+            morphStart: 10,
+            morphDuration: 20,
             morphEnd: 8
         }
     }
