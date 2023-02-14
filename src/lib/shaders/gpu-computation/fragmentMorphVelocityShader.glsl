@@ -1,6 +1,3 @@
-#include "/src/ext/glsl/lygia/generative/curl.glsl"
-#include "/src/ext/glsl/lygia/generative/cnoise.glsl"
-
 /* UNIFORMS */
 uniform float u_delta;
 uniform float u_time;
@@ -15,7 +12,9 @@ uniform float u_targetMorphDuration;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
-    vec3 position = texture2D(textureFacePosition, uv).xyz;
-    vec3 velocity = texture2D(textureFaceVelocity, uv).xyz;
-    gl_FragColor = vec4(position, 1.0);
+    vec3 position = texture2D(textureMorphPosition, uv).xyz;
+    vec3 velocity = texture2D(textureMorphVelocity, uv).xyz;
+
+    vec3 newVelocity = velocity;
+    gl_FragColor = vec4(newVelocity, 1.0);
 }

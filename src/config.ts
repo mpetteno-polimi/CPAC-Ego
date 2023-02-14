@@ -33,13 +33,13 @@ export const config: AppConfig = {
             backgroundColor: 0x000000,
             faceScaleFactor: 1,
             triangulateFace: true,
-            particlesCount: 512*512
+            particlesCount: 256*256
         },
         loop: {
-            faceDetectionStartTime: 5,
+            faceDetectionStartTime: 1,
             faceDetectedMorphDuration: 5,
-            morphStart: 5,
-            morphDuration: 5,
+            morphStart: 15,
+            morphDuration: 10,
             morphEnd: 5
         }
     }

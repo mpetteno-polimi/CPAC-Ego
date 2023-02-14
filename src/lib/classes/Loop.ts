@@ -60,7 +60,7 @@ export default class Loop {
         }
         //console.log("Uniform", this.currentUniformTime)
         this.world.particles.updateUniforms(this.currentUniformTime, delta);
-        //this.world.updateSettings();
+        this.world.updateSettings();
         this.world.controls.update();
         //this.world.renderer.render(this.scene, this.camera);
         this.world.composer.render();

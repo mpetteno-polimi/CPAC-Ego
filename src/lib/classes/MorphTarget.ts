@@ -1,4 +1,3 @@
-import type {BufferAttribute, InterleavedBufferAttribute} from "three";
 import type World from "./World";
 
 import * as THREE from 'three';

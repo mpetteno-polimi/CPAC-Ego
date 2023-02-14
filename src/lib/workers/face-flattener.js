@@ -22,6 +22,7 @@ class FaceFlattener {
             positionData.push(facePoints[currentLandmarkIndex], facePoints[currentLandmarkIndex+1], facePoints[currentLandmarkIndex+2], 1);
             currentLandmarkIndex = currentLandmarkIndex+3;
         }
+
         return positionData;
     }
 

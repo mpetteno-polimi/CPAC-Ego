@@ -40,7 +40,11 @@ export default class World {
         bloomThreshold: number,
         bloomStrength: number,
         distortion: number,
-        zoom: number
+        zoom: number,
+        noiseFreq: number,
+        noiseAmp: number,
+        noiseRadius: number,
+        noiseSpeed: number
     };
 
     constructor(options) {
@@ -57,7 +61,11 @@ export default class World {
             bloomRadius: 0,
             bloomThreshold: 0,
             bloomStrength: 0,
-            zoom: 1
+            zoom: 1,
+            noiseFreq: 0,
+            noiseAmp: 0,
+            noiseRadius: 1,
+            noiseSpeed: 0
         };
         this.faceMeshDetector = options.faceMeshDetector;
         this.faceExpressionDetector = options.faceExpressionDetector;
@@ -66,7 +74,7 @@ export default class World {
         this.addRenderer();
         this.addScene();
         this.addControls();
-        //this.addGUI();
+        this.addGUI();
         this.addLoop();
         this.addPostProcessing();
         //this.addLoaders();
@@ -159,6 +167,10 @@ export default class World {
         this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
         this.gui.add(this.settings, "bloomRadius", 0, 10, 0.01);
         this.gui.add(this.settings, "zoom", 0, 10, 0.5);
+        this.gui.add(this.settings, "noiseAmp", 0, 20, 0.01);
+        this.gui.add(this.settings, "noiseFreq", 0, 100, 0.01);
+        this.gui.add(this.settings, "noiseRadius", 0, 20, 0.01);
+        this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
     }
 
     private addPostProcessing() {

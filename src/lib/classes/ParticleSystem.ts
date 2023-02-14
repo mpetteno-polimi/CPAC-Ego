@@ -59,7 +59,6 @@ export default class ParticleSystem {
                     ]);
                     this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 }
-                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
             } else {
                 this.world.loop.isFaceDetected = false;
                 this.world.musicGenerator.stopPlayingSequence();
@@ -80,10 +79,20 @@ export default class ParticleSystem {
             "isFaceDetected": this.world.loop.isFaceDetected,
             "isMorphEnabled": this.world.loop.isMorphEnabled,
             "faceMorphDuration": config.threeJS.loop.faceDetectedMorphDuration,
-            "targetMorphDuration": config.threeJS.loop.morphDuration
+            "targetMorphDuration": config.threeJS.loop.morphDuration,
+            "noiseFreq": this.world.settings.noiseFreq,
+            "noiseAmp": this.world.settings.noiseAmp,
+            "noiseRadius": this.world.settings.noiseRadius,
+            "noiseSpeed": this.world.settings.noiseSpeed
         });
         this.material.uniforms.u_delta.value = Math.min(delta, 0.5);
         this.material.uniforms.u_time.value = elapsedTime;
+        this.material.uniforms.u_noiseFreq.value = this.world.settings.noiseFreq;
+        this.material.uniforms.u_noiseAmp.value = this.world.settings.noiseAmp;
+        this.material.uniforms.u_noiseRadius.value = this.world.settings.noiseRadius;
+        this.material.uniforms.u_noiseSpeed.value = this.world.settings.noiseSpeed;
+        this.material.uniforms.u_faceDetected.value = this.world.loop.isFaceDetected;
+        this.material.uniforms.u_morphEnabled.value = this.world.loop.isMorphEnabled;
         this.material.uniforms.u_particlesPosition.value = this.gpuComputation.getCurrentParticlesPosition();
     }
 
@@ -104,6 +113,14 @@ export default class ParticleSystem {
                 u_delta: { value: 0 },
                 u_time: { value: 0 },
                 u_resolution: { value: new THREE.Vector2() },
+                u_noiseFreq: { value: 0 },
+                u_noiseAmp: { value: 0 },
+                u_noiseRadius: { value: 0 },
+                u_noiseSpeed: { value: 0 },
+                u_faceDetected: { value: false },
+                u_morphEnabled: { value: false },
+                u_faceMorphDuration: { value: config.threeJS.loop.faceDetectedMorphDuration },
+                u_targetMorphDuration: { value: config.threeJS.loop.morphDuration },
                 u_particlesPosition: { value: null }
             },
             vertexShader: vertexShader,
