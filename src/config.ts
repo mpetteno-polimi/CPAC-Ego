@@ -31,8 +31,16 @@ export const config: AppConfig = {
         },
         scene: {
             backgroundColor: 0x000000,
+            faceScaleFactor: 1,
             triangulateFace: true,
-            textureSize: 256
+            particlesCount: 256*256
+        },
+        loop: {
+            faceDetectionStartTime: 10,
+            faceDetectedMorphDuration: 20,
+            morphStart: 10,
+            morphDuration: 20,
+            morphEnd: 8
         }
     }
 }

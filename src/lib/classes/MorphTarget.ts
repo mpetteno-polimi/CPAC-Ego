@@ -1,16 +1,20 @@
-import {config} from "../../config";
+import type World from "./World";
+
 import * as THREE from 'three';
 import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader";
+import {MeshSurfaceSampler} from "three/examples/jsm/math/MeshSurfaceSampler";
 
 export default class MorphTarget {
-    private geometry: THREE.BufferGeometry;
-    private readonly material: THREE.LineBasicMaterial;
-    private mesh: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>;
-    private svgGroup: THREE.Group;
+    private readonly verticesCount: number;
+    private world: World;
 
-    constructor() {
-        this.material = new THREE.LineBasicMaterial({color: "aqua"});
-        this.loadFromCircleGeometry();
+    constructor(world: World) {
+        this.world = world;
+        this.verticesCount = this.world.particles.textureWidth * this.world.particles.textureHeight;
+        this.loadFromSvg({
+            src: "./images/Inkblot.svg",
+            scale: 0.01
+        });
     }
 
     loadFromSvg(options: { src: string; scale: number; }) {
@@ -18,44 +22,33 @@ export default class MorphTarget {
         loader.load(
             options.src, // called when the resource is loaded
         (svgData) => {
-            this.svgGroup = new THREE.Group();
-            this.svgGroup.scale.multiplyScalar( options.scale );
-            this.svgGroup.scale.y *= - 1;
+            let shapes = [];
             svgData.paths.forEach((path) => {
-                const shapes = SVGLoader.createShapes( path );
-                shapes.forEach((shape) => {
-                    const meshGeometry = new THREE.ExtrudeGeometry(shape, {
-                        steps: 2,
-                        depth: 2,
-                        bevelEnabled: false
-                    });
-                    meshGeometry.center();
-                    //const mesh = new THREE.Mesh(meshGeometry, fillMaterial);
-                    const linesGeometry = new THREE.EdgesGeometry(meshGeometry);
-                    const lines = new THREE.LineSegments(linesGeometry, this.material);
-                    this.svgGroup.add(lines);
-                });
+                shapes.push(...SVGLoader.createShapes(path));
             });
+            let extrudeGeometry = new THREE.ExtrudeGeometry(shapes, {
+                curveSegments: 20,
+                steps: 2,
+                depth: 5,
+                bevelEnabled: false,
+                bevelThickness: 0.2,
+                bevelSize: 0.1,
+                bevelOffset: 0,
+                bevelSegments: 3
+            }).center();
+            extrudeGeometry.scale(options.scale, -1*options.scale, options.scale);
+            let extrudedMaterial = new THREE.MeshBasicMaterial();
+            let extrudedMesh = new THREE.Mesh(extrudeGeometry, extrudedMaterial);
+
+            const sampler = new MeshSurfaceSampler(extrudedMesh).build();
+            const vertices = [];
+            const tempPosition = new THREE.Vector3();
+            for (let i = 0; i < this.verticesCount; i++) {
+                sampler.sample(tempPosition);
+                vertices.push(tempPosition.x, tempPosition.y, tempPosition.z, 1);
+            }
+            this.world.particles.updateMorphTarget(vertices);
         });
-    }
-
-    // TODO - Remove (only for test)
-    loadFromCircleGeometry() {
-        this.geometry = new THREE.BufferGeometry().setFromPoints(
-            new THREE.Path().absarc(
-                0,
-                0,
-                1.25,
-                0,
-                Math.PI * 2,
-                true
-            ).getSpacedPoints(config.threeJS.scene.textureSize)
-        );
-        this.mesh = new THREE.Line(this.geometry, this.material);
-    }
-
-    getMorphBufferAttribute() {
-        return this.geometry.getAttribute("position").clone();
     }
 
 }

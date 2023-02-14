@@ -29,17 +29,28 @@ type WebcamConfig = {
 
 type ThreeJSConfig = {
     camera: CameraConfig,
-    scene: SceneConfig
+    scene: SceneConfig,
+    loop: LoopConfig
 }
 
 type SceneConfig = {
     backgroundColor: number
+    faceScaleFactor: number,
     triangulateFace: boolean
-    textureSize: number
+    particlesCount: number
 }
 
 type CameraConfig = {
     fieldOfView: number,
     nearPlane: number,
     farPlane: number
+}
+
+type LoopConfig = {
+    faceDetectionStartTime: number,
+    faceDetectedMorphDuration: number,
+    morphStart: number,
+    morphDuration: number,
+    morphEnd: number,
+
 }

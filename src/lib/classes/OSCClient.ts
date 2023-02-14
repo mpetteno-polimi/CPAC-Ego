@@ -1,7 +1,7 @@
 import OSC from "osc-js";
 
 export default class OSCClient {
-    private client: OSC;
+    private readonly client: OSC;
 
     constructor() {
         this.client = new OSC();
@@ -9,7 +9,9 @@ export default class OSCClient {
     }
 
     sendMessage(address, ...parameters) {
-        const message = new OSC.Message(address, ...parameters);
-        this.client.send(message)
+        if (this.client.status() == 1) {
+            const message = new OSC.Message(address, ...parameters);
+            this.client.send(message);
+        }
     }
 }
