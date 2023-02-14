@@ -33,7 +33,7 @@ void main() {
             }
         }
     } else {
-        float evolvRate = u_delta*1.5;
+        float evolvRate = u_delta*0.1;
         newPosition = position + velocity*evolvRate;
     }
 

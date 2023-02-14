@@ -62,10 +62,10 @@ export default class World {
             bloomThreshold: 0,
             bloomStrength: 0,
             zoom: 1,
-            noiseFreq: 0,
-            noiseAmp: 0,
+            noiseFreq: 15,
+            noiseAmp: 0.3,
             noiseRadius: 1,
-            noiseSpeed: 0
+            noiseSpeed: 3
         };
         this.faceMeshDetector = options.faceMeshDetector;
         this.faceExpressionDetector = options.faceExpressionDetector;

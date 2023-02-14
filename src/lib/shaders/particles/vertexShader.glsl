@@ -17,12 +17,16 @@ uniform float u_noiseSpeed;
 uniform sampler2D u_particlesPosition;
 
 
+float easing(float x) {
+    return pow(x, 5.);
+}
+
 vec3 getNoisedPosition() {
     vec3 pos = texture2D(u_particlesPosition, reference).xyz;
-    vec3 curlPos = curl(pos*u_noiseFreq + u_time*u_noiseSpeed) * u_noiseAmp;
+    vec3 curlPos = u_noiseAmp*curl(pos*u_noiseFreq + u_time*u_noiseSpeed);
     vec3 tar = pos + curlPos;
     float d = length(pos - tar)/u_noiseRadius;
-    return mix(pos, tar, pow(d, 5.));
+    return mix(pos, tar, easing(d));
 }
 
 void main() {
