@@ -11,6 +11,10 @@ uniform bool u_faceDetected;
 uniform bool u_morphEnabled;
 uniform float u_faceMorphDuration;
 uniform float u_targetMorphDuration;
+uniform float u_morphTargetType;
+uniform sampler2D u_textureFacePosition;
+uniform sampler2D u_textureMorphTargetPosition;
+uniform sampler2D u_textureMorphTargetMask;
 
 /* CONSTANTS */
 const float CENTER_MASS = 5.0;

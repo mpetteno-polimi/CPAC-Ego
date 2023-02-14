@@ -9,6 +9,10 @@ uniform bool u_faceDetected;
 uniform bool u_morphEnabled;
 uniform float u_faceMorphDuration;
 uniform float u_targetMorphDuration;
+uniform float u_morphTargetType;
+uniform sampler2D u_textureFacePosition;
+uniform sampler2D u_textureMorphTargetPosition;
+uniform sampler2D u_textureMorphTargetMask;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -17,10 +21,14 @@ void main() {
 
     vec3 newPosition;
     if (u_faceDetected) {
-        vec3 facePosition = texture2D(textureFacePosition, uv).xyz;
+        vec3 facePosition = texture2D(u_textureFacePosition, uv).xyz;
         if (u_morphEnabled) {
             if (u_time <= u_targetMorphDuration) {
-                vec3 morphPosition = texture2D(textureMorphPosition, uv).xyz;
+                vec3 morphPosition = texture2D(u_textureMorphTargetPosition, uv).xyz;
+                if (u_morphTargetType == 1.) {
+                    vec3 morphMask = texture2D(u_textureMorphTargetMask, uv).xyz;
+                    morphPosition = morphMask * morphPosition;
+                }
                 float mixFactor = u_time/u_targetMorphDuration;
                 newPosition = mix(facePosition, morphPosition, mixFactor);
             }
@@ -33,7 +41,7 @@ void main() {
             }
         }
     } else {
-        float evolvRate = u_delta*0.1;
+        float evolvRate = u_delta*0.6;
         newPosition = position + velocity*evolvRate;
     }
 

@@ -13,7 +13,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import {config} from "../../config";
 import Loop from "./Loop";
 import ParticleSystem from "./ParticleSystem";
-import MorphTarget from "./MorphTarget";
+import MorphTargetGenerator from "./MorphTargetGenerator";
 
 export default class World {
     scene: THREE.Scene;
@@ -27,7 +27,7 @@ export default class World {
     loop: Loop;
     controls: OrbitControls;
     particles: ParticleSystem;
-    morphTargets: MorphTarget[];
+    morphTargetGenerator: MorphTargetGenerator;
     musicGenerator: MusicGenerator;
     private dracoLoader: DRACOLoader;
     private gltf: GLTFLoader;
@@ -193,7 +193,7 @@ export default class World {
 
     private addObjects() {
         this.particles = new ParticleSystem(this);
-        this.morphTargets = [new MorphTarget(this)];
+        this.morphTargetGenerator = new MorphTargetGenerator(this);
     }
 
     private addLights() {

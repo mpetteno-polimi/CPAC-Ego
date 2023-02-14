@@ -5,16 +5,17 @@ import GPUComputation from "./GPUComputation";
 import vertexShader from "../shaders/particles/vertexShader.glsl";
 import fragmentShader from "../shaders/particles/fragmentShader.glsl";
 import {config} from "../../config";
+import MorphTargetGenerator from "./MorphTargetGenerator";
 
 export default class ParticleSystem {
     particles: THREE.Points<THREE.BufferGeometry, THREE.Material>;
     particlesCount: number;
     textureWidth: number;
     textureHeight: number;
+    gpuComputation: GPUComputation;
     protected geometry: THREE.BufferGeometry;
     protected material: THREE.ShaderMaterial;
     protected world: World;
-    protected gpuComputation: GPUComputation;
     private faceFlattener: Worker;
     private isProcessingFace: boolean;
 
@@ -66,10 +67,10 @@ export default class ParticleSystem {
         });
     }
 
-    updateMorphTarget(positions: ArrayLike<number>) {
+    updateMorphTarget(randomMorphTarget) {
+        this.gpuComputation.updateGenerativeMorphTarget(randomMorphTarget);
         // this.geometry.morphAttributes.position.push(targetPosition);
         // this.particles.updateMorphTargets();
-        this.gpuComputation.updateMorphTextures(positions);
     }
 
     updateUniforms(elapsedTime: number, delta: number) {
@@ -153,6 +154,7 @@ export default class ParticleSystem {
         this.faceFlattener.onmessage = (event) => {
             let faceTextureData = event.data[0];
             this.gpuComputation.updateFaceTextureData(faceTextureData);
+            this.world.morphTargetGenerator.getRandomMorphTarget();
             this.isProcessingFace = false;
             this.world.loop.enableFaceDetected();
             this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
