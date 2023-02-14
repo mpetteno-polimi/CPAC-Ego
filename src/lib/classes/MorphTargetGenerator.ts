@@ -20,8 +20,7 @@ export default class MorphTargetGenerator {
 
     getRandomMorphTarget() {
         let randomGeneratorIndex = Math.floor(Math.random()*this.generators.length);
-        console.log(randomGeneratorIndex)
-        this.generators[randomGeneratorIndex](this);
+        this.perlinNoiseGenerator(this);
     }
 
     private perlinNoiseGenerator(context) {

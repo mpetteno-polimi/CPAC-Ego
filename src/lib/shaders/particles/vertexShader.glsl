@@ -16,6 +16,8 @@ uniform float u_noiseRadius;
 uniform float u_noiseSpeed;
 uniform sampler2D u_particlesPosition;
 
+/* VARYINGS */
+varying vec3 vColor;
 
 float easing(float x) {
     return pow(x, 5.);
@@ -31,6 +33,14 @@ vec3 getNoisedPosition() {
 
 void main() {
     vec3 position = texture2D(u_particlesPosition, reference).xyz;
+    float display = texture2D(u_particlesPosition, reference).w;
+
+    if (display == 1.) {
+        vColor = vec3(0.5, 0.6, 0.7);
+    } else {
+        vColor = vec3(0.);
+    }
+
     #include <begin_vertex>
     #include <project_vertex>
     gl_PointSize = 1.5 * (1.0 / -mvPosition.z);

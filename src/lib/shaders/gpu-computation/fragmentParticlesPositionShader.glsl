@@ -20,6 +20,7 @@ void main() {
     vec3 velocity = texture2D(textureParticlesVelocity, uv).xyz;
 
     vec3 newPosition;
+    float display = 1.0;
     if (u_faceDetected) {
         vec3 facePosition = texture2D(u_textureFacePosition, uv).xyz;
         if (u_morphEnabled) {
@@ -27,7 +28,9 @@ void main() {
                 vec3 morphPosition = texture2D(u_textureMorphTargetPosition, uv).xyz;
                 if (u_morphTargetType == 1.) {
                     vec3 morphMask = texture2D(u_textureMorphTargetMask, uv).xyz;
-                    morphPosition = morphMask * morphPosition;
+                    if (length(morphMask) == 0.) {
+                        display = 0.0;
+                    }
                 }
                 float mixFactor = u_time/u_targetMorphDuration;
                 newPosition = mix(facePosition, morphPosition, mixFactor);
@@ -45,5 +48,5 @@ void main() {
         newPosition = position + velocity*evolvRate;
     }
 
-    gl_FragColor = vec4(newPosition, 1.0);
+    gl_FragColor = vec4(newPosition, display);
 }
