@@ -49,10 +49,11 @@ export default class Loop {
     render(elapsedTime: number, delta: number) {
         //console.log("Global", elapsedTime)
         if (elapsedTime > config.threeJS.loop.faceDetectionStartTime) {
+            this.world.particles.detectFaces();
             if (this.isFaceDetected) {
                 this.handleMorphAnimation()
             } else {
-                this.world.particles.detectFaces();
+                //this.world.particles.detectFaces();
                 this.currentUniformTime = elapsedTime;
             }
         } else {
@@ -60,7 +61,7 @@ export default class Loop {
         }
         //console.log("Uniform", this.currentUniformTime)
         this.world.particles.updateUniforms(this.currentUniformTime, delta);
-        this.world.updateSettings();
+        this.world.updateSettings(this.isFaceDetected, this.isMorphEnabled);
         this.world.controls.update();
         //this.world.renderer.render(this.scene, this.camera);
         this.world.composer.render();

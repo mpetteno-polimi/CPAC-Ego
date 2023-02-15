@@ -33,7 +33,8 @@ export const config: AppConfig = {
             backgroundColor: 0x000000,
             faceScaleFactor: 1,
             triangulateFace: true,
-            particlesCount: 256*256
+            particlesCount: 256*256,
+            automateParameters: true
         },
         loop: {
             faceDetectionStartTime: 10,

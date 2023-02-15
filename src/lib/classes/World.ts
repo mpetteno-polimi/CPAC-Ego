@@ -108,11 +108,38 @@ export default class World {
         this.camera.updateProjectionMatrix();
     }
 
-    updateSettings() {
+    updateSettings(isFaceDetected, isMorphEnabled) {
+        if(config.threeJS.scene.automateParameters){
+            let mod1 = this.LFO('sin', 0.07, 0, 1)
+            let mod2 = this.LFO('sin', 0.23, 0, 1)
+            this.bloomPass.strength = this.LFO('sin', 0.13, 0.2, 0.2+mod2);
+            this.bloomPass.radius = 0.1+mod1;
+            this.settings.noiseAmp = 0.45+mod1*0.3;
+            this.settings.noiseRadius = 1+mod2;
+            this.settings.noiseFreq = 5+15*mod2;
+    
+            if(!isFaceDetected && !isMorphEnabled){
+            }else if(isFaceDetected && isMorphEnabled){
+                this.settings.noiseAmp += mod2*0.3;
+                this.bloomPass.strength += mod2*0.2;
+                this.bloomPass.radius += mod1*0.5;
+                this.settings.noiseSpeed = 0.001+mod1*0.005+mod1*mod2*0.1;
+            }else if(isFaceDetected && !isMorphEnabled){
+            }
+            return;
+        }
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
         this.camera.zoom = this.settings.zoom;
+    }
+
+    private LFO(type, freq, min, max){
+        let millis = Date.now()/1000.0;
+        switch(type){
+            case 'sin':
+                return min + (0.5+Math.sin(freq*millis)/2)*(max-min);
+        }
     }
 
     private addCamera() {
@@ -167,7 +194,7 @@ export default class World {
         this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
         this.gui.add(this.settings, "bloomRadius", 0, 10, 0.01);
         this.gui.add(this.settings, "zoom", 0, 10, 0.5);
-        this.gui.add(this.settings, "noiseAmp", 0, 20, 0.01);
+        this.gui.add(this.settings, "noiseAmp", 0, 2, 0.01);
         this.gui.add(this.settings, "noiseFreq", 0, 100, 0.01);
         this.gui.add(this.settings, "noiseRadius", 0, 20, 0.01);
         this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
