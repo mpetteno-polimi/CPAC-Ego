@@ -24,10 +24,9 @@ export default class MorphTargetGenerator {
     }
 
     private perlinNoiseGenerator(context) {
-        let boxGeom = new THREE.BoxGeometry( 4, 4, 0.5 );
         context.world.particles.updateMorphTarget({
             "type": 1,
-            "positions": context.sampleGeometry(boxGeom)
+            "positions": context.getCanvasPositions()
         });
     }
 
@@ -59,6 +58,21 @@ export default class MorphTargetGenerator {
                 });
             }
         );
+    }
+
+    private getCanvasPositions() {
+        let boxH = 4;
+        let boxW = 4;
+        let boxPosition = [];
+        for (let i = 0; i < Math.sqrt(this.verticesCount); i++) {
+            for (let j = 0; j < Math.sqrt(this.verticesCount); j++) {
+                let pX = i / 256 * boxW - boxW / 2;
+                let pY = j / 256 * boxH - boxH / 2;
+                let pZ = 0;
+                boxPosition.push(pX, pY, pZ, 1.);
+            }
+        }
+        return boxPosition;
     }
 
     private sampleGeometry(geometry) {

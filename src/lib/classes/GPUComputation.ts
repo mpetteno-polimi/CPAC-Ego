@@ -5,7 +5,7 @@ import * as THREE from "three";
 import {GPUComputationRenderer} from "three/examples/jsm/misc/GPUComputationRenderer";
 import fragmentParticlesPositionShader from "../shaders/gpu-computation/fragmentParticlesPositionShader.glsl";
 import fragmentParticlesVelocityShader from "../shaders/gpu-computation/fragmentParticlesVelocityShader.glsl";
-import fragmentMorphTargetMaskShader from "../shaders/gpu-computation/fragmentMorphTargetMaskShader.glsl";
+import fragmentMorphTargetPositionShader from "../shaders/gpu-computation/fragmentMorphTargetPositionShader.glsl";
 
 export default class GPUComputation {
     textureWidth: number;
@@ -27,10 +27,9 @@ export default class GPUComputation {
     /* ########################## RENDER TARGETS ############################# */
     private facePositionRenderTarget: THREE.WebGLRenderTarget;
     private morphTargetPositionRenderTarget: THREE.WebGLRenderTarget;
-    private morphTargetMaskRenderTarget: THREE.WebGLRenderTarget;
 
     /* ########################## SHADER MATERIALS ############################# */
-    private fragmentMorphTargetMaskShader: THREE.ShaderMaterial;
+    private fragmentMorphTargetPositionShader: THREE.ShaderMaterial;
 
 
     constructor(props) {
@@ -74,14 +73,13 @@ export default class GPUComputation {
     updateGenerativeMorphTarget(randomMorphTarget) {
         this.positionMorphData.image.data.set(randomMorphTarget.positions);
         this.positionMorphData.needsUpdate = true;
-        this.gpuComputationRenderer.renderTexture(this.positionMorphData, this.morphTargetPositionRenderTarget);
-        if (randomMorphTarget.type == 1) { // TODO - method to check if target type is generative
-            this.gpuComputationRenderer.doRenderTarget(this.fragmentMorphTargetMaskShader, this.morphTargetMaskRenderTarget);
-        }
+        this.fragmentMorphTargetPositionShader.uniforms.u_textureMorphTargetPosition.value = this.positionMorphData
+        this.fragmentMorphTargetPositionShader.uniforms.u_morphTargetType.value = randomMorphTarget.type;
+        this.fragmentMorphTargetPositionShader.uniformsNeedUpdate = true;
+        this.gpuComputationRenderer.doRenderTarget(this.fragmentMorphTargetPositionShader, this.morphTargetPositionRenderTarget);
         Object.values(this.variables).forEach((variable) => {
             variable.material.uniforms.u_morphTargetType.value = randomMorphTarget.type;
             variable.material.uniforms.u_textureMorphTargetPosition.value = this.morphTargetPositionRenderTarget.texture;
-            variable.material.uniforms.u_textureMorphTargetMask.value = this.morphTargetMaskRenderTarget.texture;
             variable.material.uniformsNeedUpdate = true;
         })
     }
@@ -109,23 +107,22 @@ export default class GPUComputation {
     }
 
     private initShaderMaterials() {
-        this.fragmentMorphTargetMaskShader = this.gpuComputationRenderer.createShaderMaterial(
-            fragmentMorphTargetMaskShader, this.getDefaultUniforms()
+        this.fragmentMorphTargetPositionShader = this.gpuComputationRenderer.createShaderMaterial(
+            fragmentMorphTargetPositionShader, this.getDefaultUniforms()
         );
     }
 
     private initRenderTargets() {
         this.facePositionRenderTarget = this.createRenderTarget();
         this.morphTargetPositionRenderTarget = this.createRenderTarget();
-        this.morphTargetMaskRenderTarget = this.createRenderTarget();
     }
 
     private createRenderTarget() {
         return this.gpuComputationRenderer.createRenderTarget(
             this.textureWidth,
             this.textureHeight,
-            THREE.RepeatWrapping,
-            THREE.RepeatWrapping,
+            THREE.ClampToEdgeWrapping,
+            THREE.ClampToEdgeWrapping,
             THREE.NearestFilter,
             THREE.NearestFilter
         )
@@ -168,8 +165,7 @@ export default class GPUComputation {
             u_targetMorphDuration: { value: 0 },
             u_morphTargetType: { value: 0 },
             u_textureFacePosition: { value: null },
-            u_textureMorphTargetPosition: { value: null },
-            u_textureMorphTargetMask: { value: null }
+            u_textureMorphTargetPosition: { value: null }
         }
     }
 

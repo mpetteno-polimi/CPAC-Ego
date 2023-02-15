@@ -14,6 +14,7 @@ uniform float u_noiseFreq;
 uniform float u_noiseAmp;
 uniform float u_noiseRadius;
 uniform float u_noiseSpeed;
+uniform float u_morphTargetType;
 uniform sampler2D u_particlesPosition;
 
 /* VARYINGS */
@@ -43,5 +44,6 @@ void main() {
 
     #include <begin_vertex>
     #include <project_vertex>
-    gl_PointSize = 1.5 * (1.0 / -mvPosition.z);
+
+    gl_PointSize = 2. * (1.0 / -mvPosition.z);
 }

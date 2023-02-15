@@ -36,11 +36,11 @@ export const config: AppConfig = {
             particlesCount: 256*256
         },
         loop: {
-            faceDetectionStartTime: 5,
-            faceDetectedMorphDuration: 10,
-            morphStart: 5,
-            morphDuration: 10,
-            morphEnd: 5
+            faceDetectionStartTime: 1,
+            faceDetectedMorphDuration: 1,
+            morphStart: 3,
+            morphDuration: 3,
+            morphEnd: 10
         }
     }
 }

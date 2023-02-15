@@ -5,7 +5,6 @@ import GPUComputation from "./GPUComputation";
 import vertexShader from "../shaders/particles/vertexShader.glsl";
 import fragmentShader from "../shaders/particles/fragmentShader.glsl";
 import {config} from "../../config";
-import MorphTargetGenerator from "./MorphTargetGenerator";
 
 export default class ParticleSystem {
     particles: THREE.Points<THREE.BufferGeometry, THREE.Material>;
@@ -69,6 +68,7 @@ export default class ParticleSystem {
 
     updateMorphTarget(randomMorphTarget) {
         this.gpuComputation.updateGenerativeMorphTarget(randomMorphTarget);
+        this.material.uniforms.u_morphTargetType.value = randomMorphTarget.type;
         // this.geometry.morphAttributes.position.push(targetPosition);
         // this.particles.updateMorphTargets();
     }
@@ -122,6 +122,7 @@ export default class ParticleSystem {
                 u_morphEnabled: { value: false },
                 u_faceMorphDuration: { value: config.threeJS.loop.faceDetectedMorphDuration },
                 u_targetMorphDuration: { value: config.threeJS.loop.morphDuration },
+                u_morphTargetType: { value: 0 },
                 u_particlesPosition: { value: null }
             },
             vertexShader: vertexShader,
