@@ -117,6 +117,7 @@ export default class World {
             this.settings.noiseAmp = 0.45+mod1*0.3;
             this.settings.noiseRadius = 1+mod2;
             this.settings.noiseFreq = 5+15*mod2;
+            this.camera.position.set(0, 0, this.LFO('sin', 0.1, 1.8, 3));
     
             if(!isFaceDetected && !isMorphEnabled){
             }else if(isFaceDetected && isMorphEnabled){
@@ -126,12 +127,21 @@ export default class World {
                 this.settings.noiseSpeed = 0.001+mod1*0.005+mod1*mod2*0.1;
             }else if(isFaceDetected && !isMorphEnabled){
             }
+            let audioParam1 = this.clampAndNormalize(this.bloomPass.strength, 0.2, 1.4);
+            let audioParam2 = this.clampAndNormalize(this.settings.noiseAmp, 0.45, 1.05);
+            this.musicGenerator.setAudioParams(audioParam1, audioParam2);
             return;
         }
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
         this.camera.zoom = this.settings.zoom;
+    }
+
+    clampAndNormalize(input, min, max){
+        let val = Math.min(Math.max(input, min), max);
+        val = (val - min)/(max-min);
+        return val;
     }
 
     private LFO(type, freq, min, max){
@@ -159,7 +169,7 @@ export default class World {
             config.threeJS.camera.nearPlane,
             config.threeJS.camera.farPlane
         );
-        this.camera.position.set(0, 0, 2.5);
+        //this.camera.position.set(0, 0, 2.5);
         this.camera.lookAt(0, 0, 0);
     }
 

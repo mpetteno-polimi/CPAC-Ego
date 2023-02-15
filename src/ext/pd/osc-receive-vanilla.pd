@@ -3,7 +3,7 @@
 #X obj 22 39 netreceive -u -b;
 #X obj 26 97 list trim;
 #X msg 22 13 listen 9129;
-#X obj 286 242 print;
+#X obj 280 131 print;
 #X obj 41 179 makenote 120 100;
 #X obj 51 300 noteout;
 #X obj 173 179 makenote 120 100;
@@ -25,7 +25,6 @@
 #X connect 5 0 9 0;
 #X connect 5 1 6 1;
 #X connect 7 0 8 0;
-#X connect 7 0 4 0;
 #X connect 7 0 10 0;
 #X connect 7 1 8 1;
 #X connect 9 0 12 0;
@@ -35,6 +34,7 @@
 #X connect 13 0 5 0;
 #X connect 13 1 7 0;
 #X connect 13 2 14 0;
+#X connect 13 3 4 0;
 #X connect 14 0 15 0;
 #X connect 14 0 16 0;
 #X connect 14 1 15 1;
