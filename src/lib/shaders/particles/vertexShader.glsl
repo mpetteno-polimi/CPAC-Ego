@@ -30,8 +30,7 @@ float easing(float x) {
     return pow(x, 5.);
 }
 
-vec3 getNoisedPosition() {
-    vec3 pos = texture2D(u_particlesPosition, reference).xyz;
+vec3 getNoisedPosition(vec3 pos) {
     vec3 curlPos = u_noiseAmp*curl(pos*u_noiseFreq + u_time*u_noiseSpeed);
     vec3 tar = pos + curlPos;
     float d = length(pos - tar)/u_noiseRadius;
@@ -46,7 +45,6 @@ void main() {
     vec3 faceColor = vec3(0.4, 0.8, 0.5);
     vec3 morphColor = vec3(0.5, 0.6, 0.7);
     vec3 hiddenParticleColor = vec3(0.);
-
     if (u_faceDetected) {
         if (u_morphEnabled) {
             if (display == 0.) {
@@ -70,6 +68,8 @@ void main() {
             vColor = defaultColor;
         }
     }
+
+    position = getNoisedPosition(position);
 
     #include <begin_vertex>
     #include <project_vertex>

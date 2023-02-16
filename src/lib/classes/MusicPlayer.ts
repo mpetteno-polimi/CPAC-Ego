@@ -20,6 +20,14 @@ export default class MusicPlayer {
         }
     }
 
+    startNoiseDrone(){
+        if (this.oscClient.isConnected()) {
+            this.oscClient.sendMessage("/noiseDronePlay");
+        } else {
+            this.toneJsPlayer.startNoiseDrone();
+        }
+    }
+
     startDrone() {
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage("/dronePlay", 1);

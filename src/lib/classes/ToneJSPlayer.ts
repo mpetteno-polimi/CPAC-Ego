@@ -13,6 +13,10 @@ export default class ToneJSPlayer {
 
     }
 
+    startNoiseDrone() {
+
+    }
+
     stopDrone() {
 
     }

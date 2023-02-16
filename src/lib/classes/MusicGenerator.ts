@@ -260,11 +260,6 @@ export default class MusicGenerator {
         }
     }
 
-    startNoiseDrone(){
-        this.oscClient.sendMessage("/noiseDronePlay");
-    }
-
-
     stopPlayingSequence() {
         clearTimeout(this.sequenceTimeout);
     }
