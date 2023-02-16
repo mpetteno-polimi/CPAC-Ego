@@ -18,7 +18,7 @@
         await faceMeshDetector.loadDetector();
         const faceExpressionDetector = new FaceExpressionDetector(webcam);
         await faceExpressionDetector.loadModels();
-        faceMeshDetector.detectFaces(); // call to avoid lag later
+        faceMeshDetector.detectFaces(); // call to avoid lag later see: https://github.com/google/mediapipe/issues/3123
         world = new World({
             container: container,
             video: webcam.video,

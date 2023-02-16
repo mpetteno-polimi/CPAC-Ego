@@ -57,8 +57,8 @@ export default class ParticleSystem {
                         config.threeJS.scene.triangulateFace,
                         config.threeJS.scene.faceScaleFactor
                     ]);
-                    this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 }
+                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
             } else {
                 this.world.loop.isFaceDetected = false;
                 this.world.musicGenerator.stopPlayingSequence();

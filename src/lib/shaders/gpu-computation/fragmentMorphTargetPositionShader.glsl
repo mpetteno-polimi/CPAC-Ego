@@ -33,8 +33,8 @@ void main() {
         if (pos.x > -0.75*boxW/2. && pos.x < 0.75*boxW/2. && pos.y > -0.75*boxH/2. && pos.y < 0.75*boxH/2.) {
             float d = (pow(boxW, 2.)+pow(boxH, 2.))/10.;
             float mult = map(pow(pos.x, 2.)+pow(pos.y, 2.), 0., d, 1.2, 0.);
-            float noiseScale = 0.5*u_noiseSeed;
-            float threshold = 255.*0.4;
+            float noiseScale = 0.03*u_noiseSeed;
+            float threshold = 255.*0.25;
             float noise = 255.*mult*cnoise(abs(pos.xy)*noiseScale);
             if (int(noise) < int(threshold)) {
                 mask = 0.;

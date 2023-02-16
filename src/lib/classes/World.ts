@@ -113,7 +113,7 @@ export default class World {
             this.settings.noiseAmp = 0.45+mod1*0.3;
             this.settings.noiseRadius = 1+mod2;
             this.settings.noiseFreq = 5+15*mod2;
-            this.camera.position.set(0, 0, this.LFO('sin', 0.1, 1.8, 3));
+            this.camera.position.set(0, 0, this.LFO('sin', 0.1, 2.5, 3));
     
             if(!isFaceDetected && !isMorphEnabled){
             }else if(isFaceDetected && isMorphEnabled){
