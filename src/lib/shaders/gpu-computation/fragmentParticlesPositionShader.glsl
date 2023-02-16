@@ -1,6 +1,8 @@
 /* UNIFORMS */
-uniform float u_delta;
 uniform float u_time;
+uniform float u_faceMorphElapsedTime;
+uniform float u_targetMorphElapsedTime;
+uniform float u_delta;
 uniform float u_noiseFreq;
 uniform float u_noiseAmp;
 uniform float u_noiseRadius;
@@ -12,6 +14,7 @@ uniform float u_targetMorphDuration;
 uniform float u_morphTargetType;
 uniform sampler2D u_textureFacePosition;
 uniform sampler2D u_textureMorphTargetPosition;
+uniform sampler2D u_textureInitialParticlesPosition;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -23,23 +26,25 @@ void main() {
     if (u_faceDetected) {
         vec3 facePosition = texture2D(u_textureFacePosition, uv).xyz;
         if (u_morphEnabled) {
-            if (u_time <= u_targetMorphDuration) {
-                vec3 morphPosition = texture2D(u_textureMorphTargetPosition, uv).xyz;
-                display = texture2D(u_textureMorphTargetPosition, uv).w;
-                float mixFactor = u_time/u_targetMorphDuration;
-                newPosition = mix(facePosition, morphPosition, mixFactor);
-            }
+            vec3 morphPosition = texture2D(u_textureMorphTargetPosition, uv).xyz;
+            display = texture2D(u_textureMorphTargetPosition, uv).w;
+            float mixFactor = u_targetMorphElapsedTime/u_targetMorphDuration;
+            newPosition = mix(facePosition, morphPosition, clamp(0., 1., mixFactor));
         } else {
-            if (u_time <= u_faceMorphDuration) {
-                float mixFactor = 0.02 * u_time/u_faceMorphDuration;
-                newPosition = mix(position, facePosition, mixFactor);
-            } else {
-                newPosition = facePosition;
-            }
+            float mixFactor = 0.02 * u_faceMorphElapsedTime/u_faceMorphDuration;
+            newPosition = mix(position, facePosition, clamp(mixFactor, 0., 1.));
         }
     } else {
-        float evolvRate = u_delta*0.6;
-        newPosition = position + velocity*evolvRate;
+        if (u_time <= 2.) {
+            display = texture2D(u_textureMorphTargetPosition, uv).w;
+            vec3 morphPosition = texture2D(u_textureMorphTargetPosition, uv).xyz;
+            vec3 initPositions = texture2D(u_textureInitialParticlesPosition, uv).xyz;
+            float mixFactor = u_time/2.;
+            newPosition = mix(morphPosition, initPositions, mixFactor);
+        } else {
+            float evolvRate = 0.002;
+            newPosition = position + velocity*evolvRate;
+        }
     }
 
     gl_FragColor = vec4(newPosition, display);

@@ -73,9 +73,12 @@ export default class ParticleSystem {
         // this.particles.updateMorphTargets();
     }
 
-    updateUniforms(elapsedTime: number, delta: number) {
+    updateUniforms(globalElapsedTime: number, faceMorphElapsedTime: number, targetMorphElapsedTime: number,
+                   delta: number) {
         this.gpuComputation.compute({
-            "elapsedTime": elapsedTime,
+            "globalElapsedTime": globalElapsedTime,
+            "faceMorphElapsedTime": faceMorphElapsedTime,
+            "targetMorphElapsedTime": targetMorphElapsedTime,
             "delta": Math.min(delta, 0.5),
             "isFaceDetected": this.world.loop.isFaceDetected,
             "isMorphEnabled": this.world.loop.isMorphEnabled,
@@ -86,8 +89,10 @@ export default class ParticleSystem {
             "noiseRadius": this.world.settings.noiseRadius,
             "noiseSpeed": this.world.settings.noiseSpeed
         });
+        this.material.uniforms.u_time.value = globalElapsedTime;
+        this.material.uniforms.u_faceMorphElapsedTime.value = faceMorphElapsedTime;
+        this.material.uniforms.u_targetMorphElapsedTime.value = targetMorphElapsedTime;
         this.material.uniforms.u_delta.value = Math.min(delta, 0.5);
-        this.material.uniforms.u_time.value = elapsedTime;
         this.material.uniforms.u_noiseFreq.value = this.world.settings.noiseFreq;
         this.material.uniforms.u_noiseAmp.value = this.world.settings.noiseAmp;
         this.material.uniforms.u_noiseRadius.value = this.world.settings.noiseRadius;
@@ -111,8 +116,10 @@ export default class ParticleSystem {
             },
             side: THREE.DoubleSide,
             uniforms: {
-                u_delta: { value: 0 },
                 u_time: { value: 0 },
+                u_faceMorphElapsedTime: { value: 0 },
+                u_targetMorphElapsedTime: { value: 0 },
+                u_delta: { value: 0 },
                 u_resolution: { value: new THREE.Vector2() },
                 u_noiseFreq: { value: 0 },
                 u_noiseAmp: { value: 0 },

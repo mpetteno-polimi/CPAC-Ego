@@ -13,6 +13,10 @@ export const config: AppConfig = {
             staticImageMode: false
         }
     },
+    morphTargetGenerator: {
+        canvasWidth: 4,
+        canvasHeight: 4
+    },
     music: {
         generator: {
             bassEnabled: true
@@ -36,11 +40,11 @@ export const config: AppConfig = {
             particlesCount: 256*256
         },
         loop: {
-            faceDetectionStartTime: 1,
-            faceDetectedMorphDuration: 1,
-            morphStart: 3,
-            morphDuration: 3,
-            morphEnd: 10
+            faceDetectionStartTime: 8,
+            faceDetectedMorphDuration: 10,
+            morphStart: 5,
+            morphDuration: 15,
+            morphEnd: 5
         }
     }
 }

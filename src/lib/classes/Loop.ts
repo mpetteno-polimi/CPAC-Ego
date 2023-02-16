@@ -47,19 +47,18 @@ export default class Loop {
     }
 
     render(elapsedTime: number, delta: number) {
-        //console.log("Global", elapsedTime)
+        let morphElapsedTimes = [elapsedTime, 0, 0];
         if (elapsedTime > config.threeJS.loop.faceDetectionStartTime) {
             if (this.isFaceDetected) {
-                this.handleMorphAnimation()
+                morphElapsedTimes = this.handleMorphAnimation(elapsedTime);
             } else {
                 this.world.particles.detectFaces();
-                this.currentUniformTime = elapsedTime;
             }
-        } else {
-            this.currentUniformTime = elapsedTime;
         }
-        //console.log("Uniform", this.currentUniformTime)
-        this.world.particles.updateUniforms(this.currentUniformTime, delta);
+        // console.log("Global", morphElapsedTimes[0]);
+        // console.log("Face", morphElapsedTimes[1]);
+        // console.log("Morph", morphElapsedTimes[2]);
+        this.world.particles.updateUniforms(morphElapsedTimes[0], morphElapsedTimes[1], morphElapsedTimes[2], delta);
         this.world.updateSettings();
         this.world.controls.update();
         //this.world.renderer.render(this.scene, this.camera);
@@ -71,33 +70,32 @@ export default class Loop {
         this.faceDetectedStartTime = this.faceDetectedClock.getElapsedTime();
     }
 
-    private handleMorphAnimation() {
+    private handleMorphAnimation(elapsedTime: number) {
         let faceDetectedElapsedTime = this.faceDetectedClock.getElapsedTime();
-        //console.log("Face", faceDetectedElapsedTime)
+        let morphElapsedTime = 0;
         if (faceDetectedElapsedTime > config.threeJS.loop.faceDetectedMorphDuration) {
-            let morphElapsedTime = this.morphClock.getElapsedTime();
-            //console.log("Morph", morphElapsedTime)
+            morphElapsedTime = this.morphClock.getElapsedTime();
             if (!this.isMorphEnabled) {
                 if (morphElapsedTime > config.threeJS.loop.morphStart) {
                     this.morphStartTime = morphElapsedTime;
+                    morphElapsedTime = 0;
                     this.isMorphEnabled = true;
-                    this.currentUniformTime = 0;
-                } else {
-                    this.currentUniformTime = morphElapsedTime;
                 }
             } else {
                 let morphProgressTime = morphElapsedTime - this.morphStartTime;
                 if (morphProgressTime > config.threeJS.loop.morphDuration) {
                     if (morphProgressTime > config.threeJS.loop.morphDuration + config.threeJS.loop.morphEnd) {
                         this.init();
+                        return [0, 0, 0];
+                    } else {
+                        morphElapsedTime = morphProgressTime;
                     }
                 } else {
-                    this.currentUniformTime = morphProgressTime;
+                    morphElapsedTime = morphProgressTime;
                 }
             }
-        } else {
-            this.currentUniformTime = faceDetectedElapsedTime;
         }
+        return [elapsedTime, faceDetectedElapsedTime, morphElapsedTime]
     }
 
 }

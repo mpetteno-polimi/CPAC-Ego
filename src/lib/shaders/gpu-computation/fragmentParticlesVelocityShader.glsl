@@ -1,8 +1,10 @@
 #include "/src/ext/glsl/lygia/generative/curl.glsl"
 
 /* UNIFORMS */
-uniform float u_delta;
 uniform float u_time;
+uniform float u_faceMorphElapsedTime;
+uniform float u_targetMorphElapsedTime;
+uniform float u_delta;
 uniform float u_noiseFreq;
 uniform float u_noiseAmp;
 uniform float u_noiseRadius;
@@ -23,21 +25,24 @@ const float CURL_RADIUS = 0.5;
 
 void main() {
 
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    vec3 position = texture2D(textureParticlesPosition, uv).xyz;
-    vec3 velocity = texture2D(textureParticlesVelocity, uv).xyz;
+    vec3 newVelocity = vec3(1.);
+    if (u_time > 2.) {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec3 position = texture2D(textureParticlesPosition, uv).xyz;
+        vec3 velocity = texture2D(textureParticlesVelocity, uv).xyz;
 
-    float distance = length(position);
+        float distance = length(position);
 
-    // Calculate curl noise flow field
-    float curlForce = min(distance, CURL_RADIUS) / CURL_RADIUS;
-    vec3 curlVelocity = curl(position) - velocity;
+        // Calculate curl noise flow field
+        float curlForce = min(distance, CURL_RADIUS) / CURL_RADIUS;
+        vec3 curlVelocity = curl(position) - velocity;
 
-    // Calculate gravitational pull
-    float pullForce = abs((CENTER_MASS * PARTICLE_MASS) / pow(distance, 2.));
-    vec3 pull = min(pullForce, VELOCITY_TERMINAL) * -normalize(position);
+        // Calculate gravitational pull
+        float pullForce = abs((CENTER_MASS * PARTICLE_MASS) / pow(distance, 2.));
+        vec3 pull = min(pullForce, VELOCITY_TERMINAL) * -normalize(position);
 
-    vec3 newVelocity = velocity + curlVelocity * curlForce + pull * 16.0;
+        newVelocity = velocity + curlVelocity * curlForce + pull * 16.0;
+    }
 
     gl_FragColor = vec4(newVelocity, 1.0);
 }

@@ -16,6 +16,7 @@
         await faceMeshDetector.loadDetector();
         const faceExpressionDetector = new FaceExpressionDetector(webcam);
         await faceExpressionDetector.loadModels();
+        faceMeshDetector.detectFaces(); // call to avoid lag later
         world = new World({
             container: container,
             video: webcam.video,

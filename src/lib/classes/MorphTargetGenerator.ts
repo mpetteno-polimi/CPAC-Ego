@@ -3,6 +3,7 @@ import type World from "./World";
 import * as THREE from 'three';
 import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader";
 import {MeshSurfaceSampler} from "three/examples/jsm/math/MeshSurfaceSampler";
+import {config} from "../../config";
 
 export default class MorphTargetGenerator {
 
@@ -11,6 +12,8 @@ export default class MorphTargetGenerator {
     private readonly generators: any[];
 
     private SVG_PATHS = ["/images/Inkblot.svg"];
+    private CANVAS_HEIGHT = config.morphTargetGenerator.canvasHeight;
+    private CANVAS_WIDTH = config.morphTargetGenerator.canvasWidth;
 
     constructor(world: World) {
         this.world = world;
@@ -20,13 +23,16 @@ export default class MorphTargetGenerator {
 
     getRandomMorphTarget() {
         let randomGeneratorIndex = Math.floor(Math.random()*this.generators.length);
-        this.perlinNoiseGenerator(this);
+        this.generators[randomGeneratorIndex](this);
     }
 
     private perlinNoiseGenerator(context) {
         context.world.particles.updateMorphTarget({
             "type": 1,
-            "positions": context.getCanvasPositions()
+            "positions": context.getCanvasPositions(context),
+            "canvasWidth": context.CANVAS_WIDTH,
+            "canvasHeight": context.CANVAS_HEIGHT,
+            "noiseSeed": Math.random()*context.world.particles.textureHeight
         });
     }
 
@@ -60,14 +66,12 @@ export default class MorphTargetGenerator {
         );
     }
 
-    private getCanvasPositions() {
-        let boxH = 4;
-        let boxW = 4;
+    private getCanvasPositions(context) {
         let boxPosition = [];
-        for (let i = 0; i < Math.sqrt(this.verticesCount); i++) {
-            for (let j = 0; j < Math.sqrt(this.verticesCount); j++) {
-                let pX = i / 256 * boxW - boxW / 2;
-                let pY = j / 256 * boxH - boxH / 2;
+        for (let i = 0; i < context.world.particles.textureWidth; i++) {
+            for (let j = 0; j < context.world.particles.textureHeight; j++) {
+                let pX = i / context.world.particles.textureWidth * context.CANVAS_WIDTH - context.CANVAS_WIDTH / 2;
+                let pY = j / context.world.particles.textureHeight * context.CANVAS_HEIGHT - context.CANVAS_HEIGHT / 2;
                 let pZ = 0;
                 boxPosition.push(pX, pY, pZ, 1.);
             }

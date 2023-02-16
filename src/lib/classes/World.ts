@@ -85,10 +85,6 @@ export default class World {
         this.resize();
     }
 
-    morph() {
-        this.loop.morphAnimationEnabled = true;
-    }
-
     start() {
         this.loop.start();
         this.musicGenerator.newFace();
