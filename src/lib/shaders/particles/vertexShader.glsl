@@ -69,8 +69,6 @@ void main() {
         }
     }
 
-    position = getNoisedPosition(position);
-
     #include <begin_vertex>
     #include <project_vertex>
 
