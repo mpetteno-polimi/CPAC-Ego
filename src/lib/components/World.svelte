@@ -1,10 +1,12 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import FaceMeshDetector from "./lib/classes/FaceMeshDetector";
-    import FaceExpressionDetector from "./lib/classes/FaceExpressionDetector";
-    import Webcam from "./lib/classes/Webcam";
-    import World from "./lib/classes/World";
-    import MusicGenerator from "./lib/classes/MusicGenerator";
+    import {fade} from 'svelte/transition';
+    import {config} from "../../config.js";
+    import FaceMeshDetector from "../classes/FaceMeshDetector";
+    import FaceExpressionDetector from "../classes/FaceExpressionDetector";
+    import Webcam from "../classes/Webcam";
+    import World from "../classes/World";
+    import MusicGenerator from "../classes/MusicGenerator";
 
     let container, video, world;
 
@@ -29,17 +31,20 @@
 </script>
 
 <svelte:window on:resize={world.resize()} />
-<main bind:this={container}>
+<world bind:this={container} in:fade={config.world.transition.in}>
     <video bind:this={video} id="video" autoplay>
         <track kind="captions">
     </video>
-</main>
+</world>
 
 <style>
-    main {
-        position: fixed;
-        width: 100%;
-        height: 100%;
+
+    world {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
     }
 
     video {
@@ -50,9 +55,4 @@
         transform:translate(-50%, -50%);
     }
 
-    button {
-        width: 100px;
-        height: 50px;
-        z-index: 1000000;
-    }
 </style>

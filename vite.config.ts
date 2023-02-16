@@ -7,6 +7,6 @@ export default defineConfig({
     server: {
         hmr: false
     },
-    base: '/CPAC-Project/',
+    base: '/CPAC-Ego/',
     plugins: [svelte(), glsl()]
 })

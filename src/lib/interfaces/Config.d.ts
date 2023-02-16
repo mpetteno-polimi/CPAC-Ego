@@ -2,11 +2,34 @@ import type {MediaPipeFaceMeshMediaPipeModelConfig} from "@tensorflow-models/fac
 import type {MediaPipeFaceMeshEstimationConfig} from "@tensorflow-models/face-landmarks-detection/dist/mediapipe/types";
 
 type AppConfig = {
+    splashScreen: SplashScreenConfig
+    world: WorldConfig
     faceMesh: FaceMeshConfig
     morphTargetGenerator: MorphTargetGeneratorConfig
     music: MusicConfig
     webcam: WebcamConfig
     threeJS: ThreeJSConfig
+}
+
+type SplashScreenConfig = {
+    title: string
+    subtitle: string
+    transition: TransitionConfig
+}
+
+type WorldConfig = {
+    transition: TransitionConfig
+}
+
+type TransitionConfig = {
+    in: {
+        delay: number,
+        duration: number
+    },
+    out: {
+        delay: number,
+        duration: number
+    }
 }
 
 type FaceMeshConfig = {
