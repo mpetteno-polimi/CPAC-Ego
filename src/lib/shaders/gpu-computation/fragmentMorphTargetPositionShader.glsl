@@ -34,7 +34,7 @@ void main() {
             float d = (pow(boxW, 2.)+pow(boxH, 2.))/10.;
             float mult = map(pow(pos.x, 2.)+pow(pos.y, 2.), 0., d, 1.2, 0.);
             float noiseScale = 0.03*u_noiseSeed;
-            float threshold = 255.*0.25;
+            float threshold = 255.*0.1;
             float noise = 255.*mult*cnoise(abs(pos.xy)*noiseScale);
             if (int(noise) < int(threshold)) {
                 mask = 0.;

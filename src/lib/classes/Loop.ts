@@ -57,6 +57,7 @@ export default class Loop {
         // console.log("Global", morphElapsedTimes[0]);
         // console.log("Face", morphElapsedTimes[1]);
         // console.log("Morph", morphElapsedTimes[2]);
+        if(this.isFaceDetected) this.world.particles.detectFaceForMusicGenerator();
         this.world.particles.updateUniforms(morphElapsedTimes[0], morphElapsedTimes[1], morphElapsedTimes[2], delta);
         this.world.updateSettings(this.isFaceDetected, this.isMorphEnabled);
         this.world.controls.update();

@@ -48,6 +48,7 @@ export default class ParticleSystem {
         this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
             if (estimatedFaces.length != 0) {
                 let estimatedFace = estimatedFaces[0];
+                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 if (this.isFaceToUpdate()) {
                     this.isProcessingFace = true;
                     this.faceFlattener.postMessage([
@@ -58,12 +59,20 @@ export default class ParticleSystem {
                         config.threeJS.scene.faceScaleFactor
                     ]);
                 }
-                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
             } else {
                 this.world.loop.isFaceDetected = false;
                 this.world.musicGenerator.stopPlayingSequence();
             }
         });
+    }
+
+    detectFaceForMusicGenerator(){
+        this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
+            if (estimatedFaces.length != 0) {
+                let estimatedFace = estimatedFaces[0];
+                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
+            }
+        })
     }
 
     updateMorphTarget(randomMorphTarget) {
@@ -169,8 +178,9 @@ export default class ParticleSystem {
                 let detection = estimatedExpression[0];
                 if (detection) this.world.musicGenerator.setSentiment(detection.expressions);
             });
-            this.world.musicGenerator.startPlayingSequence();
+            this.world.musicGenerator.stopPlayingSequence();
             this.world.musicGenerator.newFace();
+            this.world.musicGenerator.startPlayingSequence();
         }
     }
 
