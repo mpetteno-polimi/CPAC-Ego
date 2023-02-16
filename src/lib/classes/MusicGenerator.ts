@@ -253,7 +253,6 @@ export default class MusicGenerator {
             if((baseNoteIndex + 2*i) > 6) note+=12;
             note += baseNoteOffset;
             this.oscClient.sendMessage('/chord', note);
-            console.log("playing chord note", note)
         }
     }
 
@@ -263,6 +262,10 @@ export default class MusicGenerator {
 
     startDrone() {
         this.oscClient.sendMessage("/dronePlay", 1);
+    }
+    
+    startNoiseDrone(){
+        this.oscClient.sendMessage("/noiseDronePlay");
     }
 
     stopDrone() {
@@ -326,7 +329,9 @@ export default class MusicGenerator {
         this.baseNote = 36 + Math.floor(Math.random()*4)*12;
         this.bassChance = Math.random()*0.1;
         this.bassDistance = Math.floor(Math.random()*2)*12;
-        this.bpmMax = Math.random()*40;
+        if(Math.random()<0.3){
+            this.bpmMax = Math.random()*20;
+        }else{ this.bpmMax = Math.random()*40; }
         this.chordChance = Math.random()*0.07;
         Math.random() < 0.5 ? this.chordsEnabled = true : this.chordsEnabled = false;
         Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
