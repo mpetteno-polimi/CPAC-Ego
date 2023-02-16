@@ -2,18 +2,18 @@ import type {MediaPipeFaceMeshMediaPipeModelConfig} from "@tensorflow-models/fac
 import type {MediaPipeFaceMeshEstimationConfig} from "@tensorflow-models/face-landmarks-detection/dist/mediapipe/types";
 
 type AppConfig = {
-    splashScreen: SplashScreenConfig
-    world: WorldConfig
-    faceMesh: FaceMeshConfig
-    morphTargetGenerator: MorphTargetGeneratorConfig
-    music: MusicConfig
-    webcam: WebcamConfig
+    splashScreen: SplashScreenConfig,
+    world: WorldConfig,
+    faceMesh: FaceMeshConfig,
+    morphTargetGenerator: MorphTargetGeneratorConfig,
+    music: MusicConfig,
+    webcam: WebcamConfig,
     threeJS: ThreeJSConfig
 }
 
 type SplashScreenConfig = {
-    title: string
-    subtitle: string
+    title: string,
+    subtitle: string,
     transition: TransitionConfig
 }
 
@@ -63,10 +63,10 @@ type ThreeJSConfig = {
 }
 
 type SceneConfig = {
-    backgroundColor: number
+    backgroundColor: number,
     faceScaleFactor: number,
-    triangulateFace: boolean
-    particlesCount: number
+    triangulateFace: boolean,
+    particlesCount: number,
     automateParameters: boolean
 }
 

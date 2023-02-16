@@ -104,48 +104,22 @@ export default class World {
         this.camera.updateProjectionMatrix();
     }
 
-    updateSettings(isFaceDetected, isMorphEnabled) {
-        if(config.threeJS.scene.automateParameters){
-            let mod1 = this.LFO('sin', 0.07, 0, 1)
-            let mod2 = this.LFO('sin', 0.23, 0, 1)
-            this.bloomPass.strength = this.LFO('sin', 0.13, 0.2, 0.2+mod2);
-            this.bloomPass.radius = 0.1+mod1;
-            this.settings.noiseAmp = 0.45+mod1*0.3;
-            this.settings.noiseRadius = 1+mod2;
-            this.settings.noiseFreq = 5+15*mod2;
-            this.camera.position.set(0, 0, this.LFO('sin', 0.1, 2.5, 3));
-    
-            if(!isFaceDetected && !isMorphEnabled){
-            }else if(isFaceDetected && isMorphEnabled){
-                this.settings.noiseAmp += mod2*0.3;
-                this.bloomPass.strength += mod2*0.2;
-                this.bloomPass.radius += mod1*0.5;
-                this.settings.noiseSpeed = 0.001+mod1*0.005+mod1*mod2*0.1;
-            }else if(isFaceDetected && !isMorphEnabled){
-            }
-            let audioParam1 = this.clampAndNormalize(this.bloomPass.strength, 0.2, 1.4);
-            let audioParam2 = this.clampAndNormalize(this.settings.noiseAmp, 0.45, 1.05);
-            this.musicGenerator.setAudioParams(audioParam1, audioParam2);
-            return;
+    updateParameters(parameters) {
+        if (config.threeJS.scene.automateParameters) {
+            this.bloomPass.radius = parameters.bloomRadius;
+            this.settings.noiseAmp = parameters.noiseAmp;
+            this.settings.noiseRadius = parameters.noiseRadius;
+            this.settings.noiseFreq = parameters.noiseFreq;
+            this.camera.position.set(0, 0, parameters.cameraDistance);
+            this.musicGenerator.setAudioParams(parameters.audioParam1, parameters.audioParam2);
         }
+    }
+
+    updateSettings() {
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
         this.camera.zoom = this.settings.zoom;
-    }
-
-    clampAndNormalize(input, min, max){
-        let val = Math.min(Math.max(input, min), max);
-        val = (val - min)/(max-min);
-        return val;
-    }
-
-    private LFO(type, freq, min, max){
-        let millis = Date.now()/1000.0;
-        switch(type){
-            case 'sin':
-                return min + (0.5+Math.sin(freq*millis)/2)*(max-min);
-        }
     }
 
     private addCamera() {
