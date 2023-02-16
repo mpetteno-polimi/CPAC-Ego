@@ -11,6 +11,9 @@ import OSCClient from "./OSCClient";
 import {config} from "../../config";
 
 export default class MusicGenerator {
+    param1 = 0.5;
+    param2 = 0.5;
+    param3 = 0.5;
     NoteGenerationMarkovOrder = 2;
     noteMarkovTable = [];
     scales = {
@@ -187,6 +190,7 @@ export default class MusicGenerator {
         this.scale = this.scales[sentiment];
         // if the scale is different, adapt sequence to new scale
         if(oldScale!=this.scale){ this.adaptArpeggioToNewScale() }
+        this.param3 = maxConfidences;
         console.log(sentiment)
     }
 
@@ -323,8 +327,17 @@ export default class MusicGenerator {
         this.bassChance = Math.random()*0.1;
         this.bassDistance = Math.floor(Math.random()*2)*12;
         this.bpmMax = Math.random()*40;
-        this.chordChance = Math.random()*0.1;
+        this.chordChance = Math.random()*0.07;
         Math.random() < 0.5 ? this.chordsEnabled = true : this.chordsEnabled = false;
         Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
+    }
+
+    public setAudioParams(p1, p2){
+        this.param1 = p1;
+        this.param2 = p2;
+
+        this.oscClient.sendMessage('/param1', this.param1);
+        this.oscClient.sendMessage('/param2', this.param2);
+        this.oscClient.sendMessage('/param3', this.param3);
     }
 }

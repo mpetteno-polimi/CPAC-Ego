@@ -44,6 +44,7 @@ type SceneConfig = {
     faceScaleFactor: number,
     triangulateFace: boolean
     particlesCount: number
+    automateParameters: boolean
 }
 
 type CameraConfig = {

@@ -12,7 +12,6 @@ export default class Loop {
     isFaceDetectionEnabled: boolean
     isFaceDetected:  boolean;
     isMorphEnabled: boolean;
-    private currentUniformTime: number;
     private morphStartTime: number;
     private faceDetectedStartTime: number;
 
