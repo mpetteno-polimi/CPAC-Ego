@@ -1,10 +1,22 @@
 <script lang="ts">
     import World from "./lib/components/World.svelte";
     import SplashScreen from "./lib/components/SplashScreen.svelte";
+    import * as Tone from 'tone'
+
 
     let started = false;
 
-    function init() {
+    async function init() {
+        await startAudioContext();
+        started = true;
+    }
+
+    async function startAudioContext() {
+        try {
+            await Tone.start();
+        } catch (error) {
+            console.log("Unable to start Audio Context");
+        }
         started = true;
     }
 

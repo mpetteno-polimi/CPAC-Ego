@@ -9,6 +9,7 @@ A markov chain of order 1 controls the duration of the notes.
 import type {Face} from "@tensorflow-models/face-landmarks-detection";
 import OSCClient from "./OSCClient";
 import {config} from "../../config";
+import MusicPlayer from "./MusicPlayer";
 
 export default class MusicGenerator {
     param1 = 0.5;
@@ -53,12 +54,12 @@ export default class MusicGenerator {
     bassDistance = 24;
     higherOctave = false;
     chordsEnabled = false;
-    private oscClient: OSCClient;
+    private musicPlayer: MusicPlayer;
     private bassEnabled: boolean;
     private sequenceTimeout: NodeJS.Timeout;
 
     constructor() {
-        this.oscClient = new OSCClient();
+        this.musicPlayer = new MusicPlayer();
         this.noteMarkovTable = new Array(Math.pow(7, this.NoteGenerationMarkovOrder));
         for (let i = 0; i < this.noteMarkovTable.length; i++) {
             this.noteMarkovTable[i] = new Array(7);
@@ -232,9 +233,12 @@ export default class MusicGenerator {
         let note = this.forwardSequence();
         let thisRef = this;
         this.sequenceTimeout = setTimeout(function(){thisRef.startPlayingSequence()}, note['duration']);
-        this.playNote(note['note']);
+        this.musicPlayer.playNote(note['note']);
         // bass
-        if (Math.random() < this.bassChance) { let n = 24+this.bassDistance+(note['note']%12); this.playBass(n);};
+        if (Math.random() < this.bassChance) {
+            let n = 24+this.bassDistance+(note['note']%12);
+            this.musicPlayer.playBass(n);
+        }
         // chords
         if(this.chordsEnabled && Math.random()<this.chordChance){
             this.playChord();
@@ -252,8 +256,7 @@ export default class MusicGenerator {
             let note = this.scale[noteIndex] + this.baseNote;
             if((baseNoteIndex + 2*i) > 6) note+=12;
             note += baseNoteOffset;
-            this.oscClient.sendMessage('/chord', note);
-            console.log("playing chord note", note)
+            this.musicPlayer.playChord(note);
         }
     }
 
@@ -261,21 +264,6 @@ export default class MusicGenerator {
         clearTimeout(this.sequenceTimeout);
     }
 
-    startDrone() {
-        this.oscClient.sendMessage("/dronePlay", 1);
-    }
-
-    stopDrone() {
-        this.oscClient.sendMessage("/dronePlay", 0);
-    }
-
-    playNote(note) {
-        this.oscClient.sendMessage('/note', note);
-    }
-
-    playBass(note) {
-        if (this.bassEnabled) this.oscClient.sendMessage('/bass', note);
-    }
 
     private processFaceLandmarks(data) {
         let flattenedData = this.flattenFaceData(data);
@@ -335,9 +323,6 @@ export default class MusicGenerator {
     public setAudioParams(p1, p2){
         this.param1 = p1;
         this.param2 = p2;
-
-        this.oscClient.sendMessage('/param1', this.param1);
-        this.oscClient.sendMessage('/param2', this.param2);
-        this.oscClient.sendMessage('/param3', this.param3);
+        this.musicPlayer.setAudioParams(this.param1, this.param2, this.param3);
     }
 }
