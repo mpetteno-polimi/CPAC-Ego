@@ -1,21 +1,28 @@
 <script>
     import {fade} from 'svelte/transition';
-    import {createEventDispatcher} from "svelte";
+    import {createEventDispatcher, onMount} from "svelte";
     import {config} from "../../config";
+    import SplashScreen from "../classes/SplashScreen";
+
+    let container, splashScreen;
 
     /* -- Event dispatcher -- */
     const dispatch = createEventDispatcher();
+
+    onMount(() => {
+        splashScreen = new SplashScreen({
+            container: container
+        });
+        splashScreen.start();
+    })
 
     function dispatchInteractionEvent() {
         dispatch("interaction");
     }
 </script>
 
-<svelte:window on:click={dispatchInteractionEvent} on:keydown={dispatchInteractionEvent} />
-<splash-screen out:fade={config.splashScreen.transition.out}>
-    <h1>{config.splashScreen.title}</h1>
-    <h2>{config.splashScreen.subtitle}</h2>
-</splash-screen>
+<svelte:window on:resize={splashScreen.resize()} on:click={dispatchInteractionEvent} on:keydown={dispatchInteractionEvent} />
+<splash-screen bind:this={container} out:fade={config.splashScreen.transition.out}></splash-screen>
 
 <style>
 
@@ -31,18 +38,6 @@
         right: 0;
         margin: auto;
         background-color: black;
-    }
-
-    h1 {
-        color: whitesmoke;
-        margin: 10px 0;
-        font-size: 50px;
-    }
-
-    h2 {
-        color: whitesmoke;
-        margin: 10px 0;
-        font-size: 25px;
     }
 
 </style>
