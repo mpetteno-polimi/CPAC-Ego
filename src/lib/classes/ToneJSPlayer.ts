@@ -29,7 +29,7 @@ export default class ToneJSPlayer {
 
     }
 
-    setAudioParams(p1, p2, p3) {
+    setAudioParams(p1, p2, p3, p4) {
 
     }
 

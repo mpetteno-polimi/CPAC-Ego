@@ -60,13 +60,14 @@ export default class MusicPlayer {
         }
     }
 
-    setAudioParams(p1, p2, p3) {
+    setAudioParams(p1, p2, p3, p4) {
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/param1', p1);
             this.oscClient.sendMessage('/param2', p2);
             this.oscClient.sendMessage('/param3', p3);
+            this.oscClient.sendMessage('/param4', p4);
         } else {
-            this.toneJsPlayer.setAudioParams(p1, p2, p3);
+            this.toneJsPlayer.setAudioParams(p1, p2, p3, p4);
         }
     }
 
