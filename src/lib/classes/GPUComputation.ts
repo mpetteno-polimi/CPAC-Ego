@@ -179,6 +179,7 @@ export default class GPUComputation {
             u_noiseAmp: { value: 0 },
             u_noiseRadius: { value: 0 },
             u_noiseSpeed: { value: 0 },
+            u_noiseType: { value: 0 },
             u_faceDetected: { value: false },
             u_morphEnabled: { value: false },
             u_faceMorphDuration: { value: 0 },
@@ -200,6 +201,7 @@ export default class GPUComputation {
             variable.material.uniforms.u_noiseAmp.value = options["noiseAmp"];
             variable.material.uniforms.u_noiseSpeed.value = options["noiseSpeed"];
             variable.material.uniforms.u_noiseRadius.value = options["noiseRadius"];
+            variable.material.uniforms.u_noiseType.value = options["noiseType"];
             variable.material.uniforms.u_faceDetected.value = options["isFaceDetected"];
             variable.material.uniforms.u_morphEnabled.value = options["isMorphEnabled"];
             variable.material.uniforms.u_faceMorphDuration.value = options["faceMorphDuration"];

@@ -39,12 +39,12 @@ export default class World {
         bloomRadius: number,
         bloomThreshold: number,
         bloomStrength: number,
-        distortion: number,
-        zoom: number,
+        cameraDistance: number,
         noiseFreq: number,
         noiseAmp: number,
         noiseRadius: number,
-        noiseSpeed: number
+        noiseSpeed: number,
+        noiseType: number
     };
 
     constructor(options) {
@@ -57,15 +57,15 @@ export default class World {
             videoHeight: this.videoInput.height
         };
         this.settings = {
-            distortion: 0,
             bloomRadius: 0,
             bloomThreshold: 0,
             bloomStrength: 0,
-            zoom: 1,
+            cameraDistance: 2.5,
             noiseFreq: 15,
             noiseAmp: 0.3,
             noiseRadius: 1,
-            noiseSpeed: 3
+            noiseSpeed: 3,
+            noiseType: 4
         };
         this.faceMeshDetector = options.faceMeshDetector;
         this.faceExpressionDetector = options.faceExpressionDetector;
@@ -106,11 +106,14 @@ export default class World {
 
     updateParameters(parameters) {
         if (config.threeJS.scene.automateParameters) {
-            this.bloomPass.radius = parameters.bloomRadius;
+            this.settings.bloomThreshold = parameters.bloomThreshold;
+            this.settings.bloomStrength = parameters.bloomStrength;
+            this.settings.bloomRadius = parameters.bloomRadius;
             this.settings.noiseAmp = parameters.noiseAmp;
             this.settings.noiseRadius = parameters.noiseRadius;
             this.settings.noiseFreq = parameters.noiseFreq;
-            this.camera.position.set(0, 0, parameters.cameraDistance);
+            this.settings.noiseType = parameters.noiseType;
+            this.settings.cameraDistance = parameters.cameraDistance;
             this.musicGenerator.setAudioParams(parameters.audioParam1, parameters.audioParam2);
         }
     }
@@ -119,7 +122,7 @@ export default class World {
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
-        this.camera.zoom = this.settings.zoom;
+        this.camera.position.set(0, 0, this.settings.cameraDistance);
     }
 
     private addCamera() {
@@ -169,15 +172,15 @@ export default class World {
 
     private addGUI() {
         this.gui = new dat.GUI();
-        this.gui.add(this.settings, "distortion", 0, 3, 0.01);
         this.gui.add(this.settings, "bloomThreshold", 0, 10, 0.01);
         this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
         this.gui.add(this.settings, "bloomRadius", 0, 10, 0.01);
-        this.gui.add(this.settings, "zoom", 0, 10, 0.5);
         this.gui.add(this.settings, "noiseAmp", 0, 2, 0.01);
         this.gui.add(this.settings, "noiseFreq", 0, 100, 0.01);
         this.gui.add(this.settings, "noiseRadius", 0, 20, 0.01);
         this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
+        this.gui.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
+        this.gui.add(this.settings, "cameraDistance", 0, 10, 0.5);
     }
 
     private addPostProcessing() {

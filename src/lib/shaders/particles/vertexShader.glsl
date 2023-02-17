@@ -1,7 +1,10 @@
-#include "/src/ext/glsl/lygia/generative/curl.glsl"
 #include "/src/ext/glsl/lygia/generative/cnoise.glsl"
-
-#define PI 3.1415926538
+#include "/src/ext/glsl/lygia/generative/pnoise.glsl"
+#include "/src/ext/glsl/lygia/generative/snoise.glsl"
+#include "/src/ext/glsl/lygia/generative/psrdnoise.glsl"
+#include "/src/ext/glsl/lygia/generative/curl.glsl"
+#include "/src/ext/glsl/lygia/generative/voronoi.glsl"
+#include "/src/ext/glsl/lygia/generative/worley.glsl"
 
 /* ATTRIBUTES */
 attribute vec2 reference;
@@ -15,6 +18,7 @@ uniform float u_resolution;
 uniform float u_noiseFreq;
 uniform float u_noiseAmp;
 uniform float u_noiseRadius;
+uniform int u_noiseType;
 uniform float u_noiseSpeed;
 uniform bool u_faceDetected;
 uniform bool u_morphEnabled;
@@ -24,52 +28,68 @@ uniform float u_morphTargetType;
 uniform sampler2D u_particlesPosition;
 
 /* VARYINGS */
-varying vec3 vColor;
+varying float display;
+
 
 float easing(float x) {
     return pow(x, 5.);
 }
 
 vec3 getNoisedPosition(vec3 pos) {
-    vec3 curlPos = u_noiseAmp*curl(pos*u_noiseFreq + u_time*u_noiseSpeed);
-    vec3 tar = pos + curlPos;
+
+    vec3 noise, period;
+    float noiseX, noiseY, noiseZ;
+    vec3 noiseInput = pos*u_noiseFreq + u_time*u_noiseSpeed;
+    switch (u_noiseType) {
+        case 0:
+            noiseX = cnoise(noiseInput);
+            noiseY = cnoise(noiseInput);
+            noiseZ = cnoise(noiseInput);
+            noise = vec3(noiseX, noiseY, noiseZ);
+            break;
+        case 1:
+            period = vec3(2.);
+            noiseX = pnoise(noiseInput, period);
+            noiseY = pnoise(noiseInput, period);
+            noiseZ = pnoise(noiseInput, period);
+            noise = vec3(noiseX, noiseY, noiseZ);
+            break;
+        case 2:
+            noise = snoise3(noiseInput);
+            break;
+        case 3:
+            period = vec3(u_time);
+            float alpha = u_time;
+            noiseX = psrdnoise(noiseInput, period, alpha);
+            noiseY = psrdnoise(noiseInput, period, alpha);
+            noiseZ = psrdnoise(noiseInput, period, alpha);
+            noise = vec3(noiseX, noiseY, noiseZ);
+            break;
+        case 4:
+            noise = curl(noiseInput);
+            break;
+        case 5:
+            noise = voronoi(noiseInput);
+            break;
+        case 6:
+            noiseX = worley(noiseInput);
+            noiseY = worley(noiseInput);
+            noiseZ = worley(noiseInput);
+            noise = vec3(noiseX, noiseY, noiseZ);
+            break;
+    }
+
+    vec3 noisePos = u_noiseAmp*noise;
+    vec3 tar = pos + noisePos;
     float d = length(pos - tar)/u_noiseRadius;
     return mix(pos, tar, easing(d));
 }
 
 void main() {
     vec3 position = texture2D(u_particlesPosition, reference).xyz;
-    float display = texture2D(u_particlesPosition, reference).w;
-
-    vec3 defaultColor = vec3(0.5, 0.6, 0.7);
-    vec3 faceColor = vec3(0.4, 0.8, 0.5);
-    vec3 morphColor = vec3(0.5, 0.6, 0.7);
-    vec3 hiddenParticleColor = vec3(0.);
-    if (u_faceDetected) {
-        if (u_morphEnabled) {
-            if (display == 0.) {
-                vColor = hiddenParticleColor;
-            } else {
-                vColor = morphColor;
-            }
-            if (u_targetMorphElapsedTime <= u_targetMorphDuration) {
-                float mixFactor = u_targetMorphElapsedTime/u_targetMorphDuration;
-                vColor = mix(faceColor, vColor, clamp(0., 1., mixFactor));
-            }
-        } else {
-            float mixFactor = u_faceMorphElapsedTime/u_faceMorphDuration;
-            vColor = mix(defaultColor, faceColor, clamp(0., 1., mixFactor));
-        }
-    } else {
-        if (display == 0.) {
-            float mixFactor = u_time/2.;
-            vColor = mix(hiddenParticleColor, defaultColor, clamp(0., 1., mixFactor));
-        } else {
-            vColor = defaultColor;
-        }
-    }
 
     position = getNoisedPosition(position);
+    display = texture2D(u_particlesPosition, reference).w;
 
     #include <begin_vertex>
     #include <project_vertex>

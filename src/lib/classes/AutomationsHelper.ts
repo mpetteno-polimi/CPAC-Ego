@@ -14,7 +14,7 @@ export default class AutomationHelper {
             noiseRadius: 1+mod2,
             noiseFreq: 5+15*mod2,
             noiseSpeed: 3,
-            noiseType: 0,
+            noiseType: 4,
             cameraDistance: this.LFO('sin', 0.1, 2.5, 3),
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
@@ -42,7 +42,7 @@ export default class AutomationHelper {
             noiseRadius: 1+mod2,
             noiseFreq: 5+15*mod2,
             noiseSpeed: 0.001+mod1*0.005+mod1*mod2*0.1,
-            noiseType: 0,
+            noiseType: 4,
             cameraDistance: this.LFO('sin', 0.1, 2.5, 3),
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)

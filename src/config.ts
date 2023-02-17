@@ -64,7 +64,7 @@ export const config: AppConfig = {
             faceScaleFactor: 1,
             triangulateFace: true,
             particlesCount: 256*256,
-            automateParameters: true
+            automateParameters: false
         },
         loop: {
             faceDetectionStartTime: 8,
