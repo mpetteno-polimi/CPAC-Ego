@@ -122,7 +122,7 @@ export default class World {
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
-        this.camera.position.set(0, 0, this.settings.cameraDistance);
+        this.camera.position.setZ(this.settings.cameraDistance);
     }
 
     private addCamera() {
