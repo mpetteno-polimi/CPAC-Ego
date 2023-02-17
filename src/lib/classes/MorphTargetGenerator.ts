@@ -18,7 +18,7 @@ export default class MorphTargetGenerator {
     constructor(world: World) {
         this.world = world;
         this.verticesCount = this.world.particles.textureWidth * this.world.particles.textureHeight;
-        this.generators = [this.perlinNoiseGenerator, this.loadRandomSVG];
+        this.generators = [this.perlinNoiseGenerator, this.loadRandomSVG]; // , this.roscharchGenerator
     }
 
     getRandomMorphTarget() {
@@ -26,6 +26,57 @@ export default class MorphTargetGenerator {
         this.generators[randomGeneratorIndex](this);
     }
 
+    private roscharchGenerator(context) { // TODO
+
+        const points_count = 40;
+        const t = 100; // time steps aka epochs
+
+        let points = [];
+
+        // random points coordinates
+        for (let i = 0; i < points_count / 2; i ++) {
+        
+            const a_x = - 0.0001;
+            let a_y = 0;
+            let v_x = Math.random();
+            let v_y = Math.random() * 2 - 1;
+            
+            if (v_y >= 0) {
+                a_y = - 0.0001;
+            } else {
+                a_y = 0.0001;
+            }
+            // computes position at time t
+            let x_x = v_x * t + 1/2 * a_x * t * t;
+            let x_y = v_y * t + 1/2 * a_y * t * t;
+
+            let point = {x : x_x, y : x_y};
+            points.push(point);
+        }
+
+        // sort points by angle
+        points.sort(function(a,b) {
+
+            let angle_a = Math.atan(a.x/a.y);
+            let angle_b = Math.atan(b.x/b.y);
+            
+            if (angle_a == angle_b) {
+                return 0;
+            } else if (angle_a > angle_b) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+        // add symmetric points
+        for (let i = points_count / 2 - 1; i >= 0; i--) {
+            let point = {x : - points[i].x, y : points[i].y};
+            points.push(point);
+        }
+
+        return;
+    }
     private perlinNoiseGenerator(context) {
         context.world.particles.updateMorphTarget({
             "type": 1,
