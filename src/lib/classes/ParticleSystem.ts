@@ -108,6 +108,7 @@ export default class ParticleSystem {
         this.material.uniforms.u_noiseRadius.value = this.world.settings.noiseRadius;
         this.material.uniforms.u_noiseSpeed.value = this.world.settings.noiseSpeed;
         this.material.uniforms.u_noiseType.value = this.world.settings.noiseType;
+        this.material.uniforms.u_noiseSeed.value = 2*Math.random()-1;
         this.material.uniforms.u_faceDetected.value = this.world.loop.isFaceDetected;
         this.material.uniforms.u_morphEnabled.value = this.world.loop.isMorphEnabled;
         this.material.uniforms.u_particlesPosition.value = this.gpuComputation.getCurrentParticlesPosition();
@@ -137,6 +138,7 @@ export default class ParticleSystem {
                 u_noiseRadius: { value: 0 },
                 u_noiseSpeed: { value: 0 },
                 u_noiseType: { value: 0 },
+                u_noiseSeed: { value: 0 },
                 u_faceDetected: { value: false },
                 u_morphEnabled: { value: false },
                 u_faceMorphDuration: { value: config.threeJS.loop.faceDetectedMorphDuration },

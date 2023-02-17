@@ -18,6 +18,7 @@ uniform float u_resolution;
 uniform float u_noiseFreq;
 uniform float u_noiseAmp;
 uniform float u_noiseRadius;
+uniform float u_noiseSeed;
 uniform int u_noiseType;
 uniform float u_noiseSpeed;
 uniform bool u_faceDetected;
@@ -39,7 +40,7 @@ vec3 getNoisedPosition(vec3 pos) {
 
     vec3 noise, period;
     float noiseX, noiseY, noiseZ;
-    vec3 noiseInput = pos*u_noiseFreq + u_time*u_noiseSpeed;
+    vec3 noiseInput = (pos*u_noiseFreq + u_time*u_noiseSpeed)*u_noiseSeed;
     switch (u_noiseType) {
         case 0: // Classic Perlin Noise
             noiseX = cnoise(noiseInput);
