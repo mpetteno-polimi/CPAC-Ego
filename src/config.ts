@@ -2,24 +2,24 @@ import type {AppConfig} from "./lib/interfaces/Config";
 
 export const config: AppConfig = {
     splashScreen: {
-        title: "EGO",
-        subtitle: "subtitle",
+        title: "ego",
+        subtitle: "",
         transition: {
             in: {
                 delay: 0,
                 duration: 0
             },
             out: {
-                delay: 0,
-                duration: 2000
+                delay: 1,
+                duration: 5000
             }
         }
     },
     world: {
         transition: {
             in: {
-                delay: 5,
-                duration: 3000
+                delay: 2,
+                duration: 5000
             },
             out: {
                 delay: 0,
@@ -64,7 +64,7 @@ export const config: AppConfig = {
             faceScaleFactor: 1,
             triangulateFace: true,
             particlesCount: 256*256,
-            automateParameters: true
+            automateParameters: false
         },
         loop: {
             faceDetectionStartTime: 8,

@@ -30,7 +30,7 @@ With this project we want to explore perception, as a reconstruction based on on
 
 # Final project
 - Face triangulation ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
-- Noise automation during loop's animation ![20%](https://progress-bar.dev/20) &rarr; **Matteo**
+- Noise automation during loop's animation ![70%](https://progress-bar.dev/20) &rarr; **Matteo + Sebastian**
 - ~~Image's object contour recognition~~
 - Continuous loop morphing between face and abstract shapes ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
 - Define markov chain for the composition ![100%](https://progress-bar.dev/100) &rarr; **Sebastian**
