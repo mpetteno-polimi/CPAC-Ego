@@ -11,14 +11,55 @@ export default class MorphTargetGenerator {
     private readonly verticesCount: number;
     private readonly generators: any[];
 
-    private SVG_PATHS = ["/images/Inkblot.svg"];
+    private SVG = [
+        {
+            path: "/images/svg/card_1.svg",
+            scaleFactor: 0.01
+        },
+        {
+            path: "/images/svg/card_2.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_3.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_4.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_5.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_6.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_7.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_8.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_9.svg",
+            scaleFactor: 0.1
+        },
+        {
+            path: "/images/svg/card_10.svg",
+            scaleFactor: 0.1
+        }
+    ];
     private CANVAS_HEIGHT = config.morphTargetGenerator.canvasHeight;
     private CANVAS_WIDTH = config.morphTargetGenerator.canvasWidth;
 
     constructor(world: World) {
         this.world = world;
         this.verticesCount = this.world.particles.textureWidth * this.world.particles.textureHeight;
-        this.generators = [this.perlinNoiseGenerator, this.loadRandomSVG, this.rorschachGenerator];
+        this.generators = [this.loadRandomSVG];
     }
 
     getRandomMorphTarget() {
@@ -37,11 +78,10 @@ export default class MorphTargetGenerator {
     }
 
     private loadRandomSVG(context) {
-        let scaleFactor = 0.01;
-        let randomSVGPath = context.SVG_PATHS[Math.floor(Math.random()*context.SVG_PATHS.length)]
+        let randomSVG = context.SVG[Math.floor(Math.random()*context.SVG.length)];
         let loader = new SVGLoader();
         loader.load(
-            randomSVGPath,
+            randomSVG.path,
             (svgData) => {
                 let shapes = [];
                 svgData.paths.forEach((path) => {
@@ -57,7 +97,7 @@ export default class MorphTargetGenerator {
                     bevelOffset: 0,
                     bevelSegments: 3
                 }).center();
-                extrudeGeometry.scale(scaleFactor, -1*scaleFactor, scaleFactor);
+                extrudeGeometry.scale(randomSVG.scaleFactor, -1*randomSVG.scaleFactor, randomSVG.scaleFactor);
                 context.world.particles.updateMorphTarget({
                     "type": 0,
                     "positions": context.sampleGeometry(extrudeGeometry, false)
