@@ -15,15 +15,14 @@ uniform float u_faceMorphDuration;
 uniform float u_targetMorphDuration;
 uniform float u_morphTargetType;
 uniform sampler2D u_particlesPosition;
+uniform vec3 uPrimaryColor;
+uniform vec3 uPrimaryVariant;
+uniform vec3 uSecondaryColor;
+uniform vec3 uSecondaryVariantColor;
+uniform vec3 uBackgroundColor;
 
 /* VARYINGS */
 varying float display;
-
-/* CONSTANTS */
-const vec3 DEFAULT_COLOR = vec3(0.5, 0.6, 0.7);
-const vec3 FACE_COLOR = vec3(0.5, 0.6, 0.7);
-const vec3 MORPH_TARGET_COLOR = vec3(0.5, 0.6, 0.7);
-const vec3 HIDDEN_COLOR = vec3(0.);
 
 
 void main() {
@@ -32,27 +31,29 @@ void main() {
     float point = smoothstep(0.5, 0.45, dist);
 
     vec3 vColor;
+    vec3 faceColor = uSecondaryColor;
+    vec3 morphTargetColor = uSecondaryVariantColor;
     if (u_faceDetected) {
         if (u_morphEnabled) {
             if (display == 0.) {
-                vColor = HIDDEN_COLOR;
+                vColor = uBackgroundColor;
             } else {
-                vColor = MORPH_TARGET_COLOR;
+                vColor = morphTargetColor;
             }
             if (u_targetMorphElapsedTime <= u_targetMorphDuration) {
                 float mixFactor = u_targetMorphElapsedTime/u_targetMorphDuration;
-                vColor = mix(FACE_COLOR, vColor, clamp(0., 1., mixFactor));
+                vColor = mix(faceColor, vColor, clamp(0., 1., mixFactor));
             }
         } else {
             float mixFactor = u_faceMorphElapsedTime/u_faceMorphDuration;
-            vColor = mix(DEFAULT_COLOR, FACE_COLOR, clamp(0., 1., mixFactor));
+            vColor = mix(uPrimaryColor, faceColor, clamp(0., 1., mixFactor));
         }
     } else {
         if (display == 0.) {
             float mixFactor = u_time/2.;
-            vColor = mix(HIDDEN_COLOR, DEFAULT_COLOR, clamp(0., 1., mixFactor));
+            vColor = mix(uBackgroundColor, uPrimaryColor, clamp(0., 1., mixFactor));
         } else {
-            vColor = DEFAULT_COLOR;
+            vColor = uPrimaryColor;
         }
     }
 

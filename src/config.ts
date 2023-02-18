@@ -23,8 +23,7 @@ export const config: AppConfig = {
                 fieldOfView: 75,
                 nearPlane: 0.1,
                 farPlane: 10000
-            },
-            backgroundColor: 0x000000
+            }
         },
         world: {
             transition: {
@@ -42,7 +41,6 @@ export const config: AppConfig = {
                 nearPlane: 0.01,
                 farPlane: 100
             },
-            backgroundColor: 0x000000,
             particlesCount: 256*256,
             automateParameters: false
         },
@@ -144,5 +142,12 @@ export const config: AppConfig = {
     osc: {
         host: "localhost",
         port: 8080
+    },
+    colors: {
+        primary: 0xFFFFFF,
+        primaryVariant: 0xFBFBFB,
+        secondary: 0x000402,
+        secondaryVariant: 0x000403,
+        background: 0x000000
     }
 }

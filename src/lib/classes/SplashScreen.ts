@@ -34,7 +34,12 @@ export default class SplashScreen {
         uProgress1: number,
         uProgress2: number,
         uProgress3: number,
-        uProgress4: number
+        uProgress4: number,
+        uPrimaryColor: number,
+        uPrimaryVariant: number,
+        uSecondaryColor: number,
+        uSecondaryVariantColor: number,
+        uBackgroundColor: number
     };
 
 
@@ -53,13 +58,18 @@ export default class SplashScreen {
             uProgress1: 0,
             uProgress2: 0,
             uProgress3: 0,
-            uProgress4: 0
+            uProgress4: 0,
+            uPrimaryColor: config.colors.primary,
+            uPrimaryVariant: config.colors.primaryVariant,
+            uSecondaryColor: config.colors.secondary,
+            uSecondaryVariantColor: config.colors.secondaryVariant,
+            uBackgroundColor: config.colors.background
         };
         this.addCamera();
         this.addRenderer();
         this.addScene();
         this.addControls();
-        //this.addGUI();
+        this.addGUI();
         this.addPostProcessing();
         this.addObjects();
         //this.addLights();
@@ -98,7 +108,12 @@ export default class SplashScreen {
             uProgress2: this.settings.uProgress2,
             uProgress3: this.settings.uProgress3,
             uProgress4: this.settings.uProgress4,
-            uTime: this.globalClock.getElapsedTime()
+            uTime: this.globalClock.getElapsedTime(),
+            uPrimaryColor: this.settings.uPrimaryColor,
+            uPrimaryVariant: this.settings.uPrimaryVariant,
+            uSecondaryColor: this.settings.uSecondaryColor,
+            uSecondaryVariantColor: this.settings.uSecondaryVariantColor,
+            uBackgroundColor: this.settings.uBackgroundColor,
         })
         this.updateSettings();
         this.controls.update();
@@ -134,7 +149,7 @@ export default class SplashScreen {
             alpha: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(config.scenes.splashScreen.backgroundColor);
+        this.renderer.setClearColor(config.colors.background);
         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
@@ -164,6 +179,11 @@ export default class SplashScreen {
         this.gui.add(this.settings, "uProgress2", 0, 1, 0.01);
         this.gui.add(this.settings, "uProgress3", 0, 1, 0.01);
         this.gui.add(this.settings, "uProgress4", 0, 1, 0.01);
+        this.gui.addColor(this.settings, "uPrimaryColor");
+        this.gui.addColor(this.settings, "uPrimaryVariant");
+        this.gui.addColor(this.settings, "uSecondaryColor");
+        this.gui.addColor(this.settings, "uSecondaryVariantColor");
+        this.gui.addColor(this.settings, "uBackgroundColor");
     }
 
     private addPostProcessing() {

@@ -39,6 +39,11 @@ export default class MSDFText {
         this.material.uniforms.uProgress3.value = options.uProgress3;
         this.material.uniforms.uProgress4.value = options.uProgress4;
         this.material.uniforms.uTime.value = options.uTime;
+        this.material.uniforms.uPrimaryColor.value = new THREE.Color(options.uPrimaryColor);
+        this.material.uniforms.uPrimaryVariant.value = new THREE.Color(options.uPrimaryVariant);
+        this.material.uniforms.uSecondaryColor.value = new THREE.Color(options.uSecondaryColor);
+        this.material.uniforms.uSecondaryVariantColor.value = new THREE.Color(options.uSecondaryVariantColor);
+        this.material.uniforms.uBackgroundColor.value = new THREE.Color(options.uBackgroundColor);
     }
 
     protected addGeometry() {
@@ -71,7 +76,12 @@ export default class MSDFText {
                     uProgress2: { value: 0 },
                     uProgress3: { value: 0 },
                     uProgress4: { value: 0 },
-                    uTime: { value: 0 }
+                    uTime: { value: 0 },
+                    uPrimaryColor: { value: new THREE.Color() },
+                    uPrimaryVariant: { value: new THREE.Color() },
+                    uSecondaryColor: { value: new THREE.Color() },
+                    uSecondaryVariantColor: { value: new THREE.Color() },
+                    uBackgroundColor: { value: new THREE.Color() }
                 }
             },
             vertexShader: vertexShader,

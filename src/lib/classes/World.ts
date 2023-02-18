@@ -42,7 +42,12 @@ export default class World {
         noiseAmp: number,
         noiseRadius: number,
         noiseSpeed: number,
-        noiseType: number
+        noiseType: number,
+        uPrimaryColor: number,
+        uPrimaryVariant: number,
+        uSecondaryColor: number,
+        uSecondaryVariantColor: number,
+        uBackgroundColor: number
     };
 
     constructor(options) {
@@ -56,7 +61,12 @@ export default class World {
             noiseAmp: 0.3,
             noiseRadius: 1,
             noiseSpeed: 3,
-            noiseType: 4
+            noiseType: 4,
+            uPrimaryColor: config.colors.primary,
+            uPrimaryVariant: config.colors.primaryVariant,
+            uSecondaryColor: config.colors.secondary,
+            uSecondaryVariantColor: config.colors.secondaryVariant,
+            uBackgroundColor: config.colors.background
         };
         this.faceMeshDetector = options.faceMeshDetector;
         this.faceExpressionDetector = options.faceExpressionDetector;
@@ -141,7 +151,7 @@ export default class World {
             alpha: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(config.scenes.world.backgroundColor);
+        this.renderer.setClearColor(config.colors.background);
         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
@@ -170,6 +180,11 @@ export default class World {
         this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
         this.gui.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
         this.gui.add(this.settings, "cameraDistance", 0, 10, 0.5);
+        this.gui.addColor(this.settings, "uPrimaryColor");
+        this.gui.addColor(this.settings, "uPrimaryVariant");
+        this.gui.addColor(this.settings, "uSecondaryColor");
+        this.gui.addColor(this.settings, "uSecondaryVariantColor");
+        this.gui.addColor(this.settings, "uBackgroundColor");
     }
 
     private addPostProcessing() {

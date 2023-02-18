@@ -10,6 +10,7 @@ type AppConfig = {
     webcam: WebcamConfig,
     loop: LoopConfig,
     osc: OSCConfig
+    colors: ColorPaletteConfig
 }
 
 type ScenesConfig = {
@@ -22,14 +23,12 @@ type SplashScreenConfig = {
     subtitle: string,
     font: FontConfig,
     transition: TransitionConfig,
-    camera: CameraConfig,
-    backgroundColor: number
+    camera: CameraConfig
 }
 
 type WorldConfig = {
     transition: TransitionConfig,
     camera: CameraConfig
-    backgroundColor: number,
     particlesCount: number,
     automateParameters: boolean
 }
@@ -100,6 +99,14 @@ type LoopConfig = {
 type OSCConfig = {
     host: string,
     port: number
+}
+
+type ColorPaletteConfig = {
+    primary: number,
+    primaryVariant: number,
+    secondary: number,
+    secondaryVariant: number,
+    background: number
 }
 
 type CameraConfig = {
