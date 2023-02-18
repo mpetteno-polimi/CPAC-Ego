@@ -105,10 +105,10 @@ export const config: AppConfig = {
                     path: "/images/svg/card_9.svg",
                     scaleFactor: 0.007
                 },
-                {
+                /*{
                     path: "/images/svg/card_10.svg",
                     scaleFactor: 0.007
-                }
+                }*/
             ]
         },
         symmetric: {
