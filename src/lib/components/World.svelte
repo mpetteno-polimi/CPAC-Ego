@@ -21,7 +21,6 @@
         faceMeshDetector.detectFaces(); // call to avoid lag later see: https://github.com/google/mediapipe/issues/3123
         world = new World({
             container: container,
-            video: webcam.video,
             faceMeshDetector: faceMeshDetector,
             faceExpressionDetector: faceExpressionDetector,
             musicGenerator: musicGenerator
@@ -31,7 +30,7 @@
 </script>
 
 <svelte:window on:resize={world.resize()} />
-<world bind:this={container} in:fade={config.world.transition.in}>
+<world bind:this={container} in:fade={config.scenes.world.transition.in}>
     <video bind:this={video} id="video" autoplay>
         <track kind="captions">
     </video>

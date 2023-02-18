@@ -11,6 +11,5 @@ type ScreenRange = {
 type Sizes = {
     width: number
     height: number
-    videoWidth: number
-    videoHeight: number
+
 }

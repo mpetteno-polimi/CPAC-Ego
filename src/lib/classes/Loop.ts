@@ -50,7 +50,7 @@ export default class Loop {
 
     render(elapsedTime: number, delta: number) {
         let morphElapsedTimes = [elapsedTime, 0, 0];
-        if (elapsedTime > config.threeJS.loop.faceDetectionStartTime) {
+        if (elapsedTime > config.loop.faceDetectionStartTime) {
             if (this.isFaceDetected) {
                 morphElapsedTimes = this.handleMorphAnimation(elapsedTime);
             } else {
@@ -81,10 +81,10 @@ export default class Loop {
     private handleMorphAnimation(elapsedTime: number) {
         let faceDetectedElapsedTime = this.faceDetectedClock.getElapsedTime();
         let morphElapsedTime = 0;
-        if (faceDetectedElapsedTime > config.threeJS.loop.faceDetectedMorphDuration) {
+        if (faceDetectedElapsedTime > config.loop.faceDetectedMorphDuration) {
             morphElapsedTime = this.morphClock.getElapsedTime();
             if (!this.isMorphEnabled) {
-                if (morphElapsedTime > config.threeJS.loop.morphStart) {
+                if (morphElapsedTime > config.loop.morphStart) {
                     this.morphStartTime = morphElapsedTime;
                     morphElapsedTime = 0;
                     this.isMorphEnabled = true;
@@ -94,8 +94,8 @@ export default class Loop {
                 }
             } else {
                 let morphProgressTime = morphElapsedTime - this.morphStartTime;
-                if (morphProgressTime > config.threeJS.loop.morphDuration) {
-                    if (morphProgressTime > config.threeJS.loop.morphDuration + config.threeJS.loop.morphEnd) {
+                if (morphProgressTime > config.loop.morphDuration) {
+                    if (morphProgressTime > config.loop.morphDuration + config.loop.morphEnd) {
                         this.init();
                         return [0, 0, 0];
                     } else {

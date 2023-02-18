@@ -121,7 +121,11 @@ export default class SplashScreen {
     }
 
     private addCamera() {
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        this.camera = new THREE.PerspectiveCamera(
+            config.scenes.splashScreen.camera.fieldOfView,
+            window.innerWidth / window.innerHeight,
+            config.scenes.splashScreen.camera.nearPlane,
+            config.scenes.splashScreen.camera.farPlane);
     }
 
     private addRenderer() {
@@ -130,7 +134,7 @@ export default class SplashScreen {
             alpha: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(config.threeJS.scene.backgroundColor);
+        this.renderer.setClearColor(config.scenes.splashScreen.backgroundColor);
         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }

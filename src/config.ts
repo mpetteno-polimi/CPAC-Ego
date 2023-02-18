@@ -1,33 +1,53 @@
 import type {AppConfig} from "./lib/interfaces/Config";
 
 export const config: AppConfig = {
-    splashScreen: {
-        title: "ego",
-        subtitle: "",
-        transition: {
-            in: {
-                delay: 0,
-                duration: 0
+    scenes: {
+        splashScreen: {
+            title: "ego",
+            subtitle: "",
+            font: {
+                fnt: "/fonts/msdf/roboto-regular.fnt",
+                atlas: "/fonts/msdf/roboto-regular.png"
             },
-            out: {
-                delay: 1,
-                duration: 5000
-            }
-        }
-    },
-    world: {
-        transition: {
-            in: {
-                delay: 2,
-                duration: 5000
+            transition: {
+                in: {
+                    delay: 0,
+                    duration: 0
+                },
+                out: {
+                    delay: 1,
+                    duration: 5000
+                }
             },
-            out: {
-                delay: 0,
-                duration: 0
-            }
-        }
+            camera: {
+                fieldOfView: 75,
+                nearPlane: 0.1,
+                farPlane: 10000
+            },
+            backgroundColor: 0x000000
+        },
+        world: {
+            transition: {
+                in: {
+                    delay: 2,
+                    duration: 5000
+                },
+                out: {
+                    delay: 0,
+                    duration: 0
+                }
+            },
+            camera: {
+                fieldOfView: 75,
+                nearPlane: 0.01,
+                farPlane: 100
+            },
+            backgroundColor: 0x000000,
+            particlesCount: 256*256,
+            automateParameters: false
+        },
     },
-    faceMesh: {
+    faceMeshDetector: {
         detector: {
             runtime: 'mediapipe',
             refineLandmarks: false,
@@ -37,13 +57,74 @@ export const config: AppConfig = {
         estimator: {
             flipHorizontal: false,
             staticImageMode: false
-        }
+        },
+        faceScaleFactor: 1,
+        triangulateFace: true
+    },
+    faceExpressionDetector: {
+
     },
     morphTargetGenerator: {
-        canvasWidth: 4,
-        canvasHeight: 4
+        perlin: {
+            canvasWidth: 4,
+            canvasHeight: 4
+        },
+        svg: {
+            paths: [
+                {
+                    path: "/images/svg/card_1.svg",
+                    scaleFactor: 0.01
+                },
+                {
+                    path: "/images/svg/card_2.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_3.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_4.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_5.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_6.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_7.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_8.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_9.svg",
+                    scaleFactor: 0.007
+                },
+                {
+                    path: "/images/svg/card_10.svg",
+                    scaleFactor: 0.007
+                }
+            ]
+        },
+        symmetric: {
+            time: 100,
+            pointsCount: 40
+        }
     },
     music: {
+        player: {
+
+        },
+        toneJS: {
+
+        },
         generator: {
             bassEnabled: true
         }
@@ -53,25 +134,15 @@ export const config: AppConfig = {
         heightRes: 720,
         fps: 60
     },
-    threeJS: {
-        camera: {
-            fieldOfView: 75,
-            nearPlane: 0.01,
-            farPlane: 100
-        },
-        scene: {
-            backgroundColor: 0x000000,
-            faceScaleFactor: 1,
-            triangulateFace: true,
-            particlesCount: 256*256,
-            automateParameters: false
-        },
-        loop: {
-            faceDetectionStartTime: 8,
-            faceDetectedMorphDuration: 10,
-            morphStart: 5,
-            morphDuration: 15,
-            morphEnd: 5
-        }
+    loop: {
+        faceDetectionStartTime: 8,
+        faceDetectedMorphDuration: 10,
+        morphStart: 5,
+        morphDuration: 15,
+        morphEnd: 5
+    },
+    osc: {
+        host: "localhost",
+        port: 8080
     }
 }

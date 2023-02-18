@@ -11,51 +11,6 @@ export default class MorphTargetGenerator {
     private readonly verticesCount: number;
     private readonly generators: any[];
 
-    private SVG = [
-        {
-            path: "/images/svg/card_1.svg",
-            scaleFactor: 0.01
-        },
-        {
-            path: "/images/svg/card_2.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_3.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_4.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_5.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_6.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_7.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_8.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_9.svg",
-            scaleFactor: 0.007
-        },
-        {
-            path: "/images/svg/card_10.svg",
-            scaleFactor: 0.007
-        }
-    ];
-    private CANVAS_HEIGHT = config.morphTargetGenerator.canvasHeight;
-    private CANVAS_WIDTH = config.morphTargetGenerator.canvasWidth;
-
     constructor(world: World) {
         this.world = world;
         this.verticesCount = this.world.particles.textureWidth * this.world.particles.textureHeight;
@@ -68,17 +23,20 @@ export default class MorphTargetGenerator {
     }
 
     private perlinNoiseGenerator(context) {
+        const CANVAS_HEIGHT = config.morphTargetGenerator.perlin.canvasHeight;
+        const CANVAS_WIDTH = config.morphTargetGenerator.perlin.canvasWidth;
         context.world.particles.updateMorphTarget({
             "type": 1,
             "positions": context.getCanvasPositions(context),
-            "canvasWidth": context.CANVAS_WIDTH,
-            "canvasHeight": context.CANVAS_HEIGHT,
+            "canvasWidth": CANVAS_WIDTH,
+            "canvasHeight": CANVAS_HEIGHT,
             "noiseSeed": Math.random()*context.world.particles.textureHeight
         });
     }
 
     private loadRandomSVG(context) {
-        let randomSVG = context.SVG[Math.floor(Math.random()*context.SVG.length)];
+        let svgPaths = config.morphTargetGenerator.svg.paths;
+        let randomSVG = svgPaths[Math.floor(Math.random()*svgPaths.length)];
         let loader = new SVGLoader();
         loader.load(
             randomSVG.path,
@@ -107,8 +65,8 @@ export default class MorphTargetGenerator {
     }
 
     private rorschachGenerator(context) {
-        const points_count = 40;
-        const t = 100; // time steps aka epochs
+        const points_count = config.morphTargetGenerator.symmetric.pointsCount;
+        const t = config.morphTargetGenerator.symmetric.time; // time steps aka epochs
         let points = [];
 
         // random points coordinates
@@ -147,7 +105,7 @@ export default class MorphTargetGenerator {
 
         // extrude 3D geometry from 2D spline curve
         let scaleFactor = 0.02;
-        let extrudeShape = new THREE.Shape(curve.getPoints(points_count*10));
+        let extrudeShape = new THREE.Shape(curve.getPoints(points_count*100));
         let extrudeGeometry = new THREE.ExtrudeGeometry(extrudeShape, {
             curveSegments: 20,
             steps: 2,
@@ -169,10 +127,12 @@ export default class MorphTargetGenerator {
 
     private getCanvasPositions(context) {
         let boxPosition = [];
+        const CANVAS_HEIGHT = config.morphTargetGenerator.perlin.canvasHeight;
+        const CANVAS_WIDTH = config.morphTargetGenerator.perlin.canvasWidth;
         for (let i = 0; i < context.world.particles.textureWidth; i++) {
             for (let j = 0; j < context.world.particles.textureHeight; j++) {
-                let pX = i / context.world.particles.textureWidth * context.CANVAS_WIDTH - context.CANVAS_WIDTH / 2;
-                let pY = j / context.world.particles.textureHeight * context.CANVAS_HEIGHT - context.CANVAS_HEIGHT / 2;
+                let pX = i / context.world.particles.textureWidth * CANVAS_WIDTH - CANVAS_WIDTH / 2;
+                let pY = j / context.world.particles.textureHeight * CANVAS_HEIGHT - CANVAS_HEIGHT / 2;
                 let pZ = 0;
                 boxPosition.push(pX, pY, pZ, 1.);
             }

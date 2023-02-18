@@ -19,7 +19,6 @@ export default class World {
     scene: THREE.Scene;
     currentSizes: Sizes;
     private readonly container: HTMLElement;
-    private videoInput: HTMLVideoElement;
     faceMeshDetector: FaceMeshDetector;
     faceExpressionDetector: FaceExpressionDetector;
     renderer: THREE.WebGLRenderer;
@@ -49,12 +48,9 @@ export default class World {
 
     constructor(options) {
         this.container = options.container
-        this.videoInput = options.video
         this.currentSizes = {
             width: this.container.offsetWidth,
-            height: this.container.offsetHeight,
-            videoWidth: this.videoInput.width,
-            videoHeight: this.videoInput.height
+            height: this.container.offsetHeight
         };
         this.settings = {
             bloomRadius: 0,
@@ -105,7 +101,7 @@ export default class World {
     }
 
     updateParameters(parameters) {
-        if (config.threeJS.scene.automateParameters) {
+        if (config.scenes.world.automateParameters) {
             this.settings.bloomThreshold = parameters.bloomThreshold;
             this.settings.bloomStrength = parameters.bloomStrength;
             this.settings.bloomRadius = parameters.bloomRadius;
@@ -137,10 +133,10 @@ export default class World {
             1000
         );*/
         this.camera = new THREE.PerspectiveCamera(
-            config.threeJS.camera.fieldOfView,
+            config.scenes.world.camera.fieldOfView,
             window.innerWidth / window.innerHeight,
-            config.threeJS.camera.nearPlane,
-            config.threeJS.camera.farPlane
+            config.scenes.world.camera.nearPlane,
+            config.scenes.world.camera.farPlane
         );
         //this.camera.position.set(0, 0, 2.5);
         this.camera.lookAt(0, 0, 0);
@@ -152,7 +148,7 @@ export default class World {
             alpha: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(config.threeJS.scene.backgroundColor);
+        this.renderer.setClearColor(config.scenes.world.backgroundColor);
         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }

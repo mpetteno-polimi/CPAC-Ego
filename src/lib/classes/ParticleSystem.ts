@@ -15,14 +15,12 @@ export default class ParticleSystem {
     protected geometry: THREE.BufferGeometry;
     protected material: THREE.ShaderMaterial;
     protected world: World;
-    private faceFlattener: Worker;
     private isProcessingFace: boolean;
 
     constructor(world: World, visible: boolean = true) {
         this.world = world;
-        this.particlesCount = config.threeJS.scene.particlesCount;
+        this.particlesCount = config.scenes.world.particlesCount;
         this.addTexturesData();
-        this.addWorkers();
         this.addGPUComputation();
         this.addGeometry();
         this.addMaterial();
@@ -51,13 +49,8 @@ export default class ParticleSystem {
                 this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 if (this.isFaceToUpdate()) {
                     this.isProcessingFace = true;
-                    this.faceFlattener.postMessage([
-                        estimatedFace,
-                        this.textureWidth * this.textureHeight * 4,
-                        this.world.currentSizes,
-                        config.threeJS.scene.triangulateFace,
-                        config.threeJS.scene.faceScaleFactor
-                    ]);
+                    this.world.faceMeshDetector.processFaceDetection(
+                        this, estimatedFace, this.textureWidth*this.textureHeight, this.onFaceProcessed);
                 }
             } else {
                 this.world.loop.isFaceDetected = false;
@@ -91,8 +84,8 @@ export default class ParticleSystem {
             "delta": Math.min(delta, 0.5),
             "isFaceDetected": this.world.loop.isFaceDetected,
             "isMorphEnabled": this.world.loop.isMorphEnabled,
-            "faceMorphDuration": config.threeJS.loop.faceDetectedMorphDuration,
-            "targetMorphDuration": config.threeJS.loop.morphDuration,
+            "faceMorphDuration": config.loop.faceDetectedMorphDuration,
+            "targetMorphDuration": config.loop.morphDuration,
             "noiseFreq": this.world.settings.noiseFreq,
             "noiseAmp": this.world.settings.noiseAmp,
             "noiseRadius": this.world.settings.noiseRadius,
@@ -141,8 +134,8 @@ export default class ParticleSystem {
                 u_noiseSeed: { value: 0 },
                 u_faceDetected: { value: false },
                 u_morphEnabled: { value: false },
-                u_faceMorphDuration: { value: config.threeJS.loop.faceDetectedMorphDuration },
-                u_targetMorphDuration: { value: config.threeJS.loop.morphDuration },
+                u_faceMorphDuration: { value: config.loop.faceDetectedMorphDuration },
+                u_targetMorphDuration: { value: config.loop.morphDuration },
                 u_morphTargetType: { value: 0 },
                 u_particlesPosition: { value: null }
             },
@@ -169,24 +162,19 @@ export default class ParticleSystem {
         });
     }
 
-    protected addWorkers() {
-        this.faceFlattener = new Worker(new URL('../workers/face-flattener.js', import.meta.url), {
-            type: 'module'
+    private onFaceProcessed(particles, event) {
+        let faceTextureData = event.data[0];
+        particles.gpuComputation.updateFaceTextureData(faceTextureData);
+        particles.world.morphTargetGenerator.getRandomMorphTarget();
+        particles.isProcessingFace = false;
+        particles.world.loop.enableFaceDetected();
+        particles.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
+            let detection = estimatedExpression[0];
+            if (detection) particles.world.musicGenerator.setSentiment(detection.expressions);
         });
-        this.faceFlattener.onmessage = (event) => {
-            let faceTextureData = event.data[0];
-            this.gpuComputation.updateFaceTextureData(faceTextureData);
-            this.world.morphTargetGenerator.getRandomMorphTarget();
-            this.isProcessingFace = false;
-            this.world.loop.enableFaceDetected();
-            this.world.faceExpressionDetector.detectExpressions().then((estimatedExpression) => {
-                let detection = estimatedExpression[0];
-                if (detection) this.world.musicGenerator.setSentiment(detection.expressions);
-            });
-            this.world.musicGenerator.stopPlayingSequence();
-            this.world.musicGenerator.newFace();
-            this.world.musicGenerator.startPlayingSequence();
-        }
+        particles.world.musicGenerator.stopPlayingSequence();
+        particles.world.musicGenerator.newFace();
+        particles.world.musicGenerator.startPlayingSequence();
     }
 
     private initGeometryVertices() {

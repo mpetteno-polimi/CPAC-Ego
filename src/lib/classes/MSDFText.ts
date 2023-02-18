@@ -16,7 +16,6 @@ export default class MSDFText {
     private material: MSDFTextMaterial;
     private fontAtlas: THREE.Texture;
     private font: Font;
-    private FONT_PATH = "/fonts/msdf";
 
     constructor(splashScreen: SplashScreen, visible: boolean = true) {
         this.splashScreen = splashScreen;
@@ -44,7 +43,7 @@ export default class MSDFText {
 
     protected addGeometry() {
         this.geometry = new MSDFTextGeometry({
-            text: config.splashScreen.title,
+            text: config.scenes.splashScreen.title,
             font: this.font.data,
             align: 'center'
         });
@@ -96,13 +95,13 @@ export default class MSDFText {
 
     private loadFontAtlas() {
         return new Promise((resolve, reject) => {
-            this.textureLoader.load(this.FONT_PATH + "/roboto-regular.png", resolve);
+            this.textureLoader.load(config.scenes.splashScreen.font.atlas, resolve);
         });
     }
 
     private loadFont() {
         return new Promise((resolve, reject) => {
-            this.fontLoader.load(this.FONT_PATH + "/roboto-regular.fnt", resolve);
+            this.fontLoader.load(config.scenes.splashScreen.font.fnt, resolve);
         });
     }
 
