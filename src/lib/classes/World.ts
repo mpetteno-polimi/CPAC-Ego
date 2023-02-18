@@ -17,7 +17,6 @@ import MorphTargetGenerator from "./MorphTargetGenerator";
 
 export default class World {
     scene: THREE.Scene;
-    currentSizes: Sizes;
     private readonly container: HTMLElement;
     faceMeshDetector: FaceMeshDetector;
     faceExpressionDetector: FaceExpressionDetector;
@@ -48,10 +47,6 @@ export default class World {
 
     constructor(options) {
         this.container = options.container
-        this.currentSizes = {
-            width: this.container.offsetWidth,
-            height: this.container.offsetHeight
-        };
         this.settings = {
             bloomRadius: 0,
             bloomThreshold: 0,
@@ -91,13 +86,11 @@ export default class World {
     }
 
     resize() {
-        this.currentSizes.width = this.container.offsetWidth;
-        this.currentSizes.height = this.container.offsetHeight;
-        this.renderer.setSize(this.currentSizes.width, this.currentSizes.height);
-        this.composer.setSize(this.currentSizes.width, this.currentSizes.height);
-        this.particles.resize();
-        this.camera.aspect = this.currentSizes.width / this.currentSizes.height;
+        this.camera.aspect = this.container.offsetWidth / this.container.offsetHeight;
         this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+        this.composer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+        this.particles.resize(this.container.offsetWidth, this.container.offsetHeight);
     }
 
     updateParameters(parameters) {

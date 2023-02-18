@@ -38,9 +38,9 @@ class FaceFlattener {
         return faceKeypoints.map((keypoint) => {
             return {
                 x: mapRangetoRange(this.videoSizes.videoHeight, keypoint.x, screenRange.height) - 1,
-                //x: (keypoint.x - estimatedFaceBox.xMin - (estimatedFaceBox.width / 2)) / currentSizes.videoWidth;
+                //x: (keypoint.x - estimatedFaceBox.xMin - (estimatedFaceBox.width / 2)) / this.videoSizes.videoWidth;
                 y: mapRangetoRange(this.videoSizes.videoHeight, keypoint.y, screenRange.height, true) + 1,
-                //y: -(keypoint.y - estimatedFaceBox.yMin - (estimatedFaceBox.height / 2)) / currentSizes.videoHeight;
+                //y: -(keypoint.y - estimatedFaceBox.yMin - (estimatedFaceBox.height / 2)) / this.videoSizes.videoHeight;
                 z: keypoint.z = (keypoint.z / 100) * -1 + 0.5,
                 name: keypoint.name
             }

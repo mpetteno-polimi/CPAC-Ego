@@ -37,9 +37,9 @@ export default class ParticleSystem {
         this.particles.visible = false;
     }
 
-    resize() {
-        this.material.uniforms.u_resolution.value.x = this.world.currentSizes.width;
-        this.material.uniforms.u_resolution.value.y = this.world.currentSizes.height;
+    resize(width, height) {
+        this.material.uniforms.u_resolution.value.x = width;
+        this.material.uniforms.u_resolution.value.y = height;
     }
 
     detectFaces() {
