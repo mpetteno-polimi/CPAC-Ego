@@ -4,6 +4,7 @@ import * as THREE from "three";
 import type SplashScreen from "./SplashScreen";
 import vertexShader from "../shaders/text/vertexShader.glsl";
 import fragmentShader from "../shaders/text/fragmentShader.glsl";
+import {config} from "../../config";
 
 export default class MSDFText {
 
@@ -15,6 +16,7 @@ export default class MSDFText {
     private material: MSDFTextMaterial;
     private fontAtlas: THREE.Texture;
     private font: Font;
+    private FONT_PATH = "/fonts/msdf";
 
     constructor(splashScreen: SplashScreen, visible: boolean = true) {
         this.splashScreen = splashScreen;
@@ -28,12 +30,21 @@ export default class MSDFText {
             this.addMaterial();
             this.addMesh();
             this.splashScreen.scene.add(this.mesh);
+            this.splashScreen.start();
         })
+    }
+
+    updateUniforms(options) {
+        this.material.uniforms.uProgress1.value = options.uProgress1;
+        this.material.uniforms.uProgress2.value = options.uProgress2;
+        this.material.uniforms.uProgress3.value = options.uProgress3;
+        this.material.uniforms.uProgress4.value = options.uProgress4;
+        this.material.uniforms.uTime.value = options.uTime;
     }
 
     protected addGeometry() {
         this.geometry = new MSDFTextGeometry({
-            text: "ego",
+            text: config.splashScreen.title,
             font: this.font.data,
             align: 'center'
         });
@@ -55,7 +66,14 @@ export default class MSDFText {
                 // Rendering
                 ...uniforms.rendering,
                 // Strokes
-                ...uniforms.strokes
+                ...uniforms.strokes,
+                ...{
+                    uProgress1: { value: 0 },
+                    uProgress2: { value: 0 },
+                    uProgress3: { value: 0 },
+                    uProgress4: { value: 0 },
+                    uTime: { value: 0 }
+                }
             },
             vertexShader: vertexShader,
             fragmentShader: fragmentShader
@@ -78,13 +96,13 @@ export default class MSDFText {
 
     private loadFontAtlas() {
         return new Promise((resolve, reject) => {
-            this.textureLoader.load("/fonts/msdf/roboto-regular.png", resolve);
+            this.textureLoader.load(this.FONT_PATH + "/roboto-regular.png", resolve);
         });
     }
 
     private loadFont() {
         return new Promise((resolve, reject) => {
-            this.fontLoader.load("/fonts/msdf/roboto-regular.fnt", resolve);
+            this.fontLoader.load(this.FONT_PATH + "/roboto-regular.fnt", resolve);
         });
     }
 

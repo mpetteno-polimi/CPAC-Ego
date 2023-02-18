@@ -13,7 +13,6 @@
         splashScreen = new SplashScreen({
             container: container
         });
-        splashScreen.start();
     })
 
     function dispatchInteractionEvent() {
@@ -21,7 +20,7 @@
     }
 </script>
 
-<svelte:window on:resize={splashScreen.resize()} on:click={dispatchInteractionEvent} on:keydown={dispatchInteractionEvent} />
+<svelte:window on:resize={splashScreen.resize()} on:click={dispatchInteractionEvent} />
 <splash-screen bind:this={container} out:fade={config.splashScreen.transition.out}></splash-screen>
 
 <style>

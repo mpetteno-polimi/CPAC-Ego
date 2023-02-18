@@ -6,6 +6,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import {config} from "../../config";
 import MSDFText from "./MSDFText";
+import gsap from "gsap";
 
 export default class SplashScreen {
 
@@ -16,6 +17,7 @@ export default class SplashScreen {
     controls: OrbitControls;
     text: MSDFText;
     private readonly container: HTMLElement;
+    private globalClock: THREE.Clock;
     private gui: dat.GUI;
     private renderScene: RenderPass;
     bloomPass: any;
@@ -28,7 +30,11 @@ export default class SplashScreen {
         noiseAmp: number,
         noiseRadius: number,
         noiseSpeed: number,
-        noiseType: number
+        noiseType: number,
+        uProgress1: number,
+        uProgress2: number,
+        uProgress3: number,
+        uProgress4: number
     };
 
 
@@ -43,13 +49,17 @@ export default class SplashScreen {
             noiseAmp: 0.3,
             noiseRadius: 1,
             noiseSpeed: 3,
-            noiseType: 4
+            noiseType: 4,
+            uProgress1: 0,
+            uProgress2: 0,
+            uProgress3: 0,
+            uProgress4: 0
         };
         this.addCamera();
         this.addRenderer();
         this.addScene();
         this.addControls();
-        this.addGUI();
+        //this.addGUI();
         this.addPostProcessing();
         this.addObjects();
         //this.addLights();
@@ -63,12 +73,35 @@ export default class SplashScreen {
     }
 
     start() {
+        this.globalClock = new THREE.Clock();
         this.update();
-        this.updateSettings();
-        this.controls.update();
+        this.animate();
+    }
+
+    animate() {
+        let duration = 2, stagger = 0.5;
+        let tl = gsap.timeline({onComplete: () => {}, repeat: -1, repeatDelay: 5});
+        tl.startTime(0);
+        tl.to(this.settings, { uProgress1: 1, duration: duration }, 0);
+        tl.to(this.settings, { uProgress2: 1, duration: duration }, stagger);
+        tl.to(this.settings, { uProgress3: 1, duration: duration }, stagger*2);
+        tl.to(this.settings, { uProgress4: 1, duration: duration }, stagger*3);
+        tl.to(this.settings, { bloomStrength: 2.3, duration: duration/2, ease: "power2.in" }, 0);
+        tl.to(this.settings, { bloomRadius: 1.7, duration: duration/2, ease: "power2.in" }, 0);
+        tl.to(this.settings, { bloomStrength: 0, duration: duration/2, ease: "power2.in" }, duration/2);
+        tl.to(this.settings, { bloomRadius: 0, duration: duration/2, ease: "power2.in" }, duration/2);
     }
 
     update() {
+        this.text.updateUniforms({
+            uProgress1: this.settings.uProgress1,
+            uProgress2: this.settings.uProgress2,
+            uProgress3: this.settings.uProgress3,
+            uProgress4: this.settings.uProgress4,
+            uTime: this.globalClock.getElapsedTime()
+        })
+        this.updateSettings();
+        this.controls.update();
         this.render();
         requestAnimationFrame(this.update.bind(this));
     }
@@ -123,6 +156,10 @@ export default class SplashScreen {
         this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
         this.gui.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
         this.gui.add(this.settings, "cameraDistance", 0, 5000, 100);
+        this.gui.add(this.settings, "uProgress1", 0, 1, 0.01);
+        this.gui.add(this.settings, "uProgress2", 0, 1, 0.01);
+        this.gui.add(this.settings, "uProgress3", 0, 1, 0.01);
+        this.gui.add(this.settings, "uProgress4", 0, 1, 0.01);
     }
 
     private addPostProcessing() {

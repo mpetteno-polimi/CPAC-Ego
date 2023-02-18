@@ -2,24 +2,24 @@ import type {AppConfig} from "./lib/interfaces/Config";
 
 export const config: AppConfig = {
     splashScreen: {
-        title: "EGO",
-        subtitle: "subtitle",
+        title: "ego",
+        subtitle: "",
         transition: {
             in: {
                 delay: 0,
                 duration: 0
             },
             out: {
-                delay: 0,
-                duration: 2000
+                delay: 1,
+                duration: 5000
             }
         }
     },
     world: {
         transition: {
             in: {
-                delay: 5,
-                duration: 3000
+                delay: 2,
+                duration: 5000
             },
             out: {
                 delay: 0,
