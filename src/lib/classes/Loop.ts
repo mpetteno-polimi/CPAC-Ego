@@ -2,6 +2,7 @@ import type World from "./World";
 import type {Clock} from "three";
 import * as THREE from 'three';
 import {config} from "../../config";
+import AutomationHelper from "./AutomationsHelper";
 
 export default class Loop {
     private world: World;
@@ -9,6 +10,7 @@ export default class Loop {
     private morphClock: Clock;
     private faceDetectedClock: Clock;
     private animationRequestId: number;
+    private automationsHelper: AutomationHelper;
     isFaceDetectionEnabled: boolean
     isFaceDetected:  boolean;
     isMorphEnabled: boolean;
@@ -17,6 +19,7 @@ export default class Loop {
 
     constructor(world: World) {
         this.world = world;
+        this.automationsHelper = new AutomationHelper();
     }
 
     start() {
@@ -51,15 +54,20 @@ export default class Loop {
             if (this.isFaceDetected) {
                 morphElapsedTimes = this.handleMorphAnimation(elapsedTime);
             } else {
+                let staticSphereParameters = this.automationsHelper.getStaticSphereParameters();
+                this.world.updateParameters(staticSphereParameters);
                 this.world.particles.detectFaces();
             }
+        } else {
+            let staticSphereParameters = this.automationsHelper.getStaticSphereParameters();
+            this.world.updateParameters(staticSphereParameters);
         }
         // console.log("Global", morphElapsedTimes[0]);
         // console.log("Face", morphElapsedTimes[1]);
         // console.log("Morph", morphElapsedTimes[2]);
         if(this.isFaceDetected) this.world.particles.detectFaceForMusicGenerator();
         this.world.particles.updateUniforms(morphElapsedTimes[0], morphElapsedTimes[1], morphElapsedTimes[2], delta);
-        this.world.updateSettings(this.isFaceDetected, this.isMorphEnabled);
+        this.world.updateSettings();
         this.world.controls.update();
         //this.world.renderer.render(this.scene, this.camera);
         this.world.composer.render();
@@ -80,6 +88,9 @@ export default class Loop {
                     this.morphStartTime = morphElapsedTime;
                     morphElapsedTime = 0;
                     this.isMorphEnabled = true;
+                } else {
+                    let staticFaceParameters = this.automationsHelper.getStaticFaceParameters();
+                    this.world.updateParameters(staticFaceParameters);
                 }
             } else {
                 let morphProgressTime = morphElapsedTime - this.morphStartTime;
@@ -88,12 +99,19 @@ export default class Loop {
                         this.init();
                         return [0, 0, 0];
                     } else {
+                        let staticMorphTargetParameters = this.automationsHelper.getStaticMorphTargetParameters();
+                        this.world.updateParameters(staticMorphTargetParameters);
                         morphElapsedTime = morphProgressTime;
                     }
                 } else {
+                    let faceToMorphTargetParameters = this.automationsHelper.getFaceToMorphTargetParameters();
+                    this.world.updateParameters(faceToMorphTargetParameters);
                     morphElapsedTime = morphProgressTime;
                 }
             }
+        } else {
+            let sphereToFaceParameters = this.automationsHelper.getSphereToFaceParameters();
+            this.world.updateParameters(sphereToFaceParameters);
         }
         return [elapsedTime, faceDetectedElapsedTime, morphElapsedTime]
     }
