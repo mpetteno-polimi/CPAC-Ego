@@ -18,39 +18,39 @@ export default class MorphTargetGenerator {
         },
         {
             path: "/images/svg/card_2.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_3.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_4.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_5.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_6.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_7.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_8.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_9.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         },
         {
             path: "/images/svg/card_10.svg",
-            scaleFactor: 0.1
+            scaleFactor: 0.007
         }
     ];
     private CANVAS_HEIGHT = config.morphTargetGenerator.canvasHeight;
@@ -59,7 +59,7 @@ export default class MorphTargetGenerator {
     constructor(world: World) {
         this.world = world;
         this.verticesCount = this.world.particles.textureWidth * this.world.particles.textureHeight;
-        this.generators = [this.loadRandomSVG];
+        this.generators = [this.perlinNoiseGenerator, this.loadRandomSVG, this.rorschachGenerator];
     }
 
     getRandomMorphTarget() {
