@@ -28,6 +28,9 @@ const vec3 HIDDEN_COLOR = vec3(0.);
 
 void main() {
 
+    float dist = length(gl_PointCoord - vec2(0.5));
+    float point = smoothstep(0.5, 0.45, dist);
+
     vec3 vColor;
     if (u_faceDetected) {
         if (u_morphEnabled) {
@@ -53,5 +56,6 @@ void main() {
         }
     }
 
-    gl_FragColor = vec4(vColor, 1.);
+    gl_FragColor = vec4(point*vColor, 1.);
+    if (point < 0.01) discard;
 }
