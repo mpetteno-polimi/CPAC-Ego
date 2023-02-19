@@ -17,9 +17,7 @@ import MorphTargetGenerator from "./MorphTargetGenerator";
 
 export default class World {
     scene: THREE.Scene;
-    currentSizes: Sizes;
     private readonly container: HTMLElement;
-    private videoInput: HTMLVideoElement;
     faceMeshDetector: FaceMeshDetector;
     faceExpressionDetector: FaceExpressionDetector;
     renderer: THREE.WebGLRenderer;
@@ -44,18 +42,16 @@ export default class World {
         noiseAmp: number,
         noiseRadius: number,
         noiseSpeed: number,
-        noiseType: number
+        noiseType: number,
+        primaryColor: number,
+        primaryVariant: number,
+        secondaryColor: number,
+        secondaryVariantColor: number,
+        backgroundColor: number
     };
 
     constructor(options) {
         this.container = options.container
-        this.videoInput = options.video
-        this.currentSizes = {
-            width: this.container.offsetWidth,
-            height: this.container.offsetHeight,
-            videoWidth: this.videoInput.width,
-            videoHeight: this.videoInput.height
-        };
         this.settings = {
             bloomRadius: 0,
             bloomThreshold: 0,
@@ -65,7 +61,12 @@ export default class World {
             noiseAmp: 0.3,
             noiseRadius: 1,
             noiseSpeed: 3,
-            noiseType: 4
+            noiseType: 4,
+            primaryColor: config.colors.primary,
+            primaryVariant: config.colors.primaryVariant,
+            secondaryColor: config.colors.secondary,
+            secondaryVariantColor: config.colors.secondaryVariant,
+            backgroundColor: config.colors.background
         };
         this.faceMeshDetector = options.faceMeshDetector;
         this.faceExpressionDetector = options.faceExpressionDetector;
@@ -96,17 +97,15 @@ export default class World {
     }
 
     resize() {
-        this.currentSizes.width = this.container.offsetWidth;
-        this.currentSizes.height = this.container.offsetHeight;
-        this.renderer.setSize(this.currentSizes.width, this.currentSizes.height);
-        this.composer.setSize(this.currentSizes.width, this.currentSizes.height);
-        this.particles.resize();
-        this.camera.aspect = this.currentSizes.width / this.currentSizes.height;
+        this.camera.aspect = this.container.offsetWidth / this.container.offsetHeight;
         this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+        this.composer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+        this.particles.resize(this.container.offsetWidth, this.container.offsetHeight);
     }
 
-    updateParameters(parameters) {
-        if (config.threeJS.scene.automateParameters) {
+    animate(parameters) {
+        if (config.scenes.world.automateParameters) {
             this.settings.bloomThreshold = parameters.bloomThreshold;
             this.settings.bloomStrength = parameters.bloomStrength;
             this.settings.bloomRadius = parameters.bloomRadius;
@@ -138,10 +137,10 @@ export default class World {
             1000
         );*/
         this.camera = new THREE.PerspectiveCamera(
-            config.threeJS.camera.fieldOfView,
+            config.scenes.world.camera.fieldOfView,
             window.innerWidth / window.innerHeight,
-            config.threeJS.camera.nearPlane,
-            config.threeJS.camera.farPlane
+            config.scenes.world.camera.nearPlane,
+            config.scenes.world.camera.farPlane
         );
         //this.camera.position.set(0, 0, 2.5);
         this.camera.lookAt(0, 0, 0);
@@ -153,8 +152,8 @@ export default class World {
             alpha: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(config.threeJS.scene.backgroundColor);
-        this.renderer.physicallyCorrectLights = true;
+        this.renderer.setClearColor(config.colors.background);
+         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
 
@@ -172,16 +171,29 @@ export default class World {
     }
 
     private addGUI() {
-        this.gui = new dat.GUI();
-        this.gui.add(this.settings, "bloomThreshold", 0, 10, 0.01);
-        this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
-        this.gui.add(this.settings, "bloomRadius", 0, 10, 0.01);
-        this.gui.add(this.settings, "noiseAmp", 0, 2, 0.01);
-        this.gui.add(this.settings, "noiseFreq", 0, 100, 0.01);
-        this.gui.add(this.settings, "noiseRadius", 0, 20, 0.01);
-        this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
-        this.gui.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
-        this.gui.add(this.settings, "cameraDistance", 0, 10, 0.5);
+        this.gui = new dat.GUI({ autoPlace: true });
+        this.gui.domElement.id = 'world-gui';
+        let cameraFolder = this.gui.addFolder(`Camera`);
+        cameraFolder.add(this.settings, "cameraDistance", 0, 10, 0.5);
+        let colorsFolder = this.gui.addFolder(`Color Palette`);
+        colorsFolder.addColor(this.settings, "primaryColor");
+        colorsFolder.addColor(this.settings, "primaryVariant");
+        colorsFolder.addColor(this.settings, "secondaryColor");
+        colorsFolder.addColor(this.settings, "secondaryVariantColor");
+        colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
+            this.settings.backgroundColor = color;
+            this.renderer.setClearColor(color);
+        });
+        let noiseFolder = this.gui.addFolder(`Noise`);
+        noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
+        noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
+        noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
+        noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
+        noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
+        let postProcessingFolder = this.gui.addFolder(`Post Processing`);
+        postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
+        postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
+        postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
     }
 
     private addPostProcessing() {

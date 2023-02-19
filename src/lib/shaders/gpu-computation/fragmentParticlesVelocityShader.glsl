@@ -1,21 +1,22 @@
 #include "/src/ext/glsl/lygia/generative/curl.glsl"
 
 /* UNIFORMS */
-uniform float u_time;
-uniform float u_faceMorphElapsedTime;
-uniform float u_targetMorphElapsedTime;
-uniform float u_delta;
-uniform float u_noiseFreq;
-uniform float u_noiseAmp;
-uniform float u_noiseRadius;
-uniform float u_noiseSpeed;
-uniform bool u_faceDetected;
-uniform bool u_morphEnabled;
-uniform float u_faceMorphDuration;
-uniform float u_targetMorphDuration;
-uniform float u_morphTargetType;
-uniform sampler2D u_textureFacePosition;
-uniform sampler2D u_textureMorphTargetPosition;
+uniform float uTime;
+uniform float uFaceMorphElapsedTime;
+uniform float uTargetMorphElapsedTime;
+uniform float uDelta;
+uniform float uNoiseFreq;
+uniform float uNoiseAmp;
+uniform float uNoiseRadius;
+uniform float uNoiseSpeed;
+uniform bool uFaceDetected;
+uniform bool uMorphEnabled;
+uniform float uFaceMorphDuration;
+uniform float uTargetMorphDuration;
+uniform float uMorphTargetType;
+uniform sampler2D uTextureFacePosition;
+uniform sampler2D uTextureMorphTargetPosition;
+uniform sampler2D uTextureInitialParticlesPosition;
 
 /* CONSTANTS */
 const float CENTER_MASS = 5.0;
@@ -26,7 +27,7 @@ const float CURL_RADIUS = 0.5;
 void main() {
 
     vec3 newVelocity = vec3(1.);
-    if (u_time > 2.) {
+    if (uTime > 2.) {
         vec2 uv = gl_FragCoord.xy / resolution.xy;
         vec3 position = texture2D(textureParticlesPosition, uv).xyz;
         vec3 velocity = texture2D(textureParticlesVelocity, uv).xyz;

@@ -16,7 +16,6 @@ export default class MSDFText {
     private material: MSDFTextMaterial;
     private fontAtlas: THREE.Texture;
     private font: Font;
-    private FONT_PATH = "/fonts/msdf";
 
     constructor(splashScreen: SplashScreen, visible: boolean = true) {
         this.splashScreen = splashScreen;
@@ -40,11 +39,16 @@ export default class MSDFText {
         this.material.uniforms.uProgress3.value = options.uProgress3;
         this.material.uniforms.uProgress4.value = options.uProgress4;
         this.material.uniforms.uTime.value = options.uTime;
+        this.material.uniforms.uPrimaryColor.value = new THREE.Color(options.uPrimaryColor);
+        this.material.uniforms.uPrimaryVariant.value = new THREE.Color(options.uPrimaryVariant);
+        this.material.uniforms.uSecondaryColor.value = new THREE.Color(options.uSecondaryColor);
+        this.material.uniforms.uSecondaryVariantColor.value = new THREE.Color(options.uSecondaryVariantColor);
+        this.material.uniforms.uBackgroundColor.value = new THREE.Color(options.uBackgroundColor);
     }
 
     protected addGeometry() {
         this.geometry = new MSDFTextGeometry({
-            text: config.splashScreen.title,
+            text: config.scenes.splashScreen.title,
             font: this.font.data,
             align: 'center'
         });
@@ -72,7 +76,12 @@ export default class MSDFText {
                     uProgress2: { value: 0 },
                     uProgress3: { value: 0 },
                     uProgress4: { value: 0 },
-                    uTime: { value: 0 }
+                    uTime: { value: 0 },
+                    uPrimaryColor: { value: new THREE.Color() },
+                    uPrimaryVariant: { value: new THREE.Color() },
+                    uSecondaryColor: { value: new THREE.Color() },
+                    uSecondaryVariantColor: { value: new THREE.Color() },
+                    uBackgroundColor: { value: new THREE.Color() }
                 }
             },
             vertexShader: vertexShader,
@@ -96,13 +105,13 @@ export default class MSDFText {
 
     private loadFontAtlas() {
         return new Promise((resolve, reject) => {
-            this.textureLoader.load(this.FONT_PATH + "/roboto-regular.png", resolve);
+            this.textureLoader.load(config.scenes.splashScreen.font.atlas, resolve);
         });
     }
 
     private loadFont() {
         return new Promise((resolve, reject) => {
-            this.fontLoader.load(this.FONT_PATH + "/roboto-regular.fnt", resolve);
+            this.fontLoader.load(config.scenes.splashScreen.font.fnt, resolve);
         });
     }
 

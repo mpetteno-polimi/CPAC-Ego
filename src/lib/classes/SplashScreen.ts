@@ -31,10 +31,15 @@ export default class SplashScreen {
         noiseRadius: number,
         noiseSpeed: number,
         noiseType: number,
-        uProgress1: number,
-        uProgress2: number,
-        uProgress3: number,
-        uProgress4: number
+        progress1: number,
+        progress2: number,
+        progress3: number,
+        progress4: number,
+        primaryColor: number,
+        primaryVariant: number,
+        secondaryColor: number,
+        secondaryVariantColor: number,
+        backgroundColor: number
     };
 
 
@@ -50,16 +55,21 @@ export default class SplashScreen {
             noiseRadius: 1,
             noiseSpeed: 3,
             noiseType: 4,
-            uProgress1: 0,
-            uProgress2: 0,
-            uProgress3: 0,
-            uProgress4: 0
+            progress1: 0,
+            progress2: 0,
+            progress3: 0,
+            progress4: 0,
+            primaryColor: config.colors.primary,
+            primaryVariant: config.colors.primaryVariant,
+            secondaryColor: config.colors.secondary,
+            secondaryVariantColor: config.colors.secondaryVariant,
+            backgroundColor: config.colors.background
         };
         this.addCamera();
         this.addRenderer();
         this.addScene();
         this.addControls();
-        //this.addGUI();
+        this.addGUI();
         this.addPostProcessing();
         this.addObjects();
         //this.addLights();
@@ -79,26 +89,33 @@ export default class SplashScreen {
     }
 
     animate() {
-        let duration = 2, stagger = 0.5;
-        let tl = gsap.timeline({onComplete: () => {}, repeat: -1, repeatDelay: 5});
-        tl.startTime(0);
-        tl.to(this.settings, { uProgress1: 1, duration: duration }, 0);
-        tl.to(this.settings, { uProgress2: 1, duration: duration }, stagger);
-        tl.to(this.settings, { uProgress3: 1, duration: duration }, stagger*2);
-        tl.to(this.settings, { uProgress4: 1, duration: duration }, stagger*3);
-        tl.to(this.settings, { bloomStrength: 2.3, duration: duration/2, ease: "power2.in" }, 0);
-        tl.to(this.settings, { bloomRadius: 1.7, duration: duration/2, ease: "power2.in" }, 0);
-        tl.to(this.settings, { bloomStrength: 0, duration: duration/2, ease: "power2.in" }, duration/2);
-        tl.to(this.settings, { bloomRadius: 0, duration: duration/2, ease: "power2.in" }, duration/2);
+        if (config.scenes.splashScreen.automateParameters) {
+            let duration = 2, stagger = 0.5;
+            let tl = gsap.timeline({onComplete: () => {}, repeat: -1, repeatDelay: 5});
+            tl.startTime(0);
+            tl.to(this.settings, { progress1: 1, duration: duration }, 0);
+            tl.to(this.settings, { progress2: 1, duration: duration }, stagger);
+            tl.to(this.settings, { progress3: 1, duration: duration }, stagger*2);
+            tl.to(this.settings, { progress4: 1, duration: duration }, stagger*3);
+            tl.to(this.settings, { bloomStrength: 2.3, duration: duration/2, ease: "power2.in" }, 0);
+            tl.to(this.settings, { bloomRadius: 1.7, duration: duration/2, ease: "power2.in" }, 0);
+            tl.to(this.settings, { bloomStrength: 0, duration: duration/2, ease: "power2.in" }, duration/2);
+            tl.to(this.settings, { bloomRadius: 0, duration: duration/2, ease: "power2.in" }, duration/2);
+        }
     }
 
     update() {
         this.text.updateUniforms({
-            uProgress1: this.settings.uProgress1,
-            uProgress2: this.settings.uProgress2,
-            uProgress3: this.settings.uProgress3,
-            uProgress4: this.settings.uProgress4,
-            uTime: this.globalClock.getElapsedTime()
+            uProgress1: this.settings.progress1,
+            uProgress2: this.settings.progress2,
+            uProgress3: this.settings.progress3,
+            uProgress4: this.settings.progress4,
+            uTime: this.globalClock.getElapsedTime(),
+            uPrimaryColor: this.settings.primaryColor,
+            uPrimaryVariant: this.settings.primaryVariant,
+            uSecondaryColor: this.settings.secondaryColor,
+            uSecondaryVariantColor: this.settings.secondaryVariantColor,
+            uBackgroundColor: this.settings.backgroundColor,
         })
         this.updateSettings();
         this.controls.update();
@@ -121,7 +138,11 @@ export default class SplashScreen {
     }
 
     private addCamera() {
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        this.camera = new THREE.PerspectiveCamera(
+            config.scenes.splashScreen.camera.fieldOfView,
+            window.innerWidth / window.innerHeight,
+            config.scenes.splashScreen.camera.nearPlane,
+            config.scenes.splashScreen.camera.farPlane);
     }
 
     private addRenderer() {
@@ -130,7 +151,7 @@ export default class SplashScreen {
             alpha: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setClearColor(config.threeJS.scene.backgroundColor);
+        this.renderer.setClearColor(config.colors.background);
         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
@@ -146,20 +167,34 @@ export default class SplashScreen {
     }
 
     private addGUI() {
-        this.gui = new dat.GUI();
-        this.gui.add(this.settings, "bloomThreshold", 0, 10, 0.01);
-        this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
-        this.gui.add(this.settings, "bloomRadius", 0, 10, 0.01);
-        this.gui.add(this.settings, "noiseAmp", 0, 2, 0.01);
-        this.gui.add(this.settings, "noiseFreq", 0, 100, 0.01);
-        this.gui.add(this.settings, "noiseRadius", 0, 20, 0.01);
-        this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
-        this.gui.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
-        this.gui.add(this.settings, "cameraDistance", 0, 5000, 100);
-        this.gui.add(this.settings, "uProgress1", 0, 1, 0.01);
-        this.gui.add(this.settings, "uProgress2", 0, 1, 0.01);
-        this.gui.add(this.settings, "uProgress3", 0, 1, 0.01);
-        this.gui.add(this.settings, "uProgress4", 0, 1, 0.01);
+        this.gui = new dat.GUI({ autoPlace: true });
+        this.gui.domElement.id = 'splash-screen-gui';
+        let cameraFolder = this.gui.addFolder(`Camera`);
+        cameraFolder.add(this.settings, "cameraDistance", 0, 5000, 100);
+        let colorsFolder = this.gui.addFolder(`Color Palette`);
+        colorsFolder.addColor(this.settings, "primaryColor");
+        colorsFolder.addColor(this.settings, "primaryVariant");
+        colorsFolder.addColor(this.settings, "secondaryColor");
+        colorsFolder.addColor(this.settings, "secondaryVariantColor");
+        colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
+            this.settings.backgroundColor = color;
+            this.renderer.setClearColor(color);
+        });
+        let progressFolder = this.gui.addFolder(`Progress`);
+        progressFolder.add(this.settings, "progress1", 0, 1, 0.01);
+        progressFolder.add(this.settings, "progress2", 0, 1, 0.01);
+        progressFolder.add(this.settings, "progress3", 0, 1, 0.01);
+        progressFolder.add(this.settings, "progress4", 0, 1, 0.01);
+        let noiseFolder = this.gui.addFolder(`Noise`);
+        noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
+        noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
+        noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
+        noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
+        noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
+        let postProcessingFolder = this.gui.addFolder(`Post Processing`);
+        postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
+        postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
+        postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
     }
 
     private addPostProcessing() {

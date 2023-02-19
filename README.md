@@ -26,7 +26,7 @@ With this project we want to explore perception, as a reconstruction based on on
 - Generate a face mesh from the webcam’s input in real time ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
 - ~~Use face’s to generate a grammar string for music composition~~
 - ~~Define a grammar for the composition~~
-- Generate music in PureData/Max via OSC ![50%](https://progress-bar.dev/70) &rarr; **Samuele**
+- Generate music in PureData/Max via OSC ![95%](https://progress-bar.dev/95) &rarr; **Samuele**
 
 # Final project
 - Face triangulation ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
@@ -34,20 +34,18 @@ With this project we want to explore perception, as a reconstruction based on on
 - ~~Image's object contour recognition~~
 - Continuous loop morphing between face and abstract shapes ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
 - Define markov chain for the composition ![100%](https://progress-bar.dev/100) &rarr; **Sebastian**
-- Alter sound based on the heads spatial parameters ![90%](https://progress-bar.dev/90) &rarr; **Sebastian**
+- Alter sound based on the heads spatial parameters ![95%](https://progress-bar.dev/95) &rarr; **Sebastian**
 - OSC integration ![70%](https://progress-bar.dev/70) &rarr; **Sebastian** + **Samuele**
   - **TODO** - Send start and stop for drones (also for splash screen)
   - **TODO** - Review play and stop messages during loop
-- Real time generation of morphing target images ![90%](https://progress-bar.dev/90)
+- Real time generation of morphing target images ![100%](https://progress-bar.dev/100)
   - SVG morph target loader ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
-  - Perlin noise symmetric image generator ![80%](https://progress-bar.dev/80) &rarr; **Sebastian** + **Matteo**
+  - Perlin noise symmetric image generator ![95%](https://progress-bar.dev/95) &rarr; **Sebastian** + **Matteo**
     - **TODO** - Improve perlin noise generator parameters &rarr; **Sebastian**
-- Splash screen ![50%](https://progress-bar.dev/50) &rarr; **Matteo**
-  - **TODO** - Text animation
+- Splash screen ![75%](https://progress-bar.dev/75) &rarr; **Matteo**
   - **TODO** - Modal view with experience guide
-- Processing based morph target generator ![30%](https://progress-bar.dev/30) &rarr; **Tommaso**
-  - **TODO** - ThreeJS porting
-- Improve rendering and colours ![0%](https://progress-bar.dev/0)
-- ToneJS player if OSC not available ![0%](https://progress-bar.dev/0)
+- Processing based morph target generator ![100%](https://progress-bar.dev/100) &rarr; **Tommaso**
+- Improve rendering and colours ![50%](https://progress-bar.dev/50)
+- ToneJS player if OSC not available ![50%](https://progress-bar.dev/50)
 - README + Presentation slides ![0%](https://progress-bar.dev/0)
 - Handle multiple faces at the same time ![0%](https://progress-bar.dev/0)

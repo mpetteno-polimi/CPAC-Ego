@@ -2,23 +2,119 @@ import type {MediaPipeFaceMeshMediaPipeModelConfig} from "@tensorflow-models/fac
 import type {MediaPipeFaceMeshEstimationConfig} from "@tensorflow-models/face-landmarks-detection/dist/mediapipe/types";
 
 type AppConfig = {
-    splashScreen: SplashScreenConfig,
-    world: WorldConfig,
-    faceMesh: FaceMeshConfig,
+    scenes: ScenesConfig,
+    faceMeshDetector: FaceMeshDetectorConfig,
+    faceExpressionDetector: FaceExpressionDetectorConfig,
     morphTargetGenerator: MorphTargetGeneratorConfig,
     music: MusicConfig,
     webcam: WebcamConfig,
-    threeJS: ThreeJSConfig
+    loop: LoopConfig,
+    osc: OSCConfig
+    colors: ColorPaletteConfig
+}
+
+type ScenesConfig = {
+    splashScreen: SplashScreenConfig,
+    world: WorldConfig
 }
 
 type SplashScreenConfig = {
     title: string,
     subtitle: string,
-    transition: TransitionConfig
+    font: FontConfig,
+    transition: TransitionConfig,
+    camera: CameraConfig,
+
+    automateParameters: boolean
 }
 
 type WorldConfig = {
-    transition: TransitionConfig
+    transition: TransitionConfig,
+    camera: CameraConfig
+    particlesCount: number,
+    automateParameters: boolean
+}
+
+type FaceMeshDetectorConfig = {
+    detector: MediaPipeFaceMeshMediaPipeModelConfig
+    estimator: MediaPipeFaceMeshEstimationConfig
+    faceScaleFactor: number,
+    triangulateFace: boolean
+}
+
+type FaceExpressionDetectorConfig = {
+
+}
+
+type MorphTargetGeneratorConfig = {
+    svg: SVGMorphTargetGeneratorConfig,
+    perlin: PerlinNoiseMorphTargetGeneratorConfig,
+    symmetric: SymmetryMorphTargetGeneratorConfig
+}
+
+type SVGMorphTargetGeneratorConfig = {
+    paths: any[]
+}
+
+type PerlinNoiseMorphTargetGeneratorConfig = {
+    canvasWidth: number,
+    canvasHeight: number
+}
+
+type SymmetryMorphTargetGeneratorConfig = {
+    time: number,
+    pointsCount: number
+}
+
+type MusicConfig = {
+    player: MusicPlayerConfig,
+    generator: MusicGeneratorConfig,
+    toneJS: ToneJSConfig
+}
+
+type MusicPlayerConfig = {
+
+}
+
+type ToneJSConfig = {
+
+}
+
+type MusicGeneratorConfig = {
+    bassEnabled: true
+}
+
+type WebcamConfig = {
+    widthRes: number,
+    heightRes: number,
+    fps: number
+}
+
+type LoopConfig = {
+    faceDetectionStartTime: number,
+    faceDetectedMorphDuration: number,
+    morphStart: number,
+    morphDuration: number,
+    morphEnd: number,
+}
+
+type OSCConfig = {
+    host: string,
+    port: number
+}
+
+type ColorPaletteConfig = {
+    primary: number,
+    primaryVariant: number,
+    secondary: number,
+    secondaryVariant: number,
+    background: number
+}
+
+type CameraConfig = {
+    fieldOfView: number,
+    nearPlane: number,
+    farPlane: number
 }
 
 type TransitionConfig = {
@@ -32,55 +128,7 @@ type TransitionConfig = {
     }
 }
 
-type FaceMeshConfig = {
-    detector: MediaPipeFaceMeshMediaPipeModelConfig
-    estimator: MediaPipeFaceMeshEstimationConfig
-}
-
-type MorphTargetGeneratorConfig = {
-    canvasWidth: number,
-    canvasHeight: number
-}
-
-type MusicConfig = {
-    generator: MusicGeneratorConfig
-}
-
-type MusicGeneratorConfig = {
-    bassEnabled: true
-}
-
-type WebcamConfig = {
-    widthRes: number,
-    heightRes: number
-    fps: number
-}
-
-type ThreeJSConfig = {
-    camera: CameraConfig,
-    scene: SceneConfig,
-    loop: LoopConfig
-}
-
-type SceneConfig = {
-    backgroundColor: number,
-    faceScaleFactor: number,
-    triangulateFace: boolean,
-    particlesCount: number,
-    automateParameters: boolean
-}
-
-type CameraConfig = {
-    fieldOfView: number,
-    nearPlane: number,
-    farPlane: number
-}
-
-type LoopConfig = {
-    faceDetectionStartTime: number,
-    faceDetectedMorphDuration: number,
-    morphStart: number,
-    morphDuration: number,
-    morphEnd: number,
-
+type FontConfig = {
+    fnt: string,
+    atlas: string
 }
