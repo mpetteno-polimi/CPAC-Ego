@@ -38,7 +38,7 @@ export default class MusicPlayer {
 
     stopDrone() {
         if (this.oscClient.isConnected()) {
-            this.oscClient.sendMessage("/dronePlay", 0);
+            this.oscClient.sendMessage("/droneStop", 0);
         } else {
             this.toneJsPlayer.stopDrone();
         }
