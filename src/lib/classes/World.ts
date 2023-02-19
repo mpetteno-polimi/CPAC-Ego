@@ -110,6 +110,11 @@ export default class World {
             this.settings.bloomThreshold = parameters.bloomThreshold;
             this.settings.bloomStrength = parameters.bloomStrength;
             this.settings.bloomRadius = parameters.bloomRadius;
+            this.settings.primaryColor = parameters.primaryColor;
+            this.settings.primaryVariant = parameters.primaryVariant;
+            this.settings.secondaryColor = parameters.secondaryColor;
+            this.settings.secondaryVariantColor = parameters.secondaryVariantColor;
+            this.settings.backgroundColor = parameters.backgroundColor;
             this.settings.noiseAmp = parameters.noiseAmp;
             this.settings.noiseRadius = parameters.noiseRadius;
             this.settings.noiseFreq = parameters.noiseFreq;
