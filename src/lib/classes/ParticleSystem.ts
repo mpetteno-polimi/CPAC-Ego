@@ -46,7 +46,6 @@ export default class ParticleSystem {
         this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
             if (estimatedFaces.length != 0) {
                 let estimatedFace = estimatedFaces[0];
-                this.world.musicGenerator.updateFromFaceEstimation(estimatedFace);
                 if (this.isFaceToUpdate()) {
                     this.isProcessingFace = true;
                     this.world.faceMeshDetector.processFaceDetection(
@@ -54,8 +53,6 @@ export default class ParticleSystem {
                 }
             } else {
                 this.world.loop.isFaceDetected = false;
-                this.world.musicGenerator.stopPlayingSequence();
-                this.world.musicGenerator.musicPlayer.stopDrone();
             }
         });
     }
@@ -183,7 +180,6 @@ export default class ParticleSystem {
             let detection = estimatedExpression[0];
             if (detection) particles.world.musicGenerator.setSentiment(detection.expressions);
         });
-        particles.world.musicGenerator.stopPlayingSequence();
         particles.world.musicGenerator.newFace();
         particles.world.musicGenerator.startPlayingSequence();
         particles.world.musicGenerator.musicPlayer.startDrone();

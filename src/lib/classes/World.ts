@@ -84,12 +84,11 @@ export default class World {
         //this.addHelpers();
         this.container.append(this.renderer.domElement);
         this.resize();
-        this.musicGenerator.musicPlayer.startNoiseDrone();
     }
 
     start() {
         this.loop.start();
-        this.musicGenerator.newFace();
+        this.musicGenerator.musicPlayer.startNoiseDrone();
     }
 
     stop() {

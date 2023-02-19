@@ -39,6 +39,8 @@ export default class Loop {
         this.isFaceDetectionEnabled = false;
         this.isFaceDetected = false;
         this.isMorphEnabled = false;
+        this.world.musicGenerator.stopPlayingSequence();
+        this.world.musicGenerator.musicPlayer.stopDrone();
     }
 
     animate() {
@@ -57,6 +59,7 @@ export default class Loop {
         let parameters = this.automationsHelper.getStaticSphereParameters(timeControls);
         if (elapsedTime > config.loop.faceDetectionStartTime) {
             if (this.isFaceDetected) {
+                this.world.particles.detectFaceForMusicGenerator();
                 let controls = this.handleMorphAnimation(timeControls, parameters);
                 timeControls = controls[0];
                 parameters = controls[1];
@@ -67,7 +70,6 @@ export default class Loop {
         // console.log("Global", morphElapsedTimes[0]);
         // console.log("Face", morphElapsedTimes[1]);
         // console.log("Morph", morphElapsedTimes[2]);
-        if (this.isFaceDetected) this.world.particles.detectFaceForMusicGenerator();
         this.world.animate(parameters);
         this.world.particles.updateUniforms(timeControls.globalElapsedTime, timeControls.faceDetectedElapsedTime,
             timeControls.morphElapsedTime, delta);
