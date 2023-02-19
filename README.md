@@ -26,23 +26,22 @@ With this project we want to explore perception, as a reconstruction based on on
 - Generate a face mesh from the webcam’s input in real time ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
 - ~~Use face’s to generate a grammar string for music composition~~
 - ~~Define a grammar for the composition~~
-- Generate music in PureData/Max via OSC ![95%](https://progress-bar.dev/95) &rarr; **Samuele**
+- Generate music in PureData/Max via OSC ![85%](https://progress-bar.dev/85) &rarr; **Samuele**
 
 # Final project
 - Face triangulation ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
-- Noise automation during loop's animation ![70%](https://progress-bar.dev/20) &rarr; **Matteo + Sebastian**
 - ~~Image's object contour recognition~~
 - Continuous loop morphing between face and abstract shapes ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
 - Define markov chain for the composition ![100%](https://progress-bar.dev/100) &rarr; **Sebastian**
-- Alter sound based on the heads spatial parameters ![95%](https://progress-bar.dev/95) &rarr; **Sebastian**
+- Alter sound based on the heads spatial parameters ![100%](https://progress-bar.dev/100) &rarr; **Sebastian**
 - OSC integration ![100%](https://progress-bar.dev/100) &rarr; **Sebastian** + **Samuele**
 - Real time generation of morphing target images ![100%](https://progress-bar.dev/100)
   - SVG morph target loader ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
-  - Perlin noise symmetric image generator ![95%](https://progress-bar.dev/95) &rarr; **Sebastian** + **Matteo**
-    - **TODO** - Improve perlin noise generator parameters &rarr; **Sebastian**
+  - Perlin noise symmetric image generator ![100%](https://progress-bar.dev/100) &rarr; **Sebastian** + **Matteo**
+  - Processing based morph target generator ![100%](https://progress-bar.dev/100) &rarr; **Tommaso**
 - Splash screen ![75%](https://progress-bar.dev/75) &rarr; **Matteo**
   - **TODO** - Modal view with experience guide
-- Processing based morph target generator ![100%](https://progress-bar.dev/100) &rarr; **Tommaso**
+- Noise automation during loop's animation ![20%](https://progress-bar.dev/20) &rarr; **Matteo + Sebastian**
 - Improve rendering and colours ![50%](https://progress-bar.dev/50)
 - ToneJS player if OSC not available ![50%](https://progress-bar.dev/50)
 - README + Presentation slides ![0%](https://progress-bar.dev/0)
