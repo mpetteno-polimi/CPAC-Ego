@@ -35,9 +35,7 @@ With this project we want to explore perception, as a reconstruction based on on
 - Continuous loop morphing between face and abstract shapes ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
 - Define markov chain for the composition ![100%](https://progress-bar.dev/100) &rarr; **Sebastian**
 - Alter sound based on the heads spatial parameters ![95%](https://progress-bar.dev/95) &rarr; **Sebastian**
-- OSC integration ![70%](https://progress-bar.dev/70) &rarr; **Sebastian** + **Samuele**
-  - **TODO** - Send start and stop for drones (also for splash screen)
-  - **TODO** - Review play and stop messages during loop
+- OSC integration ![100%](https://progress-bar.dev/100) &rarr; **Sebastian** + **Samuele**
 - Real time generation of morphing target images ![100%](https://progress-bar.dev/100)
   - SVG morph target loader ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
   - Perlin noise symmetric image generator ![95%](https://progress-bar.dev/95) &rarr; **Sebastian** + **Matteo**
