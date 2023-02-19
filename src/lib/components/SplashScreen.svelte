@@ -1,6 +1,6 @@
 <script>
     import {fade} from 'svelte/transition';
-    import {createEventDispatcher, onMount} from "svelte";
+    import {createEventDispatcher, onMount, onDestroy} from "svelte";
     import {config} from "../../config";
     import SplashScreen from "../classes/SplashScreen";
 
@@ -15,13 +15,23 @@
         });
     })
 
-    function dispatchInteractionEvent() {
-        dispatch("interaction");
+    onDestroy(() => {
+        window.removeEventListener("resize", splashScreen.resize);
+    });
+
+    function dispatchInteractionEvent(event) {
+        let gui = document.getElementById("splash-screen-gui");
+        if (!gui.contains(event.target)) {
+            dispatch("interaction");
+            gui.remove();
+            window.removeEventListener("click", dispatchInteractionEvent);
+        }
     }
+
 </script>
 
 <svelte:window on:resize={splashScreen.resize()} on:click={dispatchInteractionEvent} />
-<splash-screen bind:this={container} out:fade={config.splashScreen.transition.out}></splash-screen>
+<splash-screen bind:this={container} out:fade={config.scenes.splashScreen.transition.out}></splash-screen>
 
 <style>
 

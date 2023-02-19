@@ -50,22 +50,22 @@ export default class Loop {
 
     render(elapsedTime: number, delta: number) {
         let morphElapsedTimes = [elapsedTime, 0, 0];
-        if (elapsedTime > config.threeJS.loop.faceDetectionStartTime) {
+        if (elapsedTime > config.loop.faceDetectionStartTime) {
             if (this.isFaceDetected) {
                 morphElapsedTimes = this.handleMorphAnimation(elapsedTime);
             } else {
                 let staticSphereParameters = this.automationsHelper.getStaticSphereParameters();
-                this.world.updateParameters(staticSphereParameters);
+                this.world.animate(staticSphereParameters);
                 this.world.particles.detectFaces();
             }
         } else {
             let staticSphereParameters = this.automationsHelper.getStaticSphereParameters();
-            this.world.updateParameters(staticSphereParameters);
+            this.world.animate(staticSphereParameters);
         }
         // console.log("Global", morphElapsedTimes[0]);
         // console.log("Face", morphElapsedTimes[1]);
         // console.log("Morph", morphElapsedTimes[2]);
-        if(this.isFaceDetected) this.world.particles.detectFaceForMusicGenerator();
+        if (this.isFaceDetected) this.world.particles.detectFaceForMusicGenerator();
         this.world.particles.updateUniforms(morphElapsedTimes[0], morphElapsedTimes[1], morphElapsedTimes[2], delta);
         this.world.updateSettings();
         this.world.controls.update();
@@ -81,37 +81,37 @@ export default class Loop {
     private handleMorphAnimation(elapsedTime: number) {
         let faceDetectedElapsedTime = this.faceDetectedClock.getElapsedTime();
         let morphElapsedTime = 0;
-        if (faceDetectedElapsedTime > config.threeJS.loop.faceDetectedMorphDuration) {
+        if (faceDetectedElapsedTime > config.loop.faceDetectedMorphDuration) {
             morphElapsedTime = this.morphClock.getElapsedTime();
             if (!this.isMorphEnabled) {
-                if (morphElapsedTime > config.threeJS.loop.morphStart) {
+                if (morphElapsedTime > config.loop.morphStart) {
                     this.morphStartTime = morphElapsedTime;
                     morphElapsedTime = 0;
                     this.isMorphEnabled = true;
                 } else {
                     let staticFaceParameters = this.automationsHelper.getStaticFaceParameters();
-                    this.world.updateParameters(staticFaceParameters);
+                    this.world.animate(staticFaceParameters);
                 }
             } else {
                 let morphProgressTime = morphElapsedTime - this.morphStartTime;
-                if (morphProgressTime > config.threeJS.loop.morphDuration) {
-                    if (morphProgressTime > config.threeJS.loop.morphDuration + config.threeJS.loop.morphEnd) {
+                if (morphProgressTime > config.loop.morphDuration) {
+                    if (morphProgressTime > config.loop.morphDuration + config.loop.morphEnd) {
                         this.init();
                         return [0, 0, 0];
                     } else {
                         let staticMorphTargetParameters = this.automationsHelper.getStaticMorphTargetParameters();
-                        this.world.updateParameters(staticMorphTargetParameters);
+                        this.world.animate(staticMorphTargetParameters);
                         morphElapsedTime = morphProgressTime;
                     }
                 } else {
                     let faceToMorphTargetParameters = this.automationsHelper.getFaceToMorphTargetParameters();
-                    this.world.updateParameters(faceToMorphTargetParameters);
+                    this.world.animate(faceToMorphTargetParameters);
                     morphElapsedTime = morphProgressTime;
                 }
             }
         } else {
             let sphereToFaceParameters = this.automationsHelper.getSphereToFaceParameters();
-            this.world.updateParameters(sphereToFaceParameters);
+            this.world.animate(sphereToFaceParameters);
         }
         return [elapsedTime, faceDetectedElapsedTime, morphElapsedTime]
     }

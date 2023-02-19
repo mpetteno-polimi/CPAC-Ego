@@ -1,57 +1,63 @@
 /* UNIFORMS */
-uniform float u_time;
-uniform float u_faceMorphElapsedTime;
-uniform float u_targetMorphElapsedTime;
-uniform float u_delta;
-uniform float u_resolution;
-uniform float u_noiseFreq;
-uniform float u_noiseAmp;
-uniform float u_noiseRadius;
-uniform int u_noiseType;
-uniform float u_noiseSpeed;
-uniform bool u_faceDetected;
-uniform bool u_morphEnabled;
-uniform float u_faceMorphDuration;
-uniform float u_targetMorphDuration;
-uniform float u_morphTargetType;
-uniform sampler2D u_particlesPosition;
+uniform float uTime;
+uniform float uFaceMorphElapsedTime;
+uniform float uTargetMorphElapsedTime;
+uniform float uDelta;
+uniform float uResolution;
+uniform float uNoiseFreq;
+uniform float uNoiseAmp;
+uniform float uNoiseRadius;
+uniform float uNoiseSpeed;
+uniform float uNoiseSeed;
+uniform int uNoiseType;
+uniform bool uFaceDetected;
+uniform bool uMorphEnabled;
+uniform float uFaceMorphDuration;
+uniform float uTargetMorphDuration;
+uniform float uMorphTargetType;
+uniform sampler2D uParticlesPosition;
+uniform vec3 uPrimaryColor;
+uniform vec3 uPrimaryVariant;
+uniform vec3 uSecondaryColor;
+uniform vec3 uSecondaryVariantColor;
+uniform vec3 uBackgroundColor;
 
 /* VARYINGS */
 varying float display;
 
-/* CONSTANTS */
-const vec3 DEFAULT_COLOR = vec3(0.5, 0.6, 0.7);
-const vec3 FACE_COLOR = vec3(0.5, 0.6, 0.7);
-const vec3 MORPH_TARGET_COLOR = vec3(0.5, 0.6, 0.7);
-const vec3 HIDDEN_COLOR = vec3(0.);
-
 
 void main() {
 
+    float dist = length(gl_PointCoord - vec2(0.5));
+    float point = smoothstep(0.5, 0.45, dist);
+
     vec3 vColor;
-    if (u_faceDetected) {
-        if (u_morphEnabled) {
+    vec3 faceColor = uSecondaryColor;
+    vec3 morphTargetColor = uSecondaryVariantColor;
+    if (uFaceDetected) {
+        if (uMorphEnabled) {
             if (display == 0.) {
-                vColor = HIDDEN_COLOR;
+                vColor = uBackgroundColor;
             } else {
-                vColor = MORPH_TARGET_COLOR;
+                vColor = morphTargetColor;
             }
-            if (u_targetMorphElapsedTime <= u_targetMorphDuration) {
-                float mixFactor = u_targetMorphElapsedTime/u_targetMorphDuration;
-                vColor = mix(FACE_COLOR, vColor, clamp(0., 1., mixFactor));
+            if (uTargetMorphElapsedTime <= uTargetMorphDuration) {
+                float mixFactor = uTargetMorphElapsedTime/uTargetMorphDuration;
+                vColor = mix(faceColor, vColor, clamp(0., 1., mixFactor));
             }
         } else {
-            float mixFactor = u_faceMorphElapsedTime/u_faceMorphDuration;
-            vColor = mix(DEFAULT_COLOR, FACE_COLOR, clamp(0., 1., mixFactor));
+            float mixFactor = uFaceMorphElapsedTime/uFaceMorphDuration;
+            vColor = mix(uPrimaryColor, faceColor, clamp(0., 1., mixFactor));
         }
     } else {
         if (display == 0.) {
-            float mixFactor = u_time/2.;
-            vColor = mix(HIDDEN_COLOR, DEFAULT_COLOR, clamp(0., 1., mixFactor));
+            float mixFactor = uTime/2.;
+            vColor = mix(uBackgroundColor, uPrimaryColor, clamp(0., 1., mixFactor));
         } else {
-            vColor = DEFAULT_COLOR;
+            vColor = uPrimaryColor;
         }
     }
 
-    gl_FragColor = vec4(vColor, 1.);
+    gl_FragColor = vec4(point*vColor, 1.);
+    if (point < 0.01) discard;
 }

@@ -10,23 +10,23 @@
 attribute vec2 reference;
 
 /* UNIFORMS */
-uniform float u_time;
-uniform float u_faceMorphElapsedTime;
-uniform float u_targetMorphElapsedTime;
-uniform float u_delta;
-uniform float u_resolution;
-uniform float u_noiseFreq;
-uniform float u_noiseAmp;
-uniform float u_noiseRadius;
-uniform float u_noiseSeed;
-uniform int u_noiseType;
-uniform float u_noiseSpeed;
-uniform bool u_faceDetected;
-uniform bool u_morphEnabled;
-uniform float u_faceMorphDuration;
-uniform float u_targetMorphDuration;
-uniform float u_morphTargetType;
-uniform sampler2D u_particlesPosition;
+uniform float uTime;
+uniform float uFaceMorphElapsedTime;
+uniform float uTargetMorphElapsedTime;
+uniform float uDelta;
+uniform float uResolution;
+uniform float uNoiseFreq;
+uniform float uNoiseAmp;
+uniform float uNoiseRadius;
+uniform float uNoiseSpeed;
+uniform float uNoiseSeed;
+uniform int uNoiseType;
+uniform bool uFaceDetected;
+uniform bool uMorphEnabled;
+uniform float uFaceMorphDuration;
+uniform float uTargetMorphDuration;
+uniform float uMorphTargetType;
+uniform sampler2D uParticlesPosition;
 
 /* VARYINGS */
 varying float display;
@@ -40,8 +40,8 @@ vec3 getNoisedPosition(vec3 pos) {
 
     vec3 noise, period;
     float noiseX, noiseY, noiseZ;
-    vec3 noiseInput = (pos*u_noiseFreq + u_time*u_noiseSpeed)*u_noiseSeed;
-    switch (u_noiseType) {
+    vec3 noiseInput = (pos*uNoiseFreq + uTime*uNoiseSpeed)*uNoiseSeed;
+    switch (uNoiseType) {
         case 0: // Classic Perlin Noise
             noiseX = cnoise(noiseInput);
             noiseY = cnoise(noiseInput);
@@ -49,7 +49,7 @@ vec3 getNoisedPosition(vec3 pos) {
             noise = vec3(noiseX, noiseY, noiseZ);
             break;
         case 1: // Classic Perlin Noise with periodic variant
-            period = vec3(u_time);
+            period = vec3(uTime*uNoiseSeed);
             noiseX = pnoise(noiseInput, period);
             noiseY = pnoise(noiseInput, period);
             noiseZ = pnoise(noiseInput, period);
@@ -59,8 +59,8 @@ vec3 getNoisedPosition(vec3 pos) {
             noise = snoise3(noiseInput);
             break;
         case 3: // Tiling simplex flow noise
-            period = vec3(u_time);
-            float alpha = u_time;
+            period = vec3(uTime*uNoiseSeed);
+            float alpha = uTime*uNoiseSeed;
             noiseX = psrdnoise(noiseInput, period, alpha);
             noiseY = psrdnoise(noiseInput, period, alpha);
             noiseZ = psrdnoise(noiseInput, period, alpha);
@@ -80,17 +80,17 @@ vec3 getNoisedPosition(vec3 pos) {
             break;
     }
 
-    vec3 noisePos = u_noiseAmp*noise;
+    vec3 noisePos = uNoiseAmp*noise;
     vec3 tar = pos + noisePos;
-    float d = length(pos - tar)/u_noiseRadius;
+    float d = length(pos - tar)/uNoiseRadius;
     return mix(pos, tar, easing(d));
 }
 
 void main() {
-    vec3 position = texture2D(u_particlesPosition, reference).xyz;
+    vec3 position = texture2D(uParticlesPosition, reference).xyz;
 
     position = getNoisedPosition(position);
-    display = texture2D(u_particlesPosition, reference).w;
+    display = texture2D(uParticlesPosition, reference).w;
 
     #include <begin_vertex>
     #include <project_vertex>
