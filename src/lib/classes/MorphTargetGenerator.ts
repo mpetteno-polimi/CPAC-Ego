@@ -104,7 +104,7 @@ export default class MorphTargetGenerator {
         let curve = new THREE.SplineCurve(points);
 
         // extrude 3D geometry from 2D spline curve
-        let scaleFactor = 0.02;
+        let scaleFactor = 0.015;
         let extrudeShape = new THREE.Shape(curve.getPoints(points_count*100));
         let extrudeGeometry = new THREE.ExtrudeGeometry(extrudeShape, {
             curveSegments: 20,

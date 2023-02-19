@@ -147,8 +147,8 @@ export const config: AppConfig = {
     colors: {
         primary: 0xFFFFFF,
         primaryVariant: 0xFBFBFB,
-        secondary: 0x000402,
-        secondaryVariant: 0x000403,
+        secondary: 0xFFFFFF,
+        secondaryVariant: 0xFFFFFF,
         background: 0x000000
     }
 }
