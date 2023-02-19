@@ -1,7 +1,7 @@
 import * as Tone from 'tone'
 
 export default class ToneJSPlayer {
-    
+
     synthChord: Tone.Synth<Tone.SynthOptions>;
     synthDrone: Tone.Synth<Tone.SynthOptions>;
     synthNoiseDrone: Tone.Synth<Tone.SynthOptions>;
@@ -42,7 +42,7 @@ export default class ToneJSPlayer {
                       "modulationIndex" : 2,
                       "harmonicity" : 0.501
                 },
-                
+
                 "envelope": {
                     "attack": 0.01,
                     "decay": 0.1,
@@ -89,7 +89,7 @@ export default class ToneJSPlayer {
         this.synthBass.triggerAttackRelease(noteString, "2n");
     }
 
-    setAudioParams(p1, p2, p3) {
+    setAudioParams(p1, p2, p3, p4) {
         // todo
     }
 

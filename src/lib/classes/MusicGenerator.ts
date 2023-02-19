@@ -15,6 +15,7 @@ export default class MusicGenerator {
     param1 = 0.5;
     param2 = 0.5;
     param3 = 0.5;
+    param4 = 0.5;
     NoteGenerationMarkovOrder = 2;
     noteMarkovTable = [];
     scales = {
@@ -54,7 +55,7 @@ export default class MusicGenerator {
     bassDistance = 24;
     higherOctave = false;
     chordsEnabled = false;
-    private musicPlayer: MusicPlayer;
+    public musicPlayer: MusicPlayer;
     private bassEnabled: boolean;
     private sequenceTimeout: NodeJS.Timeout;
 
@@ -75,6 +76,7 @@ export default class MusicGenerator {
     updateFromFaceEstimation(estimatedFace: Face) {
         this.processFaceLandmarks(estimatedFace.keypoints);
         this.setFaceDistance(estimatedFace.box.width, estimatedFace.box.height);
+        this.param4 = this.faceDistance/2;
     }
 
     generateNewSequence() {
@@ -325,6 +327,6 @@ export default class MusicGenerator {
     public setAudioParams(p1, p2){
         this.param1 = p1;
         this.param2 = p2;
-        this.musicPlayer.setAudioParams(this.param1, this.param2, this.param3);
+        this.musicPlayer.setAudioParams(this.param1, this.param2, this.param3, this.param4);
     }
 }

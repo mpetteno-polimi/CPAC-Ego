@@ -55,6 +55,7 @@ export default class ParticleSystem {
             } else {
                 this.world.loop.isFaceDetected = false;
                 this.world.musicGenerator.stopPlayingSequence();
+                this.world.musicGenerator.musicPlayer.stopDrone();
             }
         });
     }
@@ -185,6 +186,7 @@ export default class ParticleSystem {
         particles.world.musicGenerator.stopPlayingSequence();
         particles.world.musicGenerator.newFace();
         particles.world.musicGenerator.startPlayingSequence();
+        particles.world.musicGenerator.musicPlayer.startDrone();
     }
 
     private initGeometryVertices() {
