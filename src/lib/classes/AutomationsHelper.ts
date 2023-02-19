@@ -15,6 +15,7 @@ export default class AutomationHelper {
             noiseFreq: 5+15*mod2,
             noiseSpeed: 3,
             noiseType: 4,
+            cameraAngle: 10,
             cameraDistance: this.LFO('sin', 0.1, 2.5, 3),
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)

@@ -38,6 +38,7 @@ export default class World {
         bloomThreshold: number,
         bloomStrength: number,
         cameraDistance: number,
+        cameraAngle: number,
         noiseFreq: number,
         noiseAmp: number,
         noiseRadius: number,
@@ -57,6 +58,7 @@ export default class World {
             bloomThreshold: 0,
             bloomStrength: 0,
             cameraDistance: 2.5,
+            cameraAngle: 0,
             noiseFreq: 15,
             noiseAmp: 0.3,
             noiseRadius: 1,
@@ -113,6 +115,7 @@ export default class World {
             this.settings.noiseFreq = parameters.noiseFreq;
             this.settings.noiseType = parameters.noiseType;
             this.settings.cameraDistance = parameters.cameraDistance;
+            this.settings.cameraAngle = parameters.cameraAngle;
             this.musicGenerator.setAudioParams(parameters.audioParam1, parameters.audioParam2);
         }
     }
@@ -121,6 +124,9 @@ export default class World {
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
+        // TODO - Manual rotation
+        // this.camera.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0),
+        //     MathUtils.degToRad(this.settings.cameraAngle));1
         this.camera.position.setZ(this.settings.cameraDistance);
     }
 
@@ -174,6 +180,7 @@ export default class World {
         this.gui.domElement.id = 'world-gui';
         let cameraFolder = this.gui.addFolder(`Camera`);
         cameraFolder.add(this.settings, "cameraDistance", 0, 10, 0.5);
+        cameraFolder.add(this.settings, "cameraAngle", 0, 360, 0.5);
         let colorsFolder = this.gui.addFolder(`Color Palette`);
         colorsFolder.addColor(this.settings, "primaryColor");
         colorsFolder.addColor(this.settings, "primaryVariant");
