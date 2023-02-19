@@ -68,7 +68,7 @@ export default class GPUComputation {
         this.positionFaceData.needsUpdate = true;
         this.gpuComputationRenderer.renderTexture(this.positionFaceData, this.facePositionRenderTarget);
         Object.values(this.variables).forEach((variable) => {
-            variable.material.uniforms.u_textureFacePosition.value = this.facePositionRenderTarget.texture;
+            variable.material.uniforms.uTextureFacePosition.value = this.facePositionRenderTarget.texture;
             variable.material.uniformsNeedUpdate = true;
         })
     }
@@ -76,16 +76,16 @@ export default class GPUComputation {
     updateGenerativeMorphTarget(randomMorphTarget) {
         this.positionMorphData.image.data.set(randomMorphTarget.positions);
         this.positionMorphData.needsUpdate = true;
-        this.fragmentMorphTargetPositionShader.uniforms.u_textureMorphTargetPosition.value = this.positionMorphData
-        this.fragmentMorphTargetPositionShader.uniforms.u_morphTargetType.value = randomMorphTarget.type;
-        this.fragmentMorphTargetPositionShader.uniforms.u_canvasWidth.value = randomMorphTarget.canvasWidth;
-        this.fragmentMorphTargetPositionShader.uniforms.u_canvasHeight.value = randomMorphTarget.canvasHeight;
-        this.fragmentMorphTargetPositionShader.uniforms.u_noiseSeed.value = randomMorphTarget.noiseSeed;
+        this.fragmentMorphTargetPositionShader.uniforms.uTextureMorphTargetPosition.value = this.positionMorphData
+        this.fragmentMorphTargetPositionShader.uniforms.uMorphTargetType.value = randomMorphTarget.type;
+        this.fragmentMorphTargetPositionShader.uniforms.uCanvasWidth.value = randomMorphTarget.canvasWidth;
+        this.fragmentMorphTargetPositionShader.uniforms.uCanvasHeight.value = randomMorphTarget.canvasHeight;
+        this.fragmentMorphTargetPositionShader.uniforms.uNoiseSeed.value = randomMorphTarget.noiseSeed;
         this.fragmentMorphTargetPositionShader.uniformsNeedUpdate = true;
         this.gpuComputationRenderer.doRenderTarget(this.fragmentMorphTargetPositionShader, this.morphTargetPositionRenderTarget);
         Object.values(this.variables).forEach((variable) => {
-            variable.material.uniforms.u_morphTargetType.value = randomMorphTarget.type;
-            variable.material.uniforms.u_textureMorphTargetPosition.value = this.morphTargetPositionRenderTarget.texture;
+            variable.material.uniforms.uMorphTargetType.value = randomMorphTarget.type;
+            variable.material.uniforms.uTextureMorphTargetPosition.value = this.morphTargetPositionRenderTarget.texture;
             variable.material.uniformsNeedUpdate = true;
         })
     }
@@ -109,7 +109,7 @@ export default class GPUComputation {
     private renderInitialParticlesData() {
         this.gpuComputationRenderer.renderTexture(this.positionInitData, this.initialPositionRenderTarget);
         Object.values(this.variables).forEach((variable) => {
-            variable.material.uniforms.u_textureInitialParticlesPosition.value = this.initialPositionRenderTarget.texture;
+            variable.material.uniforms.uTextureInitialParticlesPosition.value = this.initialPositionRenderTarget.texture;
             variable.material.uniformsNeedUpdate = true;
         })
     }
@@ -122,9 +122,9 @@ export default class GPUComputation {
 
     private initShaderMaterials() {
         let uniforms = this.getDefaultUniforms();
-        uniforms["u_canvasWidth"] = { value: 0 };
-        uniforms["u_canvasHeight"] = { value: 0 };
-        uniforms["u_noiseSeed"] = { value: 0 };
+        uniforms["uCanvasWidth"] = { value: 0 };
+        uniforms["uCanvasHeight"] = { value: 0 };
+        uniforms["uNoiseSeed"] = { value: 0 };
         this.fragmentMorphTargetPositionShader = this.gpuComputationRenderer.createShaderMaterial(
             fragmentMorphTargetPositionShader, uniforms);
     }
@@ -171,41 +171,41 @@ export default class GPUComputation {
 
     private getDefaultUniforms() {
         return {
-            u_time: { value: 0 },
-            u_faceMorphElapsedTime: { value: 0 },
-            u_targetMorphElapsedTime: { value: 0 },
-            u_delta: { value: 0 },
-            u_noiseFreq: { value: 0 },
-            u_noiseAmp: { value: 0 },
-            u_noiseRadius: { value: 0 },
-            u_noiseSpeed: { value: 0 },
-            u_noiseType: { value: 0 },
-            u_faceDetected: { value: false },
-            u_morphEnabled: { value: false },
-            u_faceMorphDuration: { value: 0 },
-            u_targetMorphDuration: { value: 0 },
-            u_morphTargetType: { value: 0 },
-            u_textureFacePosition: { value: null },
-            u_textureMorphTargetPosition: { value: null },
-            u_textureInitialParticlesPosition: { value: null }
+            uTime: { value: 0 },
+            uFaceMorphElapsedTime: { value: 0 },
+            uTargetMorphElapsedTime: { value: 0 },
+            uDelta: { value: 0 },
+            uNoiseFreq: { value: 0 },
+            uNoiseAmp: { value: 0 },
+            uNoiseRadius: { value: 0 },
+            uNoiseSpeed: { value: 0 },
+            uNoiseType: { value: 0 },
+            uFaceDetected: { value: false },
+            uMorphEnabled: { value: false },
+            uFaceMorphDuration: { value: 0 },
+            uTargetMorphDuration: { value: 0 },
+            uMorphTargetType: { value: 0 },
+            uTextureFacePosition: { value: null },
+            uTextureMorphTargetPosition: { value: null },
+            uTextureInitialParticlesPosition: { value: null }
         }
     }
 
     private updateVariablesUniforms(options) {
         Object.values(this.variables).forEach((variable) => {
-            variable.material.uniforms.u_time.value = options["globalElapsedTime"];
-            variable.material.uniforms.u_faceMorphElapsedTime.value = options["faceMorphElapsedTime"];
-            variable.material.uniforms.u_targetMorphElapsedTime.value = options["targetMorphElapsedTime"];
-            variable.material.uniforms.u_delta.value = options["delta"];
-            variable.material.uniforms.u_noiseFreq.value = options["noiseFreq"];
-            variable.material.uniforms.u_noiseAmp.value = options["noiseAmp"];
-            variable.material.uniforms.u_noiseSpeed.value = options["noiseSpeed"];
-            variable.material.uniforms.u_noiseRadius.value = options["noiseRadius"];
-            variable.material.uniforms.u_noiseType.value = options["noiseType"];
-            variable.material.uniforms.u_faceDetected.value = options["isFaceDetected"];
-            variable.material.uniforms.u_morphEnabled.value = options["isMorphEnabled"];
-            variable.material.uniforms.u_faceMorphDuration.value = options["faceMorphDuration"];
-            variable.material.uniforms.u_targetMorphDuration.value = options["targetMorphDuration"];
+            variable.material.uniforms.uTime.value = options["globalElapsedTime"];
+            variable.material.uniforms.uFaceMorphElapsedTime.value = options["faceMorphElapsedTime"];
+            variable.material.uniforms.uTargetMorphElapsedTime.value = options["targetMorphElapsedTime"];
+            variable.material.uniforms.uDelta.value = options["delta"];
+            variable.material.uniforms.uNoiseFreq.value = options["noiseFreq"];
+            variable.material.uniforms.uNoiseAmp.value = options["noiseAmp"];
+            variable.material.uniforms.uNoiseSpeed.value = options["noiseSpeed"];
+            variable.material.uniforms.uNoiseRadius.value = options["noiseRadius"];
+            variable.material.uniforms.uNoiseType.value = options["noiseType"];
+            variable.material.uniforms.uFaceDetected.value = options["isFaceDetected"];
+            variable.material.uniforms.uMorphEnabled.value = options["isMorphEnabled"];
+            variable.material.uniforms.uFaceMorphDuration.value = options["faceMorphDuration"];
+            variable.material.uniforms.uTargetMorphDuration.value = options["targetMorphDuration"];
         })
     }
 

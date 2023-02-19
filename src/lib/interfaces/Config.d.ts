@@ -23,7 +23,9 @@ type SplashScreenConfig = {
     subtitle: string,
     font: FontConfig,
     transition: TransitionConfig,
-    camera: CameraConfig
+    camera: CameraConfig,
+
+    automateParameters: boolean
 }
 
 type WorldConfig = {

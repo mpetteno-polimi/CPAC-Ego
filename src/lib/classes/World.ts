@@ -43,11 +43,11 @@ export default class World {
         noiseRadius: number,
         noiseSpeed: number,
         noiseType: number,
-        uPrimaryColor: number,
-        uPrimaryVariant: number,
-        uSecondaryColor: number,
-        uSecondaryVariantColor: number,
-        uBackgroundColor: number
+        primaryColor: number,
+        primaryVariant: number,
+        secondaryColor: number,
+        secondaryVariantColor: number,
+        backgroundColor: number
     };
 
     constructor(options) {
@@ -62,11 +62,11 @@ export default class World {
             noiseRadius: 1,
             noiseSpeed: 3,
             noiseType: 4,
-            uPrimaryColor: config.colors.primary,
-            uPrimaryVariant: config.colors.primaryVariant,
-            uSecondaryColor: config.colors.secondary,
-            uSecondaryVariantColor: config.colors.secondaryVariant,
-            uBackgroundColor: config.colors.background
+            primaryColor: config.colors.primary,
+            primaryVariant: config.colors.primaryVariant,
+            secondaryColor: config.colors.secondary,
+            secondaryVariantColor: config.colors.secondaryVariant,
+            backgroundColor: config.colors.background
         };
         this.faceMeshDetector = options.faceMeshDetector;
         this.faceExpressionDetector = options.faceExpressionDetector;
@@ -103,7 +103,7 @@ export default class World {
         this.particles.resize(this.container.offsetWidth, this.container.offsetHeight);
     }
 
-    updateParameters(parameters) {
+    animate(parameters) {
         if (config.scenes.world.automateParameters) {
             this.settings.bloomThreshold = parameters.bloomThreshold;
             this.settings.bloomStrength = parameters.bloomStrength;
@@ -152,7 +152,7 @@ export default class World {
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setClearColor(config.colors.background);
-        this.renderer.physicallyCorrectLights = true;
+         this.renderer.physicallyCorrectLights = true;
         //this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
 
@@ -170,21 +170,29 @@ export default class World {
     }
 
     private addGUI() {
-        this.gui = new dat.GUI();
-        this.gui.add(this.settings, "bloomThreshold", 0, 10, 0.01);
-        this.gui.add(this.settings, "bloomStrength", 0, 10, 0.01);
-        this.gui.add(this.settings, "bloomRadius", 0, 10, 0.01);
-        this.gui.add(this.settings, "noiseAmp", 0, 2, 0.01);
-        this.gui.add(this.settings, "noiseFreq", 0, 100, 0.01);
-        this.gui.add(this.settings, "noiseRadius", 0, 20, 0.01);
-        this.gui.add(this.settings, "noiseSpeed", 0, 20, 0.01);
-        this.gui.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
-        this.gui.add(this.settings, "cameraDistance", 0, 10, 0.5);
-        this.gui.addColor(this.settings, "uPrimaryColor");
-        this.gui.addColor(this.settings, "uPrimaryVariant");
-        this.gui.addColor(this.settings, "uSecondaryColor");
-        this.gui.addColor(this.settings, "uSecondaryVariantColor");
-        this.gui.addColor(this.settings, "uBackgroundColor");
+        this.gui = new dat.GUI({ autoPlace: true });
+        this.gui.domElement.id = 'world-gui';
+        let cameraFolder = this.gui.addFolder(`Camera`);
+        cameraFolder.add(this.settings, "cameraDistance", 0, 10, 0.5);
+        let colorsFolder = this.gui.addFolder(`Color Palette`);
+        colorsFolder.addColor(this.settings, "primaryColor");
+        colorsFolder.addColor(this.settings, "primaryVariant");
+        colorsFolder.addColor(this.settings, "secondaryColor");
+        colorsFolder.addColor(this.settings, "secondaryVariantColor");
+        colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
+            this.settings.backgroundColor = color;
+            this.renderer.setClearColor(color);
+        });
+        let noiseFolder = this.gui.addFolder(`Noise`);
+        noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
+        noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
+        noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
+        noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
+        noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
+        let postProcessingFolder = this.gui.addFolder(`Post Processing`);
+        postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
+        postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
+        postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
     }
 
     private addPostProcessing() {

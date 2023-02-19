@@ -48,7 +48,7 @@ export default class MorphTargetGenerator {
                 let extrudeGeometry = new THREE.ExtrudeGeometry(shapes, {
                     curveSegments: 20,
                     steps: 2,
-                    depth: 5,
+                    depth: 10,
                     bevelEnabled: false,
                     bevelThickness: 0.2,
                     bevelSize: 0.1,
@@ -109,7 +109,7 @@ export default class MorphTargetGenerator {
         let extrudeGeometry = new THREE.ExtrudeGeometry(extrudeShape, {
             curveSegments: 20,
             steps: 2,
-            depth: 5,
+            depth: 10,
             bevelEnabled: false,
             bevelThickness: 0.2,
             bevelSize: 0.1,
@@ -150,9 +150,7 @@ export default class MorphTargetGenerator {
         for (let i = 0; i < samplesCount; i++) {
             sampler.sample(tempPosition);
             samples.push(tempPosition.x, tempPosition.y, tempPosition.z, 1);
-            if (applySymmetry) {
-                samples.push(-tempPosition.x, tempPosition.y, tempPosition.z, 1);
-            }
+            if (applySymmetry) samples.push(-tempPosition.x, tempPosition.y, tempPosition.z, 1);
         }
         return samples;
     }

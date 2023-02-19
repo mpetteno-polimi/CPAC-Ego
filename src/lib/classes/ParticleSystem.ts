@@ -38,8 +38,8 @@ export default class ParticleSystem {
     }
 
     resize(width, height) {
-        this.material.uniforms.u_resolution.value.x = width;
-        this.material.uniforms.u_resolution.value.y = height;
+        this.material.uniforms.uResolution.value.x = width;
+        this.material.uniforms.uResolution.value.y = height;
     }
 
     detectFaces() {
@@ -59,7 +59,7 @@ export default class ParticleSystem {
         });
     }
 
-    detectFaceForMusicGenerator(){
+    detectFaceForMusicGenerator() {
         this.world.faceMeshDetector.detectFaces().then((estimatedFaces) => {
             if (estimatedFaces.length != 0) {
                 let estimatedFace = estimatedFaces[0];
@@ -70,7 +70,7 @@ export default class ParticleSystem {
 
     updateMorphTarget(randomMorphTarget) {
         this.gpuComputation.updateGenerativeMorphTarget(randomMorphTarget);
-        this.material.uniforms.u_morphTargetType.value = randomMorphTarget.type;
+        this.material.uniforms.uMorphTargetType.value = randomMorphTarget.type;
         // this.geometry.morphAttributes.position.push(targetPosition);
         // this.particles.updateMorphTargets();
     }
@@ -92,24 +92,24 @@ export default class ParticleSystem {
             "noiseSpeed": this.world.settings.noiseSpeed,
             "noiseType": this.world.settings.noiseType
         });
-        this.material.uniforms.u_time.value = globalElapsedTime;
-        this.material.uniforms.u_faceMorphElapsedTime.value = faceMorphElapsedTime;
-        this.material.uniforms.u_targetMorphElapsedTime.value = targetMorphElapsedTime;
-        this.material.uniforms.u_delta.value = Math.min(delta, 0.5);
-        this.material.uniforms.u_noiseFreq.value = this.world.settings.noiseFreq;
-        this.material.uniforms.u_noiseAmp.value = this.world.settings.noiseAmp;
-        this.material.uniforms.u_noiseRadius.value = this.world.settings.noiseRadius;
-        this.material.uniforms.u_noiseSpeed.value = this.world.settings.noiseSpeed;
-        this.material.uniforms.u_noiseType.value = this.world.settings.noiseType;
-        this.material.uniforms.u_noiseSeed.value = 2*Math.random()-1;
-        this.material.uniforms.u_faceDetected.value = this.world.loop.isFaceDetected;
-        this.material.uniforms.u_morphEnabled.value = this.world.loop.isMorphEnabled;
-        this.material.uniforms.u_particlesPosition.value = this.gpuComputation.getCurrentParticlesPosition();
-        this.material.uniforms.uPrimaryColor.value = new THREE.Color(this.world.settings.uPrimaryColor);
-        this.material.uniforms.uPrimaryVariant.value = new THREE.Color(this.world.settings.uPrimaryVariant);
-        this.material.uniforms.uSecondaryColor.value = new THREE.Color(this.world.settings.uSecondaryColor);
-        this.material.uniforms.uSecondaryVariantColor.value = new THREE.Color(this.world.settings.uSecondaryVariantColor);
-        this.material.uniforms.uBackgroundColor.value = new THREE.Color(this.world.settings.uBackgroundColor);
+        this.material.uniforms.uTime.value = globalElapsedTime;
+        this.material.uniforms.uFaceMorphElapsedTime.value = faceMorphElapsedTime;
+        this.material.uniforms.uTargetMorphElapsedTime.value = targetMorphElapsedTime;
+        this.material.uniforms.uDelta.value = Math.min(delta, 0.5);
+        this.material.uniforms.uNoiseFreq.value = this.world.settings.noiseFreq;
+        this.material.uniforms.uNoiseAmp.value = this.world.settings.noiseAmp;
+        this.material.uniforms.uNoiseRadius.value = this.world.settings.noiseRadius;
+        this.material.uniforms.uNoiseSpeed.value = this.world.settings.noiseSpeed;
+        this.material.uniforms.uNoiseType.value = this.world.settings.noiseType;
+        this.material.uniforms.uNoiseSeed.value = 2*Math.random()-1;
+        this.material.uniforms.uFaceDetected.value = this.world.loop.isFaceDetected;
+        this.material.uniforms.uMorphEnabled.value = this.world.loop.isMorphEnabled;
+        this.material.uniforms.uParticlesPosition.value = this.gpuComputation.getCurrentParticlesPosition();
+        this.material.uniforms.uPrimaryColor.value = new THREE.Color(this.world.settings.primaryColor);
+        this.material.uniforms.uPrimaryVariant.value = new THREE.Color(this.world.settings.primaryVariant);
+        this.material.uniforms.uSecondaryColor.value = new THREE.Color(this.world.settings.secondaryColor);
+        this.material.uniforms.uSecondaryVariantColor.value = new THREE.Color(this.world.settings.secondaryVariantColor);
+        this.material.uniforms.uBackgroundColor.value = new THREE.Color(this.world.settings.backgroundColor);
     }
 
     protected addGeometry() {
@@ -126,23 +126,23 @@ export default class ParticleSystem {
             },
             side: THREE.DoubleSide,
             uniforms: {
-                u_time: { value: 0 },
-                u_faceMorphElapsedTime: { value: 0 },
-                u_targetMorphElapsedTime: { value: 0 },
-                u_delta: { value: 0 },
-                u_resolution: { value: new THREE.Vector2() },
-                u_noiseFreq: { value: 0 },
-                u_noiseAmp: { value: 0 },
-                u_noiseRadius: { value: 0 },
-                u_noiseSpeed: { value: 0 },
-                u_noiseType: { value: 0 },
-                u_noiseSeed: { value: 0 },
-                u_faceDetected: { value: false },
-                u_morphEnabled: { value: false },
-                u_faceMorphDuration: { value: config.loop.faceDetectedMorphDuration },
-                u_targetMorphDuration: { value: config.loop.morphDuration },
-                u_morphTargetType: { value: 0 },
-                u_particlesPosition: { value: null },
+                uTime: { value: 0 },
+                uFaceMorphElapsedTime: { value: 0 },
+                uTargetMorphElapsedTime: { value: 0 },
+                uDelta: { value: 0 },
+                uResolution: { value: new THREE.Vector2() },
+                uNoiseFreq: { value: 0 },
+                uNoiseAmp: { value: 0 },
+                uNoiseRadius: { value: 0 },
+                uNoiseSpeed: { value: 0 },
+                uNoiseType: { value: 0 },
+                uNoiseSeed: { value: 0 },
+                uFaceDetected: { value: false },
+                uMorphEnabled: { value: false },
+                uFaceMorphDuration: { value: config.loop.faceDetectedMorphDuration },
+                uTargetMorphDuration: { value: config.loop.morphDuration },
+                uMorphTargetType: { value: 0 },
+                uParticlesPosition: { value: null },
                 uPrimaryColor: { value: new THREE.Color() },
                 uPrimaryVariant: { value: new THREE.Color() },
                 uSecondaryColor: { value: new THREE.Color() },

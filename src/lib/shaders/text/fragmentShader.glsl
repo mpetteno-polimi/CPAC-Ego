@@ -92,7 +92,7 @@ void main() {
     // Custom part
     vec4 l1 = vec4(uPrimaryColor, border*0.5);
     vec4 l2 = vec4(uPrimaryColor, border);
-    vec4 l3 = vec4(uSecondaryColor  , alpha);
+    vec4 l3 = vec4(uSecondaryColor, alpha);
     vec4 l4 = vec4(uPrimaryColor, alpha);
 
     float w = 1.;

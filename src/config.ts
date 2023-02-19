@@ -23,7 +23,8 @@ export const config: AppConfig = {
                 fieldOfView: 75,
                 nearPlane: 0.1,
                 farPlane: 10000
-            }
+            },
+            automateParameters: true
         },
         world: {
             transition: {
