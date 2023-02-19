@@ -49,24 +49,28 @@ export default class Loop {
     }
 
     render(elapsedTime: number, delta: number) {
-        let morphElapsedTimes = [elapsedTime, 0, 0];
+        let timeControls = {
+            globalElapsedTime: elapsedTime,
+            faceDetectedElapsedTime: 0,
+            morphElapsedTime: 0
+        }
+        let parameters = this.automationsHelper.getStaticSphereParameters(timeControls);
         if (elapsedTime > config.loop.faceDetectionStartTime) {
             if (this.isFaceDetected) {
-                morphElapsedTimes = this.handleMorphAnimation(elapsedTime);
+                let controls = this.handleMorphAnimation(timeControls, parameters);
+                timeControls = controls[0];
+                parameters = controls[1];
             } else {
-                let staticSphereParameters = this.automationsHelper.getStaticSphereParameters();
-                this.world.animate(staticSphereParameters);
                 this.world.particles.detectFaces();
             }
-        } else {
-            let staticSphereParameters = this.automationsHelper.getStaticSphereParameters();
-            this.world.animate(staticSphereParameters);
         }
         // console.log("Global", morphElapsedTimes[0]);
         // console.log("Face", morphElapsedTimes[1]);
         // console.log("Morph", morphElapsedTimes[2]);
         if (this.isFaceDetected) this.world.particles.detectFaceForMusicGenerator();
-        this.world.particles.updateUniforms(morphElapsedTimes[0], morphElapsedTimes[1], morphElapsedTimes[2], delta);
+        this.world.animate(parameters);
+        this.world.particles.updateUniforms(timeControls.globalElapsedTime, timeControls.faceDetectedElapsedTime,
+            timeControls.morphElapsedTime, delta);
         this.world.updateSettings();
         this.world.controls.update();
         //this.world.renderer.render(this.scene, this.camera);
@@ -78,42 +82,46 @@ export default class Loop {
         this.faceDetectedStartTime = this.faceDetectedClock.getElapsedTime();
     }
 
-    private handleMorphAnimation(elapsedTime: number) {
-        let faceDetectedElapsedTime = this.faceDetectedClock.getElapsedTime();
-        let morphElapsedTime = 0;
-        if (faceDetectedElapsedTime > config.loop.faceDetectedMorphDuration) {
-            morphElapsedTime = this.morphClock.getElapsedTime();
+    private handleMorphAnimation(timeControls, parameters) {
+        let updatedTimeControls = {
+            globalElapsedTime: timeControls.globalElapsedTime,
+            faceDetectedElapsedTime: this.faceDetectedClock.getElapsedTime(),
+            morphElapsedTime: timeControls.morphElapsedTime
+        }
+        let updatedParameters = parameters
+        if (updatedTimeControls.faceDetectedElapsedTime > config.loop.faceDetectedMorphDuration) {
+            updatedTimeControls.morphElapsedTime = this.morphClock.getElapsedTime();
             if (!this.isMorphEnabled) {
-                if (morphElapsedTime > config.loop.morphStart) {
-                    this.morphStartTime = morphElapsedTime;
-                    morphElapsedTime = 0;
+                if (updatedTimeControls.morphElapsedTime > config.loop.morphStart) {
+                    this.morphStartTime = updatedTimeControls.morphElapsedTime;
+                    updatedTimeControls.morphElapsedTime = 0;
                     this.isMorphEnabled = true;
                 } else {
-                    let staticFaceParameters = this.automationsHelper.getStaticFaceParameters();
-                    this.world.animate(staticFaceParameters);
+                    updatedParameters = this.automationsHelper.getStaticFaceParameters(updatedTimeControls);
                 }
             } else {
-                let morphProgressTime = morphElapsedTime - this.morphStartTime;
+                let morphProgressTime = updatedTimeControls.morphElapsedTime - this.morphStartTime;
                 if (morphProgressTime > config.loop.morphDuration) {
                     if (morphProgressTime > config.loop.morphDuration + config.loop.morphEnd) {
                         this.init();
-                        return [0, 0, 0];
+                        return [{
+                            globalElapsedTime: 0,
+                            faceDetectedElapsedTime: 0,
+                            morphElapsedTime: 0
+                        }, this.automationsHelper.getStaticSphereParameters(updatedTimeControls)]
                     } else {
-                        let staticMorphTargetParameters = this.automationsHelper.getStaticMorphTargetParameters();
-                        this.world.animate(staticMorphTargetParameters);
-                        morphElapsedTime = morphProgressTime;
+                        updatedParameters = this.automationsHelper.getStaticMorphTargetParameters(updatedTimeControls);
+                        updatedTimeControls.morphElapsedTime = morphProgressTime;
                     }
                 } else {
-                    let faceToMorphTargetParameters = this.automationsHelper.getFaceToMorphTargetParameters();
-                    this.world.animate(faceToMorphTargetParameters);
-                    morphElapsedTime = morphProgressTime;
+                    updatedParameters = this.automationsHelper.getFaceToMorphTargetParameters(updatedTimeControls);
+                    updatedTimeControls.morphElapsedTime = morphProgressTime;
                 }
             }
         } else {
-            let sphereToFaceParameters = this.automationsHelper.getSphereToFaceParameters();
-            this.world.animate(sphereToFaceParameters);
+            updatedParameters = this.automationsHelper.getSphereToFaceParameters(updatedTimeControls);
         }
-        return [elapsedTime, faceDetectedElapsedTime, morphElapsedTime]
+        return [updatedTimeControls, updatedParameters]
     }
 
 }

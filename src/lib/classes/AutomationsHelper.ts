@@ -1,7 +1,7 @@
 
 export default class AutomationHelper {
 
-    getStaticSphereParameters() {
+    getStaticSphereParameters(timeControls) {
         let mod1 = this.LFO('sin', 0.07, 0, 1)
         let mod2 = this.LFO('sin', 0.23, 0, 1)
         let bloomStrength = this.LFO('sin', 0.13, 0.2, 0.2+mod2);
@@ -21,15 +21,15 @@ export default class AutomationHelper {
         }
     }
 
-    getSphereToFaceParameters() {
-        return this.getStaticSphereParameters();
+    getSphereToFaceParameters(timeControls) {
+        return this.getStaticSphereParameters(timeControls);
     }
 
-    getStaticFaceParameters() {
-        return this.getStaticSphereParameters();
+    getStaticFaceParameters(timeControls) {
+        return this.getStaticSphereParameters(timeControls);
     }
 
-    getFaceToMorphTargetParameters() {
+    getFaceToMorphTargetParameters(timeControls) {
         let mod1 = this.LFO('sin', 0.07, 0, 1)
         let mod2 = this.LFO('sin', 0.23, 0, 1)
         let bloomStrength = mod2*0.2;
@@ -50,8 +50,8 @@ export default class AutomationHelper {
     }
 
 
-    getStaticMorphTargetParameters() {
-        return this.getStaticSphereParameters();
+    getStaticMorphTargetParameters(timeControls) {
+        return this.getStaticSphereParameters(timeControls);
     }
 
     private clampAndNormalize(input, min, max) {
