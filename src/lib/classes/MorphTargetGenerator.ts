@@ -39,7 +39,7 @@ export default class MorphTargetGenerator {
         let randomSVG = svgPaths[Math.floor(Math.random()*svgPaths.length)];
         let loader = new SVGLoader();
         loader.load(
-            randomSVG.path,
+            '/CPAC-Ego' + randomSVG.path,
             (svgData) => {
                 let shapes = [];
                 svgData.paths.forEach((path) => {

@@ -105,13 +105,13 @@ export default class MSDFText {
 
     private loadFontAtlas() {
         return new Promise((resolve, reject) => {
-            this.textureLoader.load(config.scenes.splashScreen.font.atlas, resolve);
+            this.textureLoader.load('/CPAC-Ego' + config.scenes.splashScreen.font.atlas, resolve);
         });
     }
 
     private loadFont() {
         return new Promise((resolve, reject) => {
-            this.fontLoader.load(config.scenes.splashScreen.font.fnt, resolve);
+            this.fontLoader.load('/CPAC-Ego' + config.scenes.splashScreen.font.fnt, resolve);
         });
     }
 
