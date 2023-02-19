@@ -21,11 +21,11 @@ export default class FaceExpressionDetector {
     }
 
     async loadModels() {
-        await this.nets.ssdMobilenetv1.loadFromUri("/models");
-        await this.nets.faceLandmark68Net.loadFromUri("/models");
-        await this.nets.faceRecognitionNet.loadFromUri("/models");
-        await this.nets.faceExpressionNet.loadFromUri("/models");
-        await this.nets.ageGenderNet.loadFromUri("/models");
+        await this.nets.ssdMobilenetv1.loadFromUri("/CPAC-Ego/models");
+        await this.nets.faceLandmark68Net.loadFromUri("/CPAC-Ego/models");
+        await this.nets.faceRecognitionNet.loadFromUri("/CPAC-Ego/models");
+        await this.nets.faceExpressionNet.loadFromUri("/CPAC-Ego/models");
+        await this.nets.ageGenderNet.loadFromUri("/CPAC-Ego/models");
     }
 
     detectExpressions() {
