@@ -23,8 +23,11 @@
   },
   "dependencies": {
     "@tensorflow-models/face-landmarks-detection": "^1.0.2",
-    "osc-js": "^2.4.0",
+    "@vladmandic/face-api": "^1.7.7",
     "gsap": "^3.11.3",
-    "three": "^0.147.0"
+    "osc-js": "^2.4.0",
+    "three": "^0.147.0",
+    "three-msdf-text-utils": "^1.1.0",
+    "tone": "^14.7.77"
   }
 }

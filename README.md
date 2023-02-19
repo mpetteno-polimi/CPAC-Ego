@@ -23,13 +23,29 @@ The face's landmarks will be also used to compose a unique generative soundtrack
 With this project we want to explore perception, as a reconstruction based on one's model of the world. The idea that our view of the world is a projection of our own model of it, leads inevitably to the problem of discrepancy: reality is not what we think it is and we are not what we think we are. We want to explore the theme of a feedback loop between world and self, and the concept of cognitive dissonance/reality distortion.
 
 ## Prototype after the hackathon
-- Generate a face mesh from the webcam’s input in real time
-- Use face’s to generate a grammar string for music composition
-- Define a grammar for the composition
-- Use the grammar to generate music in Pure Data via OSC
+- Generate a face mesh from the webcam’s input in real time ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
+- ~~Use face’s to generate a grammar string for music composition~~
+- ~~Define a grammar for the composition~~
+- Generate music in PureData/Max via OSC ![95%](https://progress-bar.dev/95) &rarr; **Samuele**
 
 # Final project
-- Continuous loop morphing between face and abstract shapes
-- Alter sound based on the heads spatial parameters
-- Handle multiple faces at the same time
-- Real time generation of morphing target images
+- Face triangulation ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
+- Noise automation during loop's animation ![70%](https://progress-bar.dev/20) &rarr; **Matteo + Sebastian**
+- ~~Image's object contour recognition~~
+- Continuous loop morphing between face and abstract shapes ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
+- Define markov chain for the composition ![100%](https://progress-bar.dev/100) &rarr; **Sebastian**
+- Alter sound based on the heads spatial parameters ![95%](https://progress-bar.dev/95) &rarr; **Sebastian**
+- OSC integration ![70%](https://progress-bar.dev/70) &rarr; **Sebastian** + **Samuele**
+  - **TODO** - Send start and stop for drones (also for splash screen)
+  - **TODO** - Review play and stop messages during loop
+- Real time generation of morphing target images ![100%](https://progress-bar.dev/100)
+  - SVG morph target loader ![100%](https://progress-bar.dev/100) &rarr; **Matteo**
+  - Perlin noise symmetric image generator ![95%](https://progress-bar.dev/95) &rarr; **Sebastian** + **Matteo**
+    - **TODO** - Improve perlin noise generator parameters &rarr; **Sebastian**
+- Splash screen ![75%](https://progress-bar.dev/75) &rarr; **Matteo**
+  - **TODO** - Modal view with experience guide
+- Processing based morph target generator ![100%](https://progress-bar.dev/100) &rarr; **Tommaso**
+- Improve rendering and colours ![50%](https://progress-bar.dev/50)
+- ToneJS player if OSC not available ![50%](https://progress-bar.dev/50)
+- README + Presentation slides ![0%](https://progress-bar.dev/0)
+- Handle multiple faces at the same time ![0%](https://progress-bar.dev/0)
