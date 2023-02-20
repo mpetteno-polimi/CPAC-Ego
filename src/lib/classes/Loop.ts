@@ -112,12 +112,12 @@ export default class Loop {
                             morphElapsedTime: 0
                         }, this.automationsHelper.getStaticSphereParameters(updatedTimeControls)]
                     } else {
-                        updatedParameters = this.automationsHelper.getStaticMorphTargetParameters(updatedTimeControls);
                         updatedTimeControls.morphElapsedTime = morphProgressTime;
+                        updatedParameters = this.automationsHelper.getStaticMorphTargetParameters(updatedTimeControls);
                     }
                 } else {
-                    updatedParameters = this.automationsHelper.getFaceToMorphTargetParameters(updatedTimeControls);
                     updatedTimeControls.morphElapsedTime = morphProgressTime;
+                    updatedParameters = this.automationsHelper.getFaceToMorphTargetParameters(updatedTimeControls);
                 }
             }
         } else {
