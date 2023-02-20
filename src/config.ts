@@ -135,10 +135,10 @@ export const config: AppConfig = {
     },
     loop: {
         faceDetectionStartTime: 8,
-        faceDetectedMorphDuration: 10,
-        morphStart: 5,
-        morphDuration: 15,
-        morphEnd: 5
+        faceDetectedMorphDuration: 20,
+        morphStart: 8,
+        morphDuration: 30,
+        morphEnd: 8
     },
     osc: {
         host: "localhost",
