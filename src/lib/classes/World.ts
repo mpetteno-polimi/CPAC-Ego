@@ -14,6 +14,7 @@ import {config} from "../../config";
 import Loop from "./Loop";
 import ParticleSystem from "./ParticleSystem";
 import MorphTargetGenerator from "./MorphTargetGenerator";
+import { Vector3 } from "three";
 
 export default class World {
     scene: THREE.Scene;
@@ -129,10 +130,9 @@ export default class World {
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
-        // TODO - Manual rotation
-        // this.camera.setRotationFromAxisAngle(new THREE.Vector3(0, 1, 0),
-        //     MathUtils.degToRad(this.settings.cameraAngle));1
-        this.camera.position.setZ(this.settings.cameraDistance);
+        this.camera.position.setX(Math.sin(this.settings.cameraAngle)*this.settings.cameraDistance);
+        this.camera.position.setZ(Math.cos(this.settings.cameraAngle)*this.settings.cameraDistance);
+        this.camera.lookAt(new THREE.Vector3(0,0,0))
     }
 
     private addCamera() {

@@ -43,7 +43,7 @@ export const config: AppConfig = {
                 farPlane: 100
             },
             particlesCount: 256*256,
-            automateParameters: false
+            automateParameters: true
         },
     },
     faceMeshDetector: {
