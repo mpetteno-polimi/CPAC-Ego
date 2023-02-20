@@ -4,7 +4,8 @@ import {MathUtils} from "three";
 export default class AutomationHelper {
 
     getStaticSphereParameters(timeControls) {
-        let bloomStrength = this.LFO('sin', 0.25, 0.2, 1.5, timeControls.globalElapsedTime);
+        //let bloomStrength = this.LFO('sin', 0.25, 0.2, 1.5, timeControls.globalElapsedTime);
+        let bloomStrength = this.LFO('impulse', 0.25, 0.2, 1.5, timeControls.globalElapsedTime);
         return {
             bloomStrength: bloomStrength,
             bloomThreshold: 0,
@@ -139,6 +140,16 @@ export default class AutomationHelper {
         switch(type) {
             case 'sin':
                 return min + (0.5-Math.cos(freq*time)/2)*(max-min);
+            case 'impulse':
+                time = time%(1/freq)
+                time = time/(1/freq)
+                if(time<=0.5){
+                    time*=2
+                    return min+time*time*time*(max-min)
+                }else{
+                    time = (time-0.5)*2
+                    return min+(1-time*time*time)*(max-min)
+                }
         }
     }
 
