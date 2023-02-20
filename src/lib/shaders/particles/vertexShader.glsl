@@ -31,40 +31,58 @@ uniform sampler2D uParticlesPosition;
 /* VARYINGS */
 varying float display;
 
+vec3 cnoise3(vec3 x) {
+    float s  = cnoise(vec3(x));
+    float s1 = cnoise(vec3(x.y - 19.1, x.z + 33.4, x.x + 47.2));
+    float s2 = cnoise(vec3(x.z + 74.2, x.x - 124.5, x.y + 99.4));
+    return vec3(s, s1, s2);
+}
+
+vec3 pnoise3(vec3 x) {
+    vec3 period = vec3(uTime*uNoiseSeed);
+    float s  = pnoise(vec3(x), period);
+    float s1 = pnoise(vec3(x.y - 19.1, x.z + 33.4, x.x + 47.2), period);
+    float s2 = pnoise(vec3(x.z + 74.2, x.x - 124.5, x.y + 99.4), period);
+    return vec3(s, s1, s2);
+}
+
+vec3 psrdnoise3(vec3 x) {
+    float alpha = uTime*uNoiseSeed;
+    vec3 period = vec3(alpha);
+    float s  = psrdnoise(vec3(x), period);
+    float s1 = psrdnoise(vec3(x.y - 19.1, x.z + 33.4, x.x + 47.2), period, alpha);
+    float s2 = psrdnoise(vec3(x.z + 74.2, x.x - 124.5, x.y + 99.4), period, alpha);
+    return vec3(s, s1, s2);
+}
+
+vec3 worley3(vec3 x) {
+    float s  = worley(vec3(x));
+    float s1 = worley(vec3(x.y - 19.1, x.z + 33.4, x.x + 47.2));
+    float s2 = worley(vec3(x.z + 74.2, x.x - 124.5, x.y + 99.4));
+    return vec3(s, s1, s2);
+}
+
 
 float easing(float x) {
-    return pow(x, 5.);
+    return x;
 }
 
 vec3 getNoisedPosition(vec3 pos) {
 
-    vec3 noise, period;
-    float noiseX, noiseY, noiseZ;
+    vec3 noise;
     vec3 noiseInput = (pos*uNoiseFreq + uTime*uNoiseSpeed)*uNoiseSeed;
     switch (uNoiseType) {
         case 0: // Classic Perlin Noise
-            noiseX = cnoise(noiseInput);
-            noiseY = cnoise(noiseInput);
-            noiseZ = cnoise(noiseInput);
-            noise = vec3(noiseX, noiseY, noiseZ);
+            noise = cnoise3(noiseInput);
             break;
         case 1: // Classic Perlin Noise with periodic variant
-            period = vec3(uTime*uNoiseSeed);
-            noiseX = pnoise(noiseInput, period);
-            noiseY = pnoise(noiseInput, period);
-            noiseZ = pnoise(noiseInput, period);
-            noise = vec3(noiseX, noiseY, noiseZ);
+            noise = pnoise3(noiseInput);
             break;
         case 2: // Simplex Noise
             noise = snoise3(noiseInput);
             break;
         case 3: // Tiling simplex flow noise
-            period = vec3(uTime*uNoiseSeed);
-            float alpha = uTime*uNoiseSeed;
-            noiseX = psrdnoise(noiseInput, period, alpha);
-            noiseY = psrdnoise(noiseInput, period, alpha);
-            noiseZ = psrdnoise(noiseInput, period, alpha);
-            noise = vec3(noiseX, noiseY, noiseZ);
+            noise = psrdnoise3(noiseInput);
             break;
         case 4: // Curl noise
             noise = curl(noiseInput);
@@ -73,10 +91,7 @@ vec3 getNoisedPosition(vec3 pos) {
             noise = voronoi(noiseInput);
             break;
         case 6: // Worley noise
-            noiseX = worley(noiseInput);
-            noiseY = worley(noiseInput);
-            noiseZ = worley(noiseInput);
-            noise = vec3(noiseX, noiseY, noiseZ);
+            noise = worley3(noiseInput);
             break;
     }
 

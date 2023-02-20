@@ -43,7 +43,7 @@ export const config: AppConfig = {
                 farPlane: 100
             },
             particlesCount: 256*256,
-            automateParameters: false
+            automateParameters: true
         },
     },
     faceMeshDetector: {
@@ -135,10 +135,10 @@ export const config: AppConfig = {
     },
     loop: {
         faceDetectionStartTime: 8,
-        faceDetectedMorphDuration: 10,
-        morphStart: 5,
-        morphDuration: 15,
-        morphEnd: 5
+        faceDetectedMorphDuration: 20,
+        morphStart: 8,
+        morphDuration: 30,
+        morphEnd: 8
     },
     osc: {
         host: "localhost",
@@ -147,7 +147,7 @@ export const config: AppConfig = {
     colors: {
         primary: 0xFFFFFF,
         primaryVariant: 0xFBFBFB,
-        secondary: 0xFFFFFF,
+        secondary: 0x8099CC,
         secondaryVariant: 0xFFFFFF,
         background: 0x000000
     }

@@ -32,7 +32,7 @@ void main() {
     float point = smoothstep(0.5, 0.45, dist);
 
     vec3 vColor;
-    vec3 faceColor = uSecondaryColor;
+    vec3 faceColor = uPrimaryColor;
     vec3 morphTargetColor = uSecondaryVariantColor;
     if (uFaceDetected) {
         if (uMorphEnabled) {
@@ -58,6 +58,6 @@ void main() {
         }
     }
 
-    gl_FragColor = vec4(point*vColor, 1.);
+gl_FragColor = vec4(point*vColor, 1.);
     if (point < 0.01) discard;
 }
