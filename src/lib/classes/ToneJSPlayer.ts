@@ -2,7 +2,7 @@ import * as Tone from 'tone'
 
 export default class ToneJSPlayer {
 
-    synthChord: Tone.Synth<Tone.SynthOptions>;
+    synthChord: Tone.PolySynth;
     synthDrone: Tone.Synth<Tone.SynthOptions>;
     synthNoiseDrone: Tone.NoiseSynth;
     synthLead: Tone.Synth<Tone.SynthOptions>;
@@ -33,12 +33,12 @@ export default class ToneJSPlayer {
                 "sustain": 0.2,
                 "release": 2
             },
-            "volume" : - 18
+            "volume" : - 12
         });
 
         // instantiate the low pass for the lead synth
         this.filterLead = new Tone.Filter(4000, "lowpass");
-        this.filterLead.chain(this.filterLead,this.reverb,Tone.Destination);
+        this.synthLead.chain(this.filterLead,this.reverb,Tone.Destination);
 
         // instantiate the bass
         this.synthBass = new Tone.Synth({
@@ -56,22 +56,11 @@ export default class ToneJSPlayer {
                     "sustain": 0.4,
                     "release": 2
                 },
-                "volume" : - 12
+                "volume" : - 18
             }).toDestination();
 
             // instantiate chord synth
-            this.synthChord = new Tone.Synth({
-                "oscillator": {
-                "type": "sine",
-            },
-            "envelope": {
-                "attack": 0.4,
-                "decay": 0.01,
-                "sustain": 1,
-                "attackCurve" : "sine",
-                "releaseCurve" : "sine",
-                "release": 1
-            },
+            this.synthChord = new Tone.PolySynth({
             "volume" : - 12}).toDestination();
             
 
@@ -124,8 +113,10 @@ export default class ToneJSPlayer {
     }
 
     playChord(note) {
+        const now = Tone.now();
         let noteString = Tone.Frequency(note, "midi").toNote();
-        this.synthChord.triggerAttackRelease(noteString, "1n");
+        this.synthChord.triggerRelease(now);
+        this.synthChord.triggerAttack(noteString, "1n", now + 0.5);
     }
 
 
@@ -147,13 +138,14 @@ export default class ToneJSPlayer {
     playNote(note) {
         let now = Tone.now();
         let noteString = Tone.Frequency(note, "midi").toNote();
-        this.synthLead.triggerAttack(noteString, now);
+        this.synthLead.triggerRelease(now);
+        this.synthLead.triggerAttack(noteString,  now + 0.5);
 
     }
 
     playBass(note) {
         let now = Tone.now();
-        let noteString = Tone.Frequency(note, "midi").transpose(12).toNote();
+        let noteString = Tone.Frequency(note, "midi").toNote();
         this.synthBass.triggerAttack(noteString, now);
     }
 
