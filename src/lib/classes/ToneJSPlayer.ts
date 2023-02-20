@@ -60,7 +60,19 @@ export default class ToneJSPlayer {
             }).toDestination();
 
             // instantiate chord synth
-            this.synthChord = new Tone.Synth().toDestination();
+            this.synthChord = new Tone.Synth({
+                "oscillator": {
+                "type": "sine",
+            },
+            "envelope": {
+                "attack": 0.4,
+                "decay": 0.01,
+                "sustain": 1,
+                "attackCurve" : "sine",
+                "releaseCurve" : "sine",
+                "release": 1
+            },
+            "volume" : - 12}).toDestination();
             
 
             // instastiate the pitched drone
@@ -129,7 +141,7 @@ export default class ToneJSPlayer {
 
     stopDrone() {
         const now = Tone.now();
-        this.synthNoiseDrone.triggerRelease(now);
+        this.synthDrone.triggerRelease(now);
     }
 
     playNote(note) {
@@ -141,7 +153,7 @@ export default class ToneJSPlayer {
 
     playBass(note) {
         let now = Tone.now();
-        let noteString = Tone.Frequency(note, "midi").toNote();
+        let noteString = Tone.Frequency(note, "midi").transpose(12).toNote();
         this.synthBass.triggerAttack(noteString, now);
     }
 
