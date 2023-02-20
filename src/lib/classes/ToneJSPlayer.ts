@@ -136,7 +136,6 @@ export default class ToneJSPlayer {
     }
 
     playNote(note) {
-        console.log("real note");
         let now = Tone.now();
         let noteString = Tone.Frequency(note, "midi").toNote();
         this.synthLead.triggerRelease(now);
@@ -145,7 +144,6 @@ export default class ToneJSPlayer {
     }
 
     playBass(note) {
-        console.log("real bass");
         let now = Tone.now();
         let noteString = Tone.Frequency(note, "midi").toNote();
         this.synthBass.triggerAttack(noteString, now);
