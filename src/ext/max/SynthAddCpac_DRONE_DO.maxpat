@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 1372.0, 779.0 ],
+		"rect" : [ 38.0, 260.0, 1372.0, 779.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -247,7 +247,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 151.666682362556458, 788.00333218097694, 107.0, 22.0 ],
-					"text" : "scale -1 1 70. 80."
+					"text" : "scale -1 1 80. 90."
 				}
 
 			}
@@ -356,7 +356,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 1498.000016450881958, 605.000019192695618, 72.0, 22.0 ],
-					"text" : "cycle~ 0.05"
+					"text" : "cycle~ 0.5"
 				}
 
 			}
@@ -1167,7 +1167,7 @@
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "bang" ],
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 1548.000016450881958, 25.0, 30.0, 30.0 ]
 				}
 
@@ -1193,7 +1193,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1095.333342552185059, 665.336665792465169, 100.0, 22.0 ],
-					"text" : "scale 0 1 40 80"
+					"text" : "scale 0 1 40 100"
 				}
 
 			}
@@ -1844,7 +1844,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 561.666682362556458, 715.00333218097694, 107.0, 22.0 ],
-					"text" : "scale -1 1 50. 60."
+					"text" : "scale -1 1 70. 70."
 				}
 
 			}
@@ -1916,7 +1916,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 855.666682362556458, 715.00333218097694, 107.0, 22.0 ],
-					"text" : "scale -1 1 20. 30."
+					"text" : "scale -1 1 30. 40."
 				}
 
 			}
@@ -2439,7 +2439,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 490.666667103767395, 1518.670036001205517, 360.0, 23.0 ],
-					"text" : "0.01057 0.021139 0.01057 -1.76349 0.805768"
+					"text" : "0.06438 0.12876 0.06438 -1.311798 0.569318"
 				}
 
 			}
@@ -2502,7 +2502,7 @@
 					"outlettype" : [ "list", "float", "float", "float", "float", "list", "int" ],
 					"parameter_enable" : 0,
 					"patching_rect" : [ 490.666667103767395, 1346.170036001205517, 360.0, 155.0 ],
-					"setfilter" : [ 0, 1, 1, 0, 0, 1656.3699951171875, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+					"setfilter" : [ 0, 1, 1, 0, 0, 4438.67138671875, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
 					"varname" : "filtergraph~"
 				}
 
