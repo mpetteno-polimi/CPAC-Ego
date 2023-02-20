@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 1372.0, 779.0 ],
+		"rect" : [ 427.0, 90.0, 1372.0, 779.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,30 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-41",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 146.0, 669.0, 50.0, 22.0 ],
+					"text" : "68"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-30",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 146.0, 631.0, 50.0, 22.0 ],
+					"text" : "75"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-102",
 					"maxclass" : "newobj",
@@ -159,7 +183,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 338.0, 700.0, 50.0, 22.0 ],
-					"text" : "48"
+					"text" : "36"
 				}
 
 			}
@@ -1753,7 +1777,7 @@
 					"id" : "obj-4",
 					"linecount" : 2,
 					"maxclass" : "newobj",
-					"numinlets" : 2,
+					"numinlets" : 3,
 					"numoutlets" : 1,
 					"outlettype" : [ "multichannelsignal" ],
 					"patching_rect" : [ 206.0, 976.0, 100.0, 35.0 ],
@@ -2306,6 +2330,22 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"order" : 1,
+					"source" : [ "obj-30", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-80", 0 ],
+					"order" : 0,
+					"source" : [ "obj-30", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-25", 0 ],
 					"source" : [ "obj-32", 0 ]
 				}
@@ -2357,6 +2397,22 @@
 				"patchline" : 				{
 					"destination" : [ "obj-18", 3 ],
 					"source" : [ "obj-40", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"order" : 1,
+					"source" : [ "obj-41", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-80", 0 ],
+					"order" : 0,
+					"source" : [ "obj-41", 0 ]
 				}
 
 			}
@@ -2831,6 +2887,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-3", 3 ],
+					"order" : 0,
+					"source" : [ "obj-91", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 2 ],
+					"order" : 1,
 					"source" : [ "obj-91", 0 ]
 				}
 
@@ -2886,19 +2951,19 @@
 			}
  ],
 		"parameters" : 		{
-			"obj-4::obj-44" : [ "vst~[8]", "vst~[8]", 0 ],
-			"obj-4::obj-37" : [ "vst~[7]", "vst~[7]", 0 ],
-			"obj-11::obj-47" : [ "vst~[10]", "vst~[1]", 0 ],
-			"obj-3::obj-125" : [ "vst~[1]", "vst~[1]", 0 ],
-			"obj-11::obj-39" : [ "vst~[4]", "vst~", 0 ],
 			"obj-4::obj-38" : [ "vst~[13]", "vst~[13]", 0 ],
+			"obj-11::obj-39" : [ "vst~[4]", "vst~", 0 ],
+			"obj-34" : [ "vst~[12]", "vst~[12]", 0 ],
+			"obj-11::obj-47" : [ "vst~[10]", "vst~[1]", 0 ],
+			"obj-4::obj-37" : [ "vst~[7]", "vst~[7]", 0 ],
+			"obj-3::obj-157" : [ "vst~[6]", "vst~[3]", 0 ],
+			"obj-4::obj-35" : [ "vst~", "vst~", 0 ],
+			"obj-4::obj-44" : [ "vst~[8]", "vst~[8]", 0 ],
+			"obj-3::obj-124" : [ "vst~[2]", "vst~[2]", 0 ],
 			"obj-73" : [ "vst~[11]", "vst~[11]", 0 ],
 			"obj-15::obj-3" : [ "vst~[9]", "vst~", 0 ],
 			"obj-3::obj-171" : [ "vst~[14]", "vst~", 0 ],
-			"obj-34" : [ "vst~[12]", "vst~[12]", 0 ],
-			"obj-4::obj-35" : [ "vst~", "vst~", 0 ],
-			"obj-3::obj-156" : [ "vst~[2]", "vst~[2]", 0 ],
-			"obj-3::obj-157" : [ "vst~[6]", "vst~[3]", 0 ],
+			"obj-3::obj-125" : [ "vst~[1]", "vst~[1]", 0 ],
 			"parameterbanks" : 			{
 
 			}
@@ -2969,13 +3034,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "kHs Bitcrush.maxsnap",
-				"bootpath" : "~/Documents/Max 8/Snapshots",
-				"patcherrelativepath" : "../../../../../Max 8/Snapshots",
-				"type" : "mx@s",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "kHs Formant Filter.maxsnap",
 				"bootpath" : "~/Documents/Max 8/Snapshots",
 				"patcherrelativepath" : "../../../../../Max 8/Snapshots",
@@ -2991,6 +3049,13 @@
 			}
 , 			{
 				"name" : "kHs Resonator.maxsnap",
+				"bootpath" : "~/Documents/Max 8/Snapshots",
+				"patcherrelativepath" : "../../../../../Max 8/Snapshots",
+				"type" : "mx@s",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "kHs Bitcrush.maxsnap",
 				"bootpath" : "~/Documents/Max 8/Snapshots",
 				"patcherrelativepath" : "../../../../../Max 8/Snapshots",
 				"type" : "mx@s",
