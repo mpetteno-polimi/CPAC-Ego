@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 1372.0, 779.0 ],
+		"rect" : [ 651.0, 89.0, 755.0, 779.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -1403,7 +1403,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 190.666667103767395, 1522.670036001205517, 360.0, 23.0 ],
-					"text" : "0.000046 0.000092 0.000046 -1.98663 0.986814"
+					"text" : "0.001017 0.002034 0.001017 -1.934729 0.938798"
 				}
 
 			}
@@ -1466,7 +1466,7 @@
 					"outlettype" : [ "list", "float", "float", "float", "float", "list", "int" ],
 					"parameter_enable" : 0,
 					"patching_rect" : [ 190.666667103767395, 1350.170036001205517, 360.0, 155.0 ],
-					"setfilter" : [ 0, 1, 1, 0, 0, 104.0, 1.0, 1.025591611862183, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+					"setfilter" : [ 0, 1, 1, 0, 0, 495.0, 1.0, 1.025591611862183, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
 					"varname" : "filtergraph~"
 				}
 
@@ -2540,7 +2540,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "float" ],
-					"patching_rect" : [ 395.0, 167.006672945022615, 100.0, 22.0 ],
+					"patching_rect" : [ 286.000007152557373, 216.006672945022615, 100.0, 22.0 ],
 					"text" : "/ 127."
 				}
 
@@ -2905,7 +2905,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 69.333331704139709, 831.670012159347607, 100.0, 35.0 ],
+					"patching_rect" : [ 69.329998807907103, 936.670012159347607, 100.0, 35.0 ],
 					"text" : "send~ SynthOut_Arp"
 				}
 
@@ -3215,13 +3215,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-117", 0 ],
 					"source" : [ "obj-115", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-45", 0 ],
-					"source" : [ "obj-116", 0 ]
 				}
 
 			}
@@ -4126,6 +4119,14 @@
 				"patchline" : 				{
 					"destination" : [ "obj-116", 0 ],
 					"order" : 3,
+					"source" : [ "obj-81", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-45", 0 ],
+					"order" : 4,
 					"source" : [ "obj-81", 0 ]
 				}
 
