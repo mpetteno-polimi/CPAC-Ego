@@ -136,7 +136,7 @@ export default class AutomationHelper {
         return val;
     }
 
-    private LFO(type, freq, min, max, time = Date.now()/1000) {
+    private LFO(type, freq, min, max, time = Date.now()/1000, slope=3) {
         switch(type) {
             case 'sin':
                 return min + (0.5-Math.cos(freq*time)/2)*(max-min);
@@ -145,11 +145,15 @@ export default class AutomationHelper {
                 time = time/(1/freq)
                 if(time<=0.5){
                     time*=2
-                    return min+time*time*time*(max-min)
+                    return min+Math.pow(time, slope)*(max-min)
                 }else{
                     time = (time-0.5)*2
-                    return min+(1-time*time*time)*(max-min)
+                    return min+(1-Math.pow(time, slope))*(max-min)
                 }
+            case 'beta':
+                time = time%(1/freq)
+                time = time/(1/freq)
+                return min+Math.pow(4, slope)*Math.pow(time*(1-time), slope)*(max-min)
         }
     }
 
