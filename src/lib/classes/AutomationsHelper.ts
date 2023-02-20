@@ -4,14 +4,11 @@ import {MathUtils} from "three";
 export default class AutomationHelper {
 
     getStaticSphereParameters(timeControls) {
-        let mod1 = this.LFO('sin', 0.07, 0, 1)
-        let mod2 = this.LFO('sin', 0.23, 0, 1)
-        let bloomStrength = this.LFO('sin', 0.13, 0.2, 0.2+mod2);
-        let noiseAmp = 0.45+mod1*0.3;
+        let bloomStrength = this.LFO('sin', 0.25, 0.2, 1.5, timeControls.globalElapsedTime);
         return {
             bloomStrength: bloomStrength,
             bloomThreshold: 0,
-            bloomRadius: 0.5,
+            bloomRadius: 0.1,
             primaryColor: 0xFFFFFF,
             primaryVariant: 0xFFFFFF,
             secondaryColor: 0xFFFFFF,
@@ -23,17 +20,16 @@ export default class AutomationHelper {
             noiseSpeed: 1,
             noiseType: 0,
             cameraAngle: 0,
-            cameraDistance: 4,
+            cameraDistance: 3,
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
-            audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
+            audioParam2: 0.6
         }
     }
 
     getSphereToFaceParameters(timeControls) {
         let progress = timeControls.faceDetectedElapsedTime/config.loop.faceDetectedMorphDuration;
-        console.log("S to F", progress)
         let bloomStrength = MathUtils.lerp(0, 3.5, progress);
-        let noiseAmp = MathUtils.lerp(0, 0.5, progress);
+        let noiseAmp = MathUtils.lerp(0, 0.02, progress);
         return {
             bloomStrength: bloomStrength,
             bloomThreshold: 0,
@@ -49,7 +45,7 @@ export default class AutomationHelper {
             noiseSpeed: 1,
             noiseType: Math.floor(7*Math.random()),
             cameraAngle: 0,
-            cameraDistance: MathUtils.lerp(4, 2.5, progress),
+            cameraDistance: MathUtils.lerp(3, 2.5, progress),
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
         }
@@ -139,11 +135,10 @@ export default class AutomationHelper {
         return val;
     }
 
-    private LFO(type, freq, min, max) {
-        let millis = Date.now()/1000.0;
+    private LFO(type, freq, min, max, time = Date.now()/1000) {
         switch(type) {
             case 'sin':
-                return min + (0.5+Math.sin(freq*millis)/2)*(max-min);
+                return min + (0.5-Math.cos(freq*time)/2)*(max-min);
         }
     }
 
