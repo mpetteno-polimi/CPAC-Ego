@@ -312,7 +312,6 @@ export default class MusicGenerator {
     public newFace(){
         if(this.faceDistance==2) return;
         // randomize some parameters when a new face is detected
-        this.generateNewSequence();
         this.alterChance = 0.1+Math.random()*0.4;
         this.baseNote = 36 + Math.floor(Math.random()*4)*12;
         this.bassChance = Math.random()*0.1;
