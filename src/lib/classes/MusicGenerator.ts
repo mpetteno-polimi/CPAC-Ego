@@ -311,16 +311,13 @@ export default class MusicGenerator {
     public newFace(){
         if(this.faceDistance==2) return;
         // randomize some parameters when a new face is detected
-        this.generateNewSequence();
         this.alterChance = 0.1+Math.random()*0.4;
         this.baseNote = 36 + Math.floor(Math.random()*4)*12;
         this.bassChance = Math.random()*0.1;
         this.bassDistance = Math.floor(Math.random()*2)*12;
-        if(Math.random()<0.3){
-            this.bpmMax = Math.random()*20;
-        }else{ this.bpmMax = Math.random()*40; }
+        this.bpmMax = Math.random()*40;
         this.chordChance = Math.random()*0.07;
-        Math.random() < 0.5 ? this.chordsEnabled = true : this.chordsEnabled = false;
+        Math.random() > 0.6 ? this.chordsEnabled = true : this.chordsEnabled = false;
         Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
     }
 

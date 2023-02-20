@@ -16,10 +16,9 @@ uniform float uFaceMorphDuration;
 uniform float uTargetMorphDuration;
 uniform float uMorphTargetType;
 uniform sampler2D uParticlesPosition;
-uniform vec3 uPrimaryColor;
-uniform vec3 uPrimaryVariant;
-uniform vec3 uSecondaryColor;
-uniform vec3 uSecondaryVariantColor;
+uniform vec3 uSphereColor;
+uniform vec3 uFaceColor;
+uniform vec3 uMorphTargetColor;
 uniform vec3 uBackgroundColor;
 
 /* VARYINGS */
@@ -32,8 +31,8 @@ void main() {
     float point = smoothstep(0.5, 0.45, dist);
 
     vec3 vColor;
-    vec3 faceColor = uSecondaryColor;
-    vec3 morphTargetColor = uSecondaryVariantColor;
+    vec3 faceColor = uFaceColor;
+    vec3 morphTargetColor = uMorphTargetColor;
     if (uFaceDetected) {
         if (uMorphEnabled) {
             if (display == 0.) {
@@ -47,14 +46,14 @@ void main() {
             }
         } else {
             float mixFactor = uFaceMorphElapsedTime/uFaceMorphDuration;
-            vColor = mix(uPrimaryColor, faceColor, clamp(0., 1., mixFactor));
+            vColor = mix(uSphereColor, faceColor, clamp(0., 1., mixFactor));
         }
     } else {
         if (display == 0.) {
             float mixFactor = uTime/2.;
-            vColor = mix(uBackgroundColor, uPrimaryColor, clamp(0., 1., mixFactor));
+            vColor = mix(uBackgroundColor, uSphereColor, clamp(0., 1., mixFactor));
         } else {
-            vColor = uPrimaryColor;
+            vColor = uSphereColor;
         }
     }
 

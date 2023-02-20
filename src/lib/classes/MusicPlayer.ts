@@ -12,7 +12,6 @@ export default class MusicPlayer {
     }
 
     playChord(note) {
-        console.log("playing chord note", note)
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/chord', note);
         } else {
@@ -38,7 +37,7 @@ export default class MusicPlayer {
 
     stopDrone() {
         if (this.oscClient.isConnected()) {
-            this.oscClient.sendMessage("/droneStop", 0);
+            this.oscClient.sendMessage("/dronePlay", 0);
         } else {
             this.toneJsPlayer.stopDrone();
         }

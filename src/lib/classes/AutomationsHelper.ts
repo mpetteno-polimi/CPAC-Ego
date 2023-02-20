@@ -1,57 +1,120 @@
+import {config} from "../../config";
+import {MathUtils} from "three";
 
 export default class AutomationHelper {
 
-    getStaticSphereParameters() {
-        let mod1 = this.LFO('sin', 0.07, 0, 1)
-        let mod2 = this.LFO('sin', 0.23, 0, 1)
-        let bloomStrength = this.LFO('sin', 0.13, 0.2, 0.2+mod2);
-        let noiseAmp = 0.45+mod1*0.3;
+    getStaticSphereParameters(timeControls) {
+        let bloomStrength = this.LFO('impulse', 0.25, 0.2, 1.2, timeControls.globalElapsedTime, 1);
         return {
             bloomStrength: bloomStrength,
             bloomThreshold: 0,
-            bloomRadius: 0.1+mod1,
+            bloomRadius: 0.1,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
+            backgroundColor: config.colors.background,
+            noiseAmp: 0.025,
+            noiseRadius: 1,
+            noiseFreq: 1,
+            noiseSpeed: 1,
+            noiseType: 0,
+            cameraAngle: 0,
+            cameraDistance: 3,
+            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4), // apertura stereo noise drone
+            audioParam2: 0.6
+        }
+    }
+
+    getSphereToFaceParameters(timeControls) {
+        let progress = timeControls.faceDetectedElapsedTime/config.loop.faceDetectedMorphDuration;
+        let bloomStrength = this.LFO('beta', 0, 0, 1.2, progress, 5);
+        let bloomRadius = this.LFO('beta', 0, 0, 0.2, progress, 5);
+        return {
+            bloomStrength: bloomStrength,
+            bloomThreshold: 0,
+            bloomRadius: bloomRadius,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
+            backgroundColor: config.colors.background,
+            noiseAmp: 0.005,
+            noiseRadius: 1,
+            noiseFreq: 1,
+            noiseSpeed: 1,
+            noiseType: 5,
+            cameraAngle: this.LFO('sin', 8, 0, 2*Math.PI, progress)*bloomStrength,
+            cameraDistance: MathUtils.lerp(3, 2.5, progress),
+            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
+            audioParam2: 0.6
+        }
+    }
+
+    getStaticFaceParameters(timeControls) {
+        return {
+            bloomStrength: 0,
+            bloomThreshold: 0,
+            bloomRadius: 0,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
+            backgroundColor: config.colors.background,
+            noiseAmp: 0.025,
+            noiseRadius: 1,
+            noiseFreq: 1,
+            noiseSpeed: 1,
+            noiseType: 0,
+            cameraAngle: 0,
+            cameraDistance: 2.5,
+            audioParam1: 0.6,
+            audioParam2: 0.6
+        }
+    }
+
+    getFaceToMorphTargetParameters(timeControls) {
+        let progress = timeControls.morphElapsedTime/config.loop.morphDuration;
+        let bloomStrength = this.LFO('beta', 0, 0, 1.2, progress);
+        let bloomRadius = this.LFO('beta', 0, 0, 0.2, progress);
+        let noiseAmp = this.LFO('beta', 0, 0, 0.4, progress, 5);
+        return {
+            bloomStrength: bloomStrength,
+            bloomThreshold: 0,
+            bloomRadius: bloomRadius,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
+            backgroundColor: config.colors.background,
             noiseAmp: noiseAmp,
-            noiseRadius: 1+mod2,
-            noiseFreq: 5+15*mod2,
-            noiseSpeed: 3,
-            noiseType: 4,
-            cameraDistance: this.LFO('sin', 0.1, 2.5, 3),
+            noiseRadius: 1,
+            noiseFreq: 1,
+            noiseSpeed: 1,
+            noiseType: Math.floor(7*Math.random()),
+            cameraAngle: 0,
+            cameraDistance: 2.5,
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
         }
     }
 
-    getSphereToFaceParameters() {
-        return this.getStaticSphereParameters();
-    }
 
-    getStaticFaceParameters() {
-        return this.getStaticSphereParameters();
-    }
-
-    getFaceToMorphTargetParameters() {
-        let mod1 = this.LFO('sin', 0.07, 0, 1)
-        let mod2 = this.LFO('sin', 0.23, 0, 1)
-        let bloomStrength = mod2*0.2;
-        let noiseAmp = mod2*0.3;
+    getStaticMorphTargetParameters(timeControls) {
         return {
-            bloomStrength: bloomStrength,
+            bloomStrength: 0.2,
             bloomThreshold: 0,
-            bloomRadius: mod1*0.5,
-            noiseAmp: noiseAmp,
-            noiseRadius: 1+mod2,
-            noiseFreq: 5+15*mod2,
-            noiseSpeed: 0.001+mod1*0.005+mod1*mod2*0.1,
-            noiseType: 4,
-            cameraDistance: this.LFO('sin', 0.1, 2.5, 3),
-            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
-            audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
+            bloomRadius: 0.1,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
+            backgroundColor: config.colors.background,
+            noiseAmp: 0.025,
+            noiseRadius: 1,
+            noiseFreq: 1,
+            noiseSpeed: 1,
+            noiseType: 0,
+            cameraAngle: 0,
+            cameraDistance: 2.5,
+            audioParam1: 0.6,
+            audioParam2: 0.6
         }
-    }
-
-
-    getStaticMorphTargetParameters() {
-        return this.getStaticSphereParameters();
     }
 
     private clampAndNormalize(input, min, max) {
@@ -60,11 +123,22 @@ export default class AutomationHelper {
         return val;
     }
 
-    private LFO(type, freq, min, max) {
-        let millis = Date.now()/1000.0;
+    private LFO(type, freq, min, max, time = Date.now()/1000, slope=3) {
         switch(type) {
             case 'sin':
-                return min + (0.5+Math.sin(freq*millis)/2)*(max-min);
+                return min + (0.5-Math.cos(freq*time)/2)*(max-min);
+            case 'impulse':
+                time = time%(1/freq)
+                time = time/(1/freq)
+                if(time<=0.5){
+                    time*=2
+                    return min+Math.pow(time, slope)*(max-min)
+                }else{
+                    time = (time-0.5)*2
+                    return min+(1-Math.pow(time, slope))*(max-min)
+                }
+            case 'beta':
+                return min+Math.pow(4, slope)*Math.pow(time*(1-time), slope)*(max-min)
         }
     }
 
