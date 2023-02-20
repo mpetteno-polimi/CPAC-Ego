@@ -59,9 +59,9 @@ export default class ToneJSPlayer {
                 "volume" : - 12
             }).toDestination();
 
-            /*
+            // instantiate chord synth
             this.synthChord = new Tone.Synth().toDestination();
-            */
+            
 
             // instastiate the pitched drone
             this.synthDrone = new Tone.Synth({
