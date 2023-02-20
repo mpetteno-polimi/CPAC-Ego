@@ -33,7 +33,7 @@ export default class ToneJSPlayer {
                 "sustain": 0.2,
                 "release": 2
             },
-            "volume" : - 12
+            "volume" : - 18
         });
 
         // instantiate the low pass for the lead synth
@@ -78,7 +78,8 @@ export default class ToneJSPlayer {
                         "attackCurve" : "sine",
                         "releaseCurve" : "sine",
                         "release": 0.4
-                    }
+                    },
+                    "volume" : - 12
                 }).toDestination();
 
             this.filterDrone = new Tone.Filter(2000, "lowpass");
@@ -95,7 +96,8 @@ export default class ToneJSPlayer {
                     "decay": 2,
                     "sustain": 0.5,
                     "release": 3
-                }
+                },
+                "volume" : - 18
             });
 
             this.synthNoiseDrone.chain(this.reverb,Tone.Destination);
@@ -116,17 +118,17 @@ export default class ToneJSPlayer {
 
 
     startDrone() {
-        let now = Tone.now();
+        const now = Tone.now();
         this.synthDrone.triggerAttack("C2", now);
     }
 
     startNoiseDrone() {
-        let now = Tone.now();
-        this.synthNoiseDrone.triggerAttack("C2", now);
+        const now = Tone.now();
+        this.synthNoiseDrone.triggerAttack(now, 0.6);
     }
 
     stopDrone() {
-        let now = Tone.now();
+        const now = Tone.now();
         this.synthNoiseDrone.triggerRelease(now);
     }
 
