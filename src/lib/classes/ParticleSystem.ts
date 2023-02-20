@@ -47,6 +47,7 @@ export default class ParticleSystem {
             if (estimatedFaces.length != 0) {
                 let estimatedFace = estimatedFaces[0];
                 if (this.isFaceToUpdate()) {
+                    this.world.musicGenerator.newFace();
                     this.isProcessingFace = true;
                     this.world.faceMeshDetector.processFaceDetection(
                         this, estimatedFace, this.textureWidth*this.textureHeight, this.onFaceProcessed);

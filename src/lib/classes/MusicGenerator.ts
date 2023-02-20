@@ -76,7 +76,7 @@ export default class MusicGenerator {
     updateFromFaceEstimation(estimatedFace: Face) {
         this.processFaceLandmarks(estimatedFace.keypoints);
         this.setFaceDistance(estimatedFace.box.width, estimatedFace.box.height);
-        this.newFace();
+        //this.newFace();
         this.param4 = this.faceDistance/2;
     }
 
@@ -316,11 +316,9 @@ export default class MusicGenerator {
         this.baseNote = 36 + Math.floor(Math.random()*4)*12;
         this.bassChance = Math.random()*0.1;
         this.bassDistance = Math.floor(Math.random()*2)*12;
-        if(Math.random()<0.3){
-            this.bpmMax = Math.random()*20;
-        }else{ this.bpmMax = Math.random()*40; }
+        this.bpmMax = Math.random()*40;
         this.chordChance = Math.random()*0.07;
-        Math.random() < 0.5 ? this.chordsEnabled = true : this.chordsEnabled = false;
+        Math.random() > 0.6 ? this.chordsEnabled = true : this.chordsEnabled = false;
         Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
     }
 

@@ -44,7 +44,7 @@ export default class MusicPlayer {
         }
     }
 
-    playNote(note) {
+    playNote(note) { console.log(note)
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/note', note);
         } else {
