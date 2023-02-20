@@ -76,9 +76,9 @@ export default class AutomationHelper {
 
     getFaceToMorphTargetParameters(timeControls) {
         let progress = timeControls.morphElapsedTime/config.loop.morphDuration;
-        let bloomStrength = this.LFO('beta', 0, 0, 1.4, progress);
+        let bloomStrength = this.LFO('beta', 0, 0, 1.2, progress);
         let bloomRadius = this.LFO('beta', 0, 0, 0.2, progress);
-        let noiseAmp = this.LFO('beta', 0, 0, 0.5, progress);
+        let noiseAmp = this.LFO('beta', 0, 0, 0.4, progress, 10);
         return {
             bloomStrength: bloomStrength,
             bloomThreshold: 0,
@@ -102,14 +102,10 @@ export default class AutomationHelper {
 
 
     getStaticMorphTargetParameters(timeControls) {
-        let mod1 = this.LFO('sin', 0.07, 0, 1)
-        let mod2 = this.LFO('sin', 0.23, 0, 1)
-        let bloomStrength = this.LFO('sin', 0.13, 0.2, 0.2+mod2);
-        let noiseAmp = 0.45+mod1*0.3;
         return {
-            bloomStrength: bloomStrength,
+            bloomStrength: 1,
             bloomThreshold: 0,
-            bloomRadius: 0.5,
+            bloomRadius: 0.2,
             primaryColor: 0xFFFFFF,
             primaryVariant: 0xFFFFFF,
             secondaryColor: 0xFFFFFF,
@@ -122,8 +118,8 @@ export default class AutomationHelper {
             noiseType: 0,
             cameraAngle: 0,
             cameraDistance: 2.5,
-            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
-            audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
+            audioParam1: 0.6,
+            audioParam2: 0.6
         }
     }
 
