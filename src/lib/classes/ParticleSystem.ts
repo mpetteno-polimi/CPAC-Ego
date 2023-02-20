@@ -104,10 +104,9 @@ export default class ParticleSystem {
         this.material.uniforms.uFaceDetected.value = this.world.loop.isFaceDetected;
         this.material.uniforms.uMorphEnabled.value = this.world.loop.isMorphEnabled;
         this.material.uniforms.uParticlesPosition.value = this.gpuComputation.getCurrentParticlesPosition();
-        this.material.uniforms.uPrimaryColor.value = new THREE.Color(this.world.settings.primaryColor);
-        this.material.uniforms.uPrimaryVariant.value = new THREE.Color(this.world.settings.primaryVariant);
-        this.material.uniforms.uSecondaryColor.value = new THREE.Color(this.world.settings.secondaryColor);
-        this.material.uniforms.uSecondaryVariantColor.value = new THREE.Color(this.world.settings.secondaryVariantColor);
+        this.material.uniforms.uSphereColor.value = new THREE.Color(this.world.settings.sphereColor);
+        this.material.uniforms.uFaceColor.value = new THREE.Color(this.world.settings.faceColor);
+        this.material.uniforms.uMorphTargetColor.value = new THREE.Color(this.world.settings.morphTargetColor);
         this.material.uniforms.uBackgroundColor.value = new THREE.Color(this.world.settings.backgroundColor);
     }
 
@@ -142,10 +141,9 @@ export default class ParticleSystem {
                 uTargetMorphDuration: { value: config.loop.morphDuration },
                 uMorphTargetType: { value: 0 },
                 uParticlesPosition: { value: null },
-                uPrimaryColor: { value: new THREE.Color() },
-                uPrimaryVariant: { value: new THREE.Color() },
-                uSecondaryColor: { value: new THREE.Color() },
-                uSecondaryVariantColor: { value: new THREE.Color() },
+                uSphereColor: { value: new THREE.Color() },
+                uFaceColor: { value: new THREE.Color() },
+                uMorphTargetColor: { value: new THREE.Color() },
                 uBackgroundColor: { value: new THREE.Color() }
             },
             vertexShader: vertexShader,

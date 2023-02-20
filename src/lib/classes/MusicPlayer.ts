@@ -12,7 +12,6 @@ export default class MusicPlayer {
     }
 
     playChord(note) {
-        console.log("playing chord note", note)
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/chord', note);
         } else {
@@ -44,7 +43,7 @@ export default class MusicPlayer {
         }
     }
 
-    playNote(note) { console.log(note)
+    playNote(note) {
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/note', note);
         } else {

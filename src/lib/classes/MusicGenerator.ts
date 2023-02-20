@@ -76,7 +76,6 @@ export default class MusicGenerator {
     updateFromFaceEstimation(estimatedFace: Face) {
         this.processFaceLandmarks(estimatedFace.keypoints);
         this.setFaceDistance(estimatedFace.box.width, estimatedFace.box.height);
-        //this.newFace();
         this.param4 = this.faceDistance/2;
     }
 

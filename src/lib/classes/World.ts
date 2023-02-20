@@ -44,10 +44,9 @@ export default class World {
         noiseRadius: number,
         noiseSpeed: number,
         noiseType: number,
-        primaryColor: number,
-        primaryVariant: number,
-        secondaryColor: number,
-        secondaryVariantColor: number,
+        sphereColor: number,
+        faceColor: number,
+        morphTargetColor: number,
         backgroundColor: number
     };
 
@@ -59,15 +58,14 @@ export default class World {
             bloomStrength: 0,
             cameraDistance: 2.5,
             cameraAngle: 0,
-            noiseFreq: 15,
-            noiseAmp: 0.3,
+            noiseFreq: 0,
+            noiseAmp: 0,
             noiseRadius: 1,
-            noiseSpeed: 3,
-            noiseType: 4,
-            primaryColor: config.colors.primary,
-            primaryVariant: config.colors.primaryVariant,
-            secondaryColor: config.colors.secondary,
-            secondaryVariantColor: config.colors.secondaryVariant,
+            noiseSpeed: 0,
+            noiseType: 0,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background
         };
         this.faceMeshDetector = options.faceMeshDetector;
@@ -110,10 +108,9 @@ export default class World {
             this.settings.bloomThreshold = parameters.bloomThreshold;
             this.settings.bloomStrength = parameters.bloomStrength;
             this.settings.bloomRadius = parameters.bloomRadius;
-            this.settings.primaryColor = parameters.primaryColor;
-            this.settings.primaryVariant = parameters.primaryVariant;
-            this.settings.secondaryColor = parameters.secondaryColor;
-            this.settings.secondaryVariantColor = parameters.secondaryVariantColor;
+            this.settings.sphereColor = parameters.sphereColor;
+            this.settings.faceColor = parameters.faceColor;
+            this.settings.morphTargetColor = parameters.morphTargetColor;
             this.settings.backgroundColor = parameters.backgroundColor;
             this.settings.noiseAmp = parameters.noiseAmp;
             this.settings.noiseRadius = parameters.noiseRadius;
@@ -162,7 +159,7 @@ export default class World {
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setClearColor(config.colors.background);
-         this.renderer.physicallyCorrectLights = true;
+        this.renderer.physicallyCorrectLights = true;
         this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
 
@@ -187,10 +184,9 @@ export default class World {
             cameraFolder.add(this.settings, "cameraDistance", 0, 10, 0.5);
             cameraFolder.add(this.settings, "cameraAngle", 0, 360, 0.5);
             let colorsFolder = this.gui.addFolder(`Color Palette`);
-            colorsFolder.addColor(this.settings, "primaryColor");
-            colorsFolder.addColor(this.settings, "primaryVariant");
-            colorsFolder.addColor(this.settings, "secondaryColor");
-            colorsFolder.addColor(this.settings, "secondaryVariantColor");
+            colorsFolder.addColor(this.settings, "sphereColor");
+            colorsFolder.addColor(this.settings, "faceColor");
+            colorsFolder.addColor(this.settings, "morphTargetColor");
             colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
                 this.settings.backgroundColor = color;
                 this.renderer.setClearColor(color);

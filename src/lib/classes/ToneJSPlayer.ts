@@ -150,7 +150,7 @@ export default class ToneJSPlayer {
     }
 
 
-    setAudioParams(p1, p2, p3) {
+    setAudioParams(p1, p2, p3, p4) {
 
         this.filterLead.set({
             frequency: 2000 + p1 * 1000

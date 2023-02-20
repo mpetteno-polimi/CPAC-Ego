@@ -186,12 +186,6 @@ export default class SplashScreen {
             progressFolder.add(this.settings, "progress2", 0, 1, 0.01);
             progressFolder.add(this.settings, "progress3", 0, 1, 0.01);
             progressFolder.add(this.settings, "progress4", 0, 1, 0.01);
-            let noiseFolder = this.gui.addFolder(`Noise`);
-            noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
-            noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
-            noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
-            noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
-            noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
             let postProcessingFolder = this.gui.addFolder(`Post Processing`);
             postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
             postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
