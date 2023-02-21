@@ -42,7 +42,7 @@ export const config: AppConfig = {
                 nearPlane: 0.01,
                 farPlane: 100
             },
-            particlesCount: 256*256,
+            particlesCount: 1024*1024,
             automateParameters: true
         },
     },
@@ -122,7 +122,7 @@ export const config: AppConfig = {
 
         },
         toneJS: {
-
+            enabled: false
         },
         generator: {
             bassEnabled: true
@@ -134,7 +134,7 @@ export const config: AppConfig = {
         fps: 60
     },
     loop: {
-        faceDetectionStartTime: 8,
+        faceDetectionStartTime: 10,
         faceDetectedMorphDuration: 20,
         morphStart: 8,
         morphDuration: 30,
@@ -145,10 +145,10 @@ export const config: AppConfig = {
         port: 8080
     },
     colors: {
-        primary: 0xFFFFFF,
+        primary: 0x8099B3,
         primaryVariant: 0xFBFBFB,
-        secondary: 0x8099CC,
-        secondaryVariant: 0xFFFFFF,
+        secondary: 0x66cc80,
+        ternary: 0xFFFFFF,
         background: 0x000000
     }
 }

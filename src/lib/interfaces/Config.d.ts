@@ -77,11 +77,11 @@ type MusicPlayerConfig = {
 }
 
 type ToneJSConfig = {
-
+    enabled: boolean
 }
 
 type MusicGeneratorConfig = {
-    bassEnabled: true
+    bassEnabled: boolean
 }
 
 type WebcamConfig = {
@@ -107,7 +107,7 @@ type ColorPaletteConfig = {
     primary: number,
     primaryVariant: number,
     secondary: number,
-    secondaryVariant: number,
+    ternary: number,
     background: number
 }
 

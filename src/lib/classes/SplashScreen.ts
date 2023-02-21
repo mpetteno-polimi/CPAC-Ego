@@ -38,7 +38,7 @@ export default class SplashScreen {
         primaryColor: number,
         primaryVariant: number,
         secondaryColor: number,
-        secondaryVariantColor: number,
+        ternaryColor: number,
         backgroundColor: number
     };
 
@@ -62,7 +62,7 @@ export default class SplashScreen {
             primaryColor: config.colors.primary,
             primaryVariant: config.colors.primaryVariant,
             secondaryColor: config.colors.secondary,
-            secondaryVariantColor: config.colors.secondaryVariant,
+            ternaryColor: config.colors.ternary,
             backgroundColor: config.colors.background
         };
         this.addCamera();
@@ -114,7 +114,7 @@ export default class SplashScreen {
             uPrimaryColor: this.settings.primaryColor,
             uPrimaryVariant: this.settings.primaryVariant,
             uSecondaryColor: this.settings.secondaryColor,
-            uSecondaryVariantColor: this.settings.secondaryVariantColor,
+            uTernaryColor: this.settings.ternaryColor,
             uBackgroundColor: this.settings.backgroundColor,
         })
         this.updateSettings();
@@ -176,7 +176,7 @@ export default class SplashScreen {
             colorsFolder.addColor(this.settings, "primaryColor");
             colorsFolder.addColor(this.settings, "primaryVariant");
             colorsFolder.addColor(this.settings, "secondaryColor");
-            colorsFolder.addColor(this.settings, "secondaryVariantColor");
+            colorsFolder.addColor(this.settings, "ternaryColor");
             colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
                 this.settings.backgroundColor = color;
                 this.renderer.setClearColor(color);

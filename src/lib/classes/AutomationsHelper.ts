@@ -10,7 +10,7 @@ export default class AutomationHelper {
             bloomThreshold: 0,
             bloomRadius: 0.1,
             sphereColor: config.colors.primary,
-            faceColor: config.colors.primary,
+            faceColor: config.colors.secondary,
             morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background,
             noiseAmp: 0.025,
@@ -34,7 +34,7 @@ export default class AutomationHelper {
             bloomThreshold: 0,
             bloomRadius: bloomRadius,
             sphereColor: config.colors.primary,
-            faceColor: config.colors.primary,
+            faceColor: config.colors.secondary,
             morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background,
             noiseAmp: 0.005,
@@ -42,7 +42,7 @@ export default class AutomationHelper {
             noiseFreq: 1,
             noiseSpeed: 1,
             noiseType: 5,
-            cameraAngle: this.LFO('sin', 8, 0, 2*Math.PI, progress)*bloomStrength,
+            cameraAngle: this.LFO('sin', 1, 0, 2*Math.PI, progress)*bloomStrength,
             cameraDistance: MathUtils.lerp(3, 2.5, progress),
             audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: 0.6
@@ -55,7 +55,7 @@ export default class AutomationHelper {
             bloomThreshold: 0,
             bloomRadius: 0,
             sphereColor: config.colors.primary,
-            faceColor: config.colors.primary,
+            faceColor: config.colors.secondary,
             morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background,
             noiseAmp: 0.025,
@@ -72,20 +72,20 @@ export default class AutomationHelper {
 
     getFaceToMorphTargetParameters(timeControls) {
         let progress = timeControls.morphElapsedTime/config.loop.morphDuration;
-        let bloomStrength = this.LFO('beta', 0, 0, 1.2, progress);
+        let bloomStrength = this.LFO('beta', 0, 0, 2, progress);
         let bloomRadius = this.LFO('beta', 0, 0, 0.2, progress);
-        let noiseAmp = this.LFO('beta', 0, 0, 0.4, progress, 5);
+        let noiseAmp = this.LFO('beta', 0, 0, 0.18, progress);
         return {
             bloomStrength: bloomStrength,
             bloomThreshold: 0,
             bloomRadius: bloomRadius,
             sphereColor: config.colors.primary,
-            faceColor: config.colors.primary,
+            faceColor: config.colors.secondary,
             morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background,
             noiseAmp: noiseAmp,
             noiseRadius: 1,
-            noiseFreq: 1,
+            noiseFreq: Math.random()*45,
             noiseSpeed: 1,
             noiseType: Math.floor(7*Math.random()),
             cameraAngle: 0,
@@ -102,7 +102,7 @@ export default class AutomationHelper {
             bloomThreshold: 0,
             bloomRadius: 0.1,
             sphereColor: config.colors.primary,
-            faceColor: config.colors.primary,
+            faceColor: config.colors.secondary,
             morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background,
             noiseAmp: 0.025,
