@@ -42,7 +42,7 @@ export const config: AppConfig = {
                 nearPlane: 0.01,
                 farPlane: 100
             },
-            particlesCount: 1024*1024,
+            particlesCount: 256*256,
             automateParameters: true
         },
     },
