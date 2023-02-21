@@ -318,7 +318,7 @@ export default class MusicGenerator {
         this.bpmMax = Math.random()*40;
         this.chordChance = 0.05+Math.random()*0.07;
         Math.random() > 0.6 ? this.chordsEnabled = true : this.chordsEnabled = false;
-        Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false; console.log(this.chordsEnabled)
+        Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
     }
 
     public setAudioParams(p1, p2){

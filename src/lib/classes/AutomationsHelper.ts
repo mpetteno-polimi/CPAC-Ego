@@ -20,7 +20,7 @@ export default class AutomationHelper {
             noiseType: 0,
             cameraAngle: 0,
             cameraDistance: 3,
-            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4), // apertura stereo noise drone
+            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
             audioParam2: 0.6
         }
     }
