@@ -71,4 +71,8 @@ export default class MusicPlayer {
         }
     }
 
+    useToneJS() {
+        return ! this.oscClient.isConnected();
+    }
+
 }

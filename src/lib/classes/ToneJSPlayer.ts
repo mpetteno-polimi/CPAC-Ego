@@ -10,6 +10,8 @@ export default class ToneJSPlayer {
     reverb: Tone.Reverb;
     filterLead: Tone.Filter;
     filterDrone: Tone.Filter;
+    currentChord = [];
+    currentChordFlag;
 
     constructor() {
 
@@ -33,7 +35,7 @@ export default class ToneJSPlayer {
                 "sustain": 0.2,
                 "release": 2
             },
-            "volume" : - 12
+            "volume" : - 8
         });
 
         // instantiate the low pass for the lead synth
@@ -109,14 +111,24 @@ export default class ToneJSPlayer {
          this.synthNoiseDrone.triggerAttack("C2", Tone.now() + 2);
          */
         
+        // keeps track of the chord
+        
 
     }
 
     playChord(note) {
+
+        // console.log("chord play");
+        // console.log(note);
         const now = Tone.now();
-        let noteString = Tone.Frequency(note, "midi").toNote();
-        this.synthChord.triggerRelease(now);
-        this.synthChord.triggerAttack(noteString, "1n", now + 0.5);
+        let chordNotes = [];
+
+        for (let i = 0; i < note.length; i++) {
+            // console.log(Tone.Frequency(note[i], "midi").toNote());
+            chordNotes.push (Tone.Frequency(note[i], "midi").toNote());
+        }
+            this.synthChord.releaseAll(now);
+        this.synthChord.triggerAttack(chordNotes, now + 0.05, 0.2);
     }
 
 

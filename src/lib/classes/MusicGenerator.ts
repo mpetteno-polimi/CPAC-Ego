@@ -15,7 +15,6 @@ export default class MusicGenerator {
     param1 = 0.5;
     param2 = 0.5;
     param3 = 0.5;
-    param4 = 0.5;
     NoteGenerationMarkovOrder = 2;
     noteMarkovTable = [];
     scales = {
@@ -55,7 +54,7 @@ export default class MusicGenerator {
     bassDistance = 24;
     higherOctave = false;
     chordsEnabled = false;
-    public musicPlayer: MusicPlayer;
+    private musicPlayer: MusicPlayer;
     private bassEnabled: boolean;
     private sequenceTimeout: NodeJS.Timeout;
 
@@ -76,7 +75,6 @@ export default class MusicGenerator {
     updateFromFaceEstimation(estimatedFace: Face) {
         this.processFaceLandmarks(estimatedFace.keypoints);
         this.setFaceDistance(estimatedFace.box.width, estimatedFace.box.height);
-        this.param4 = this.faceDistance/2;
     }
 
     generateNewSequence() {
@@ -238,7 +236,7 @@ export default class MusicGenerator {
         this.musicPlayer.playNote(note['note']);
         // bass
         if (Math.random() < this.bassChance) {
-            let n = 36+this.bassDistance+(note['note']%12);
+            let n = 24+this.bassDistance+(note['note']%12);
             this.musicPlayer.playBass(n);
         }
         // chords
@@ -252,14 +250,30 @@ export default class MusicGenerator {
         let baseNoteIndex = Math.floor(Math.random()*7);
         let baseNoteOffset = -12 + Math.floor(Math.random()*3)*12;
         let numberOfNotes = 3;
+        let chordNotes = [];
+
         if(Math.random()<0.4) numberOfNotes=4;
-        for(let i=0; i<numberOfNotes; i++){
+            
+
+        for(let i=0; i<numberOfNotes; i++) {
+
             let noteIndex = (baseNoteIndex + 2*i) % 7;
             let note = this.scale[noteIndex] + this.baseNote;
+
             if((baseNoteIndex + 2*i) > 6) note+=12;
             note += baseNoteOffset;
-            this.musicPlayer.playChord(note);
+
+            if (this.musicPlayer.useToneJS()) {
+                chordNotes.push (note);
+            } else {
+                this.musicPlayer.playChord(note);
+            }
         }
+
+        if (this.musicPlayer.useToneJS()) {
+            this.musicPlayer.playChord(chordNotes);
+        }
+
     }
 
     stopPlayingSequence() {
@@ -311,19 +325,22 @@ export default class MusicGenerator {
     public newFace(){
         if(this.faceDistance==2) return;
         // randomize some parameters when a new face is detected
+        this.generateNewSequence();
         this.alterChance = 0.1+Math.random()*0.4;
         this.baseNote = 36 + Math.floor(Math.random()*4)*12;
         this.bassChance = Math.random()*0.1;
         this.bassDistance = Math.floor(Math.random()*2)*12;
-        this.bpmMax = Math.random()*40;
-        this.chordChance = 0.05+Math.random()*0.07;
-        Math.random() > 0.6 ? this.chordsEnabled = true : this.chordsEnabled = false;
+        if(Math.random()<0.3){
+            this.bpmMax = Math.random()*20;
+        }else{ this.bpmMax = Math.random()*40; }
+        this.chordChance = Math.random()*0.07;
+        Math.random() < 0.5 ? this.chordsEnabled = true : this.chordsEnabled = false;
         Math.random() > 0.5 ? this.bassEnabled = true : this.bassEnabled = false;
     }
 
     public setAudioParams(p1, p2){
         this.param1 = p1;
         this.param2 = p2;
-        this.musicPlayer.setAudioParams(this.param1, this.param2, this.param3, this.param4);
+        this.musicPlayer.setAudioParams(this.param1, this.param2, this.param3);
     }
 }
