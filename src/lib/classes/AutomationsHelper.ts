@@ -20,7 +20,7 @@ export default class AutomationHelper {
             noiseType: 0,
             cameraAngle: 0,
             cameraDistance: 3,
-            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
+            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.2),
             audioParam2: 0.6
         }
     }
@@ -44,7 +44,7 @@ export default class AutomationHelper {
             noiseType: 5,
             cameraAngle: this.LFO('sin', 1, 0, 2*Math.PI, progress)*bloomStrength,
             cameraDistance: MathUtils.lerp(3, 2.5, progress),
-            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
+            audioParam1: this.clampAndNormalize(bloomStrength, 0, 1.2),
             audioParam2: 0.6
         }
     }
@@ -90,8 +90,8 @@ export default class AutomationHelper {
             noiseType: Math.floor(7*Math.random()),
             cameraAngle: 0,
             cameraDistance: 2.5,
-            audioParam1: this.clampAndNormalize(bloomStrength, 0.2, 1.4),
-            audioParam2: this.clampAndNormalize(noiseAmp, 0.45, 1.05)
+            audioParam1: this.clampAndNormalize(bloomStrength, 0, 2),
+            audioParam2: this.clampAndNormalize(noiseAmp, 0, 0.18)
         }
     }
 
