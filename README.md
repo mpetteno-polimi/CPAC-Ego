@@ -77,30 +77,18 @@ The main objects that make up the patch are:
 - Scale object: which allows us to map parameters in a given range.
 - KiloHearts Essential Plugins: used for sound effects.
 
-As for the sound design of the various instruments (Arpeggio, Bass, Drone) we started from a template of additive 
-synthesis created by us and then go to modify it in order to achieve the desired sounds. The template consists of 4 
-oscillators in which we can decide for each waveform, envelope and amplitude. We also have several LFOs available for
-each of them for both frequency modulation and amplitude modulation. Next we find an Eq that allows us to choose any
-type of filter and change its parameters (cut, gain, Q) and finally our effects plugins.
+Concerning the sound design of the various instruments (Arpeggio, Bass, Drone) we started from a template of Additive Synthesis created by us and then modified it in order to achieve the desired sound.
+The template consists of 4 oscillators in which we can decide each waveform, envelope and amplitude. We also have several LFOs available for each of them, both for frequency modulation and amplitude modulation. 
+Next we find an EQ that allows us to choose any type of filter and change its parameters (cut, gain, Q) and finally our effect plugins.
 
-For the noise drone we went instead to use a sample. This sample is first added into a buffer, and then using the 
-`Stretch~` object we go to modify the buffer contents in a "destructive" way both in terms of pitch and time.
-Next we go to generate 16 channels of a signal, and we go to divert them and then multiply them by the sample inserted 
-previously in the buffer. This makes it possible to generate a particular noise effect. In the end, we find our effects 
-sends to have the noise drone even more consistent.
+For the noise drone we used a sample. This sample is first added into a buffer, and then using the Stretch~ object we modify the buffer contents in a "destructive" way both in terms of pitch and time.
+Next we generate 16 channels of a signal and we divert them and then multiply them by the sample inserted previously in the buffer. This makes it possible to generate a particular noise effect. In the end, we apply the effect sends to the noise drone.
 
-In the phase of receiving OSC messages, in addition to having messages for notes and related start and stop messages 
-for some tools, we have input some parameters that correspond to:
-- Parameter 1: corresponds to the Bloom Intensity, and is mapped to the Depth, Rate, Mix parameters of the Flanger in 
-the sub patch `TryPoly_CPAC` and the Cut of the low pass filter of the same.
-- Parameter 2: corresponds to the Noise Amplitude and is mapped to the cutoff of the low pass filter and to the 
-Amplitude of the pink noise in the `SynthAddCpac_DRONE_DO` sub patch, and to the Mix parameter of Ensemble plugin in 
-the `Structure_CPAC` patch.
-- Parameter 3: corresponds to theConfidence of Feeling’s Detection and is mapped to the Spread parameter of Phase 
-Distortion plugin in the `SynthAddCpac_DRONE_DO` sub patch and to the detune parameter of Ensemble Plugin in the 
-`Structure_CPAC` patch.
-- Parameter 4: corresponds to the face distance and is mapped to the amplitude of the fourth oscillator of the 
-`SynthAddCpac_DRONE_DO` subpath e and to the ADSR’s attack and the amplitude of the `SynthAddCpac_ARP` subpath.
+When it comes to receiving OSC messages, in addition to notes messages and control messages, we have 4 sound design parameters:
+- Parameter 1 : corresponds to the Bloom (post processing effect) intensity, mapped in Max to the Depth, Rate, Mix parameters of the Flanger in the subpatch `TryPoly_CPAC` and the Cut of the lowpass filter.
+- Parameter 2 :  corresponds to the particle Noise Amplitude and is mapped to the cutoff of the lowpass filter and to the Amplitude of the pink noise in the `SynthAddCpac_DRONE_DO` Subpatch, and to the Mix parameter of Ensemble plugin in the `Structure_CPAC` patch.
+- Parameter 3: corresponds to the Confidence of Sentiment Detection and is mapped to the Spread parameter of Phase Distorsion plugin in the `SynthAddCpac_DRONE_DO` subpatch  and to the detune parameter of Ensemble Plugin in the `Structure_CPAC` patch.
+- Parameter 4: corresponds to the face distance and is mapped to the amplitude of the fourth oscillator of the `SynthAddCpac_DRONE_DO` subpath e and to the adsr’s attack and the amplitude of the `SynthAddCpac_ARP` subpatch.
 
 ### ToneJS
 
