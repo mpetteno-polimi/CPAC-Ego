@@ -2,7 +2,7 @@ import * as Tone from 'tone'
 
 export default class ToneJSPlayer {
 
-    synthChord: Tone.Synth<Tone.SynthOptions>;
+    synthChord: Tone.PolySynth;
     synthDrone: Tone.Synth<Tone.SynthOptions>;
     synthNoiseDrone: Tone.NoiseSynth;
     synthLead: Tone.Synth<Tone.SynthOptions>;
@@ -10,6 +10,8 @@ export default class ToneJSPlayer {
     reverb: Tone.Reverb;
     filterLead: Tone.Filter;
     filterDrone: Tone.Filter;
+    currentChord = [];
+    currentChordFlag;
 
     constructor() {
 
@@ -33,12 +35,12 @@ export default class ToneJSPlayer {
                 "sustain": 0.2,
                 "release": 2
             },
-            "volume" : - 18
+            "volume" : - 8
         });
 
         // instantiate the low pass for the lead synth
         this.filterLead = new Tone.Filter(4000, "lowpass");
-        this.filterLead.chain(this.filterLead,this.reverb,Tone.Destination);
+        this.synthLead.chain(this.filterLead,this.reverb,Tone.Destination);
 
         // instantiate the bass
         this.synthBass = new Tone.Synth({
@@ -56,22 +58,11 @@ export default class ToneJSPlayer {
                     "sustain": 0.4,
                     "release": 2
                 },
-                "volume" : - 12
+                "volume" : - 18
             }).toDestination();
 
             // instantiate chord synth
-            this.synthChord = new Tone.Synth({
-                "oscillator": {
-                "type": "sine",
-            },
-            "envelope": {
-                "attack": 0.4,
-                "decay": 0.01,
-                "sustain": 1,
-                "attackCurve" : "sine",
-                "releaseCurve" : "sine",
-                "release": 1
-            },
+            this.synthChord = new Tone.PolySynth({
             "volume" : - 12}).toDestination();
             
 
@@ -120,12 +111,24 @@ export default class ToneJSPlayer {
          this.synthNoiseDrone.triggerAttack("C2", Tone.now() + 2);
          */
         
+        // keeps track of the chord
+        
 
     }
 
     playChord(note) {
-        let noteString = Tone.Frequency(note, "midi").toNote();
-        this.synthChord.triggerAttackRelease(noteString, "1n");
+
+        // console.log("chord play");
+        // console.log(note);
+        const now = Tone.now();
+        let chordNotes = [];
+
+        for (let i = 0; i < note.length; i++) {
+            // console.log(Tone.Frequency(note[i], "midi").toNote());
+            chordNotes.push (Tone.Frequency(note[i], "midi").toNote());
+        }
+            this.synthChord.releaseAll(now);
+        this.synthChord.triggerAttackRelease(chordNotes, "1n", now + 0.05, 0.2);
     }
 
 
@@ -147,18 +150,19 @@ export default class ToneJSPlayer {
     playNote(note) {
         let now = Tone.now();
         let noteString = Tone.Frequency(note, "midi").toNote();
-        this.synthLead.triggerAttack(noteString, now);
+        this.synthLead.triggerRelease(now);
+        this.synthLead.triggerAttack(noteString,  now + 0.5);
 
     }
 
     playBass(note) {
         let now = Tone.now();
-        let noteString = Tone.Frequency(note, "midi").transpose(12).toNote();
+        let noteString = Tone.Frequency(note, "midi").toNote();
         this.synthBass.triggerAttack(noteString, now);
     }
 
 
-    setAudioParams(p1, p2, p3) {
+    setAudioParams(p1, p2, p3, p4) {
 
         this.filterLead.set({
             frequency: 2000 + p1 * 1000

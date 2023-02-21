@@ -253,13 +253,28 @@ export default class MusicGenerator {
         let baseNoteIndex = Math.floor(Math.random()*7);
         let baseNoteOffset = -12 + Math.floor(Math.random()*3)*12;
         let numberOfNotes = 3;
+        let chordNotes = [];
+
         if(Math.random()<0.4) numberOfNotes=4;
-        for(let i=0; i<numberOfNotes; i++){
+            
+
+        for(let i=0; i<numberOfNotes; i++) {
+
             let noteIndex = (baseNoteIndex + 2*i) % 7;
             let note = this.scale[noteIndex] + this.baseNote;
+
             if((baseNoteIndex + 2*i) > 6) note+=12;
             note += baseNoteOffset;
-            this.musicPlayer.playChord(note);
+
+            if (this.musicPlayer.useToneJS()) {
+                chordNotes.push (note);
+            } else {
+                this.musicPlayer.playChord(note);
+            }
+        }
+
+        if (this.musicPlayer.useToneJS()) {
+            this.musicPlayer.playChord(chordNotes);
         }
     }
 
