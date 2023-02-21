@@ -21,9 +21,9 @@
 
     function dispatchInteractionEvent(event) {
         let gui = document.getElementById("splash-screen-gui");
-        if (!gui.contains(event.target)) {
+        if (!gui || !gui.contains(event.target)) {
             dispatch("interaction");
-            gui.remove();
+            if (gui) gui.remove();
             window.removeEventListener("click", dispatchInteractionEvent);
         }
     }

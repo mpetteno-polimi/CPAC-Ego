@@ -1,5 +1,6 @@
 import OSCClient from "./OSCClient";
 import ToneJSPlayer from "./ToneJSPlayer";
+import {config} from "../../config";
 
 export default class MusicPlayer {
 
@@ -12,10 +13,9 @@ export default class MusicPlayer {
     }
 
     playChord(note) {
-        console.log("playing chord note", note)
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/chord', note);
-        } else {
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.playChord(note);
         }
     }
@@ -23,7 +23,7 @@ export default class MusicPlayer {
     startNoiseDrone(){
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage("/noiseDronePlay");
-        } else {
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.startNoiseDrone();
         }
     }
@@ -31,15 +31,15 @@ export default class MusicPlayer {
     startDrone() {
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage("/dronePlay", 1);
-        } else {
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.startDrone();
         }
     }
 
     stopDrone() {
         if (this.oscClient.isConnected()) {
-            this.oscClient.sendMessage("/droneStop", 0);
-        } else {
+            this.oscClient.sendMessage("/dronePlay", 0);
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.stopDrone();
         }
     }
@@ -47,7 +47,7 @@ export default class MusicPlayer {
     playNote(note) {
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/note', note);
-        } else {
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.playNote(note);
         }
     }
@@ -55,7 +55,7 @@ export default class MusicPlayer {
     playBass(note) {
         if (this.oscClient.isConnected()) {
             this.oscClient.sendMessage('/bass', note);
-        } else {
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.playBass(note);
         }
     }
@@ -66,7 +66,7 @@ export default class MusicPlayer {
             this.oscClient.sendMessage('/param2', p2);
             this.oscClient.sendMessage('/param3', p3);
             this.oscClient.sendMessage('/param4', p4);
-        } else {
+        } else if (config.music.toneJS.enabled) {
             this.toneJsPlayer.setAudioParams(p1, p2, p3, p4);
         }
     }

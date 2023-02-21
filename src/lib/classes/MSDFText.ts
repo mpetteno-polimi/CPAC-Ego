@@ -42,7 +42,7 @@ export default class MSDFText {
         this.material.uniforms.uPrimaryColor.value = new THREE.Color(options.uPrimaryColor);
         this.material.uniforms.uPrimaryVariant.value = new THREE.Color(options.uPrimaryVariant);
         this.material.uniforms.uSecondaryColor.value = new THREE.Color(options.uSecondaryColor);
-        this.material.uniforms.uSecondaryVariantColor.value = new THREE.Color(options.uSecondaryVariantColor);
+        this.material.uniforms.uTernaryColor.value = new THREE.Color(options.uTernaryColor);
         this.material.uniforms.uBackgroundColor.value = new THREE.Color(options.uBackgroundColor);
     }
 
@@ -80,7 +80,7 @@ export default class MSDFText {
                     uPrimaryColor: { value: new THREE.Color() },
                     uPrimaryVariant: { value: new THREE.Color() },
                     uSecondaryColor: { value: new THREE.Color() },
-                    uSecondaryVariantColor: { value: new THREE.Color() },
+                    uTernaryColor: { value: new THREE.Color() },
                     uBackgroundColor: { value: new THREE.Color() }
                 }
             },

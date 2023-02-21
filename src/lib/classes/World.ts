@@ -38,15 +38,15 @@ export default class World {
         bloomThreshold: number,
         bloomStrength: number,
         cameraDistance: number,
+        cameraAngle: number,
         noiseFreq: number,
         noiseAmp: number,
         noiseRadius: number,
         noiseSpeed: number,
         noiseType: number,
-        primaryColor: number,
-        primaryVariant: number,
-        secondaryColor: number,
-        secondaryVariantColor: number,
+        sphereColor: number,
+        faceColor: number,
+        morphTargetColor: number,
         backgroundColor: number
     };
 
@@ -57,15 +57,15 @@ export default class World {
             bloomThreshold: 0,
             bloomStrength: 0,
             cameraDistance: 2.5,
-            noiseFreq: 15,
-            noiseAmp: 0.3,
+            cameraAngle: 0,
+            noiseFreq: 0,
+            noiseAmp: 0,
             noiseRadius: 1,
-            noiseSpeed: 3,
-            noiseType: 4,
-            primaryColor: config.colors.primary,
-            primaryVariant: config.colors.primaryVariant,
-            secondaryColor: config.colors.secondary,
-            secondaryVariantColor: config.colors.secondaryVariant,
+            noiseSpeed: 0,
+            noiseType: 0,
+            sphereColor: config.colors.primary,
+            faceColor: config.colors.primary,
+            morphTargetColor: config.colors.primary,
             backgroundColor: config.colors.background
         };
         this.faceMeshDetector = options.faceMeshDetector;
@@ -84,12 +84,11 @@ export default class World {
         //this.addHelpers();
         this.container.append(this.renderer.domElement);
         this.resize();
-        this.musicGenerator.musicPlayer.startNoiseDrone();
     }
 
     start() {
         this.loop.start();
-        this.musicGenerator.newFace();
+        this.musicGenerator.musicPlayer.startNoiseDrone();
     }
 
     stop() {
@@ -109,11 +108,16 @@ export default class World {
             this.settings.bloomThreshold = parameters.bloomThreshold;
             this.settings.bloomStrength = parameters.bloomStrength;
             this.settings.bloomRadius = parameters.bloomRadius;
+            this.settings.sphereColor = parameters.sphereColor;
+            this.settings.faceColor = parameters.faceColor;
+            this.settings.morphTargetColor = parameters.morphTargetColor;
+            this.settings.backgroundColor = parameters.backgroundColor;
             this.settings.noiseAmp = parameters.noiseAmp;
             this.settings.noiseRadius = parameters.noiseRadius;
             this.settings.noiseFreq = parameters.noiseFreq;
             this.settings.noiseType = parameters.noiseType;
             this.settings.cameraDistance = parameters.cameraDistance;
+            this.settings.cameraAngle = parameters.cameraAngle;
             this.musicGenerator.setAudioParams(parameters.audioParam1, parameters.audioParam2);
         }
     }
@@ -122,7 +126,9 @@ export default class World {
         this.bloomPass.threshold = this.settings.bloomThreshold;
         this.bloomPass.strength = this.settings.bloomStrength;
         this.bloomPass.radius = this.settings.bloomRadius;
-        this.camera.position.setZ(this.settings.cameraDistance);
+        this.camera.position.setX(Math.sin(this.settings.cameraAngle)*this.settings.cameraDistance);
+        this.camera.position.setZ(Math.cos(this.settings.cameraAngle)*this.settings.cameraDistance);
+        this.camera.lookAt(new THREE.Vector3(0,0,0))
     }
 
     private addCamera() {
@@ -153,8 +159,8 @@ export default class World {
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setClearColor(config.colors.background);
-         this.renderer.physicallyCorrectLights = true;
-        //this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.physicallyCorrectLights = true;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
     }
 
     private addScene() {
@@ -171,29 +177,31 @@ export default class World {
     }
 
     private addGUI() {
-        this.gui = new dat.GUI({ autoPlace: true });
-        this.gui.domElement.id = 'world-gui';
-        let cameraFolder = this.gui.addFolder(`Camera`);
-        cameraFolder.add(this.settings, "cameraDistance", 0, 10, 0.5);
-        let colorsFolder = this.gui.addFolder(`Color Palette`);
-        colorsFolder.addColor(this.settings, "primaryColor");
-        colorsFolder.addColor(this.settings, "primaryVariant");
-        colorsFolder.addColor(this.settings, "secondaryColor");
-        colorsFolder.addColor(this.settings, "secondaryVariantColor");
-        colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
-            this.settings.backgroundColor = color;
-            this.renderer.setClearColor(color);
-        });
-        let noiseFolder = this.gui.addFolder(`Noise`);
-        noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
-        noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
-        noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
-        noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
-        noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
-        let postProcessingFolder = this.gui.addFolder(`Post Processing`);
-        postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
-        postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
-        postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
+        if (!config.scenes.world.automateParameters) {
+            this.gui = new dat.GUI({ autoPlace: true });
+            this.gui.domElement.id = 'world-gui';
+            let cameraFolder = this.gui.addFolder(`Camera`);
+            cameraFolder.add(this.settings, "cameraDistance", 0, 10, 0.5);
+            cameraFolder.add(this.settings, "cameraAngle", 0, 360, 0.5);
+            let colorsFolder = this.gui.addFolder(`Color Palette`);
+            colorsFolder.addColor(this.settings, "sphereColor");
+            colorsFolder.addColor(this.settings, "faceColor");
+            colorsFolder.addColor(this.settings, "morphTargetColor");
+            colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
+                this.settings.backgroundColor = color;
+                this.renderer.setClearColor(color);
+            });
+            let noiseFolder = this.gui.addFolder(`Noise`);
+            noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
+            noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
+            noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
+            noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
+            noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
+            let postProcessingFolder = this.gui.addFolder(`Post Processing`);
+            postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
+            postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
+            postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
+        }
     }
 
     private addPostProcessing() {

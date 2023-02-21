@@ -43,7 +43,7 @@ export const config: AppConfig = {
                 farPlane: 100
             },
             particlesCount: 256*256,
-            automateParameters: false
+            automateParameters: true
         },
     },
     faceMeshDetector: {
@@ -122,7 +122,7 @@ export const config: AppConfig = {
 
         },
         toneJS: {
-
+            enabled: false
         },
         generator: {
             bassEnabled: true
@@ -134,21 +134,21 @@ export const config: AppConfig = {
         fps: 60
     },
     loop: {
-        faceDetectionStartTime: 8,
-        faceDetectedMorphDuration: 10,
-        morphStart: 5,
-        morphDuration: 15,
-        morphEnd: 5
+        faceDetectionStartTime: 10,
+        faceDetectedMorphDuration: 20,
+        morphStart: 8,
+        morphDuration: 30,
+        morphEnd: 8
     },
     osc: {
         host: "localhost",
         port: 8080
     },
     colors: {
-        primary: 0xFFFFFF,
+        primary: 0x8099B3,
         primaryVariant: 0xFBFBFB,
-        secondary: 0xFFFFFF,
-        secondaryVariant: 0xFFFFFF,
+        secondary: 0x66cc80,
+        ternary: 0xFFFFFF,
         background: 0x000000
     }
 }

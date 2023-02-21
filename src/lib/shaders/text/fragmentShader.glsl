@@ -32,9 +32,8 @@ uniform float uProgress3;
 uniform float uProgress4;
 uniform float uTime;
 uniform vec3 uPrimaryColor;
-uniform vec3 uPrimaryVariant;
 uniform vec3 uSecondaryColor;
-uniform vec3 uSecondaryVariantColor;
+uniform vec3 uTernaryColor;
 uniform vec3 uBackgroundColor;
 
 // Utils: Median
@@ -90,10 +89,10 @@ void main() {
     // gl_FragColor = strokedFragColor;
 
     // Custom part
-    vec4 l1 = vec4(uPrimaryColor, border*0.5);
-    vec4 l2 = vec4(uPrimaryColor, border);
-    vec4 l3 = vec4(uSecondaryColor, alpha);
-    vec4 l4 = vec4(uPrimaryColor, alpha);
+    vec4 l1 = vec4(uTernaryColor, border*0.5);
+    vec4 l2 = vec4(uSecondaryColor, border);
+    vec4 l3 = vec4(uPrimaryColor, alpha);
+    vec4 l4 = vec4(uTernaryColor, alpha);
 
     float w = 1.;
 

@@ -38,7 +38,7 @@ export default class SplashScreen {
         primaryColor: number,
         primaryVariant: number,
         secondaryColor: number,
-        secondaryVariantColor: number,
+        ternaryColor: number,
         backgroundColor: number
     };
 
@@ -62,7 +62,7 @@ export default class SplashScreen {
             primaryColor: config.colors.primary,
             primaryVariant: config.colors.primaryVariant,
             secondaryColor: config.colors.secondary,
-            secondaryVariantColor: config.colors.secondaryVariant,
+            ternaryColor: config.colors.ternary,
             backgroundColor: config.colors.background
         };
         this.addCamera();
@@ -114,7 +114,7 @@ export default class SplashScreen {
             uPrimaryColor: this.settings.primaryColor,
             uPrimaryVariant: this.settings.primaryVariant,
             uSecondaryColor: this.settings.secondaryColor,
-            uSecondaryVariantColor: this.settings.secondaryVariantColor,
+            uTernaryColor: this.settings.ternaryColor,
             uBackgroundColor: this.settings.backgroundColor,
         })
         this.updateSettings();
@@ -167,34 +167,30 @@ export default class SplashScreen {
     }
 
     private addGUI() {
-        this.gui = new dat.GUI({ autoPlace: true });
-        this.gui.domElement.id = 'splash-screen-gui';
-        let cameraFolder = this.gui.addFolder(`Camera`);
-        cameraFolder.add(this.settings, "cameraDistance", 0, 5000, 100);
-        let colorsFolder = this.gui.addFolder(`Color Palette`);
-        colorsFolder.addColor(this.settings, "primaryColor");
-        colorsFolder.addColor(this.settings, "primaryVariant");
-        colorsFolder.addColor(this.settings, "secondaryColor");
-        colorsFolder.addColor(this.settings, "secondaryVariantColor");
-        colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
-            this.settings.backgroundColor = color;
-            this.renderer.setClearColor(color);
-        });
-        let progressFolder = this.gui.addFolder(`Progress`);
-        progressFolder.add(this.settings, "progress1", 0, 1, 0.01);
-        progressFolder.add(this.settings, "progress2", 0, 1, 0.01);
-        progressFolder.add(this.settings, "progress3", 0, 1, 0.01);
-        progressFolder.add(this.settings, "progress4", 0, 1, 0.01);
-        let noiseFolder = this.gui.addFolder(`Noise`);
-        noiseFolder.add(this.settings, "noiseAmp", 0, 2, 0.01);
-        noiseFolder.add(this.settings, "noiseFreq", 0, 100, 0.01);
-        noiseFolder.add(this.settings, "noiseRadius", 0, 20, 0.01);
-        noiseFolder.add(this.settings, "noiseSpeed", 0, 20, 0.01);
-        noiseFolder.add(this.settings, "noiseType", [0, 1, 2, 3, 4, 5, 6]);
-        let postProcessingFolder = this.gui.addFolder(`Post Processing`);
-        postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
-        postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
-        postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
+        if (!config.scenes.splashScreen.automateParameters) {
+            this.gui = new dat.GUI({ autoPlace: true });
+            this.gui.domElement.id = 'splash-screen-gui';
+            let cameraFolder = this.gui.addFolder(`Camera`);
+            cameraFolder.add(this.settings, "cameraDistance", 0, 5000, 100);
+            let colorsFolder = this.gui.addFolder(`Color Palette`);
+            colorsFolder.addColor(this.settings, "primaryColor");
+            colorsFolder.addColor(this.settings, "primaryVariant");
+            colorsFolder.addColor(this.settings, "secondaryColor");
+            colorsFolder.addColor(this.settings, "ternaryColor");
+            colorsFolder.addColor(this.settings, "backgroundColor").onChange((color) => {
+                this.settings.backgroundColor = color;
+                this.renderer.setClearColor(color);
+            });
+            let progressFolder = this.gui.addFolder(`Progress`);
+            progressFolder.add(this.settings, "progress1", 0, 1, 0.01);
+            progressFolder.add(this.settings, "progress2", 0, 1, 0.01);
+            progressFolder.add(this.settings, "progress3", 0, 1, 0.01);
+            progressFolder.add(this.settings, "progress4", 0, 1, 0.01);
+            let postProcessingFolder = this.gui.addFolder(`Post Processing`);
+            postProcessingFolder.add(this.settings, "bloomThreshold", 0, 10, 0.01);
+            postProcessingFolder.add(this.settings, "bloomStrength", 0, 10, 0.01);
+            postProcessingFolder.add(this.settings, "bloomRadius", 0, 10, 0.01);
+        }
     }
 
     private addPostProcessing() {
