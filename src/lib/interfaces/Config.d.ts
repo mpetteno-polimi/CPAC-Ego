@@ -78,6 +78,7 @@ type MusicPlayerConfig = {
 
 type ToneJSConfig = {
     enabled: boolean
+    chordsEnabled: boolean
 }
 
 type MusicGeneratorConfig = {

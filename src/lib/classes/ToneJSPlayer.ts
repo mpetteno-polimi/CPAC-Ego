@@ -1,4 +1,5 @@
 import * as Tone from 'tone'
+import {config} from "../../config";
 
 export default class ToneJSPlayer {
 
@@ -113,10 +114,12 @@ export default class ToneJSPlayer {
     }
 
     playChord(note) {
-        const now = Tone.now();
-        let noteString = Tone.Frequency(note, "midi").toNote();
-        this.synthChord.triggerRelease(now);
-        this.synthChord.triggerAttack(noteString, "1n", now + 0.5);
+        if (config.music.toneJS.chordsEnabled) {
+            const now = Tone.now();
+            let noteString = Tone.Frequency(note, "midi").toNote();
+            this.synthChord.triggerRelease(now);
+            this.synthChord.triggerAttack(noteString, "1n", now + 0.5);
+        }
     }
 
 
