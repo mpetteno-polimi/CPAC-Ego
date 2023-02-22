@@ -112,7 +112,7 @@ used for sentiment detection are also used as sound design parameters in Max.
 
 As far as sound design is concerned, we immediately started with the idea of using an external tool controlled via
 the OSC protocol, but given the nature of the application we realized that it was necessary to make the sound
-experience available also in the browser nto on-expert users. For this purpose we have designed the system to be able
+experience available also in the browser into on-expert users. For this purpose we have designed the system to be able
 to handle both situations: if there is an active OSC connection it will be used,
 otherwise [Tone.js](https://tonejs.github.io/)
 in the browser will take care of the sound output.
