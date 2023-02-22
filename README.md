@@ -2,7 +2,8 @@
 
 **Ego** is a project that is meant to explore the idea of human perception, in particular the idea of identity and self
 consciousness and the way it is distorted and biased.
-It is available at this [link](https://github.com/mpetteno-polimi/CPAC-Ego)
+
+It is available at this [link](https://mpetteno-polimi.github.io/CPAC-Ego/).
 
 ## Artistic vision
 
