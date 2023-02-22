@@ -25,7 +25,7 @@ export default class ToneJSPlayer {
         // instantiate the lead synth
         this.synthLead = new Tone.Synth({
 
-            "portamento" : 0.08,
+            "portamento" : 0.05,
             "oscillator": {
                 "type": "square4"
             },
@@ -35,7 +35,7 @@ export default class ToneJSPlayer {
                 "sustain": 0.2,
                 "release": 2
             },
-            "volume" : - 8
+            "volume" : - 18
         });
 
         // instantiate the low pass for the lead synth
@@ -127,8 +127,8 @@ export default class ToneJSPlayer {
             // console.log(Tone.Frequency(note[i], "midi").toNote());
             chordNotes.push (Tone.Frequency(note[i], "midi").toNote());
         }
-            this.synthChord.releaseAll(now);
-        this.synthChord.triggerAttackRelease(chordNotes, "1n", now + 0.05, 0.2);
+        this.synthChord.releaseAll(now);
+        this.synthChord.triggerAttack(chordNotes, now + 0.05, 0.2);
     }
 
 
@@ -148,10 +148,12 @@ export default class ToneJSPlayer {
     }
 
     playNote(note) {
+        console.log("note played");
+        console.log("note");
         let now = Tone.now();
         let noteString = Tone.Frequency(note, "midi").toNote();
         this.synthLead.triggerRelease(now);
-        this.synthLead.triggerAttack(noteString,  now + 0.5);
+        this.synthLead.triggerAttack(noteString,  now + 0.001);
 
     }
 
