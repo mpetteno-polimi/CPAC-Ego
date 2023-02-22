@@ -122,7 +122,8 @@ export const config: AppConfig = {
 
         },
         toneJS: {
-            enabled: false
+            enabled: true,
+            chordsEnabled: false
         },
         generator: {
             bassEnabled: true
