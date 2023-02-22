@@ -222,5 +222,5 @@ If you want to start OSC communication run:
 - Noise automation during loop's animation ![100%](https://progress-bar.dev/100) &rarr; **Matteo + Sebastian**
 - Improve rendering and colours ![100%](https://progress-bar.dev/100)
 - ToneJS player if OSC not available ![100%](https://progress-bar.dev/100)
-- README + Presentation slides ![50%](https://progress-bar.dev/50)
+- README + Presentation slides ![100%](https://progress-bar.dev/100)
 - Handle multiple faces at the same time ![0%](https://progress-bar.dev/0)
